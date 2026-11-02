@@ -5,5 +5,6 @@
 -- explicada no PR que a introduz.
 --
 -- Regra: uma migração já aplicada nunca é editada. Para mudar algo, crie V<n+1>.
+-- (Esta só está sendo ajustada porque ainda não foi aplicada em nenhum banco real.)
 
-SET TIME ZONE 'UTC';
+COMMENT ON SCHEMA public IS 'Rota Dev. Schema versionado pelo Flyway (api/src/main/resources/db/migration).';

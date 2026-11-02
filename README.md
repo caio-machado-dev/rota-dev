@@ -88,10 +88,11 @@ Para quem está aprendendo Spring, nesta ordem:
 
 ## Roadmap
 
-- [x] **Fase 0:** fundação (monorepo, compose, CI, ADRs)
+- [ ] **Fase 0:** fundação (monorepo, compose, CI, ADRs), em revisão no PR #1
 - [ ] **Fase 1:** login com GitHub, ingestão de repositórios, upload de LinkedIn e CV, revisão do perfil
 - [ ] **Fase 2:** objetivos, diagnóstico e plano via IA
 - [ ] **Fase 3:** painel do dia, sessões, check-in semanal, índice de prontidão
+- [ ] **Deploy:** publicação de imagens no GHCR, compose de produção e Caddy compartilhado na VPS (ADR 0013)
 - [ ] **Fase 4:** prontidão para SaaS (LGPD, limites, observabilidade)
 
 ## Convenções
