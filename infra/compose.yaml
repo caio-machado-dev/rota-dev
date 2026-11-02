@@ -1,0 +1,54 @@
+# Ambiente local completo: Postgres + API + Web.
+#   docker compose -f infra/compose.yaml up --build     (tudo)
+#   docker compose -f infra/compose.yaml up postgres    (só o banco, para rodar API/web fora do Docker)
+#
+# Os limites de memória são os mesmos planejados para a VPS (ADR 0013), para que
+# o comportamento local já seja parecido com o de produção.
+
+name: rota-dev
+
+services:
+  postgres:
+    image: postgres:17
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-rotadev}
+      POSTGRES_USER: ${POSTGRES_USER:-rotadev}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-rotadev}
+    ports:
+      # Só em 127.0.0.1: o banco não fica exposto na rede.
+      - "127.0.0.1:${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    mem_limit: 512m
+
+  api:
+    build: ../api
+    environment:
+      DATABASE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-rotadev}
+      DATABASE_USER: ${POSTGRES_USER:-rotadev}
+      DATABASE_PASSWORD: ${POSTGRES_PASSWORD:-rotadev}
+    ports:
+      - "127.0.0.1:8080:8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    mem_limit: 768m
+
+  web:
+    build:
+      context: ../web
+      args:
+        API_INTERNAL_URL: http://api:8080
+    ports:
+      - "127.0.0.1:3000:3000"
+    depends_on:
+      - api
+    mem_limit: 256m
+
+volumes:
+  pgdata:
