@@ -42,8 +42,9 @@ Java grande dele, e ele lê e revisa cada linha. Trabalhe como um pleno que ensi
 - API (em `api/`): `./mvnw verify` roda tudo; `./mvnw test -Dtest=NomeDoTeste` roda um.
   Os testes de integração precisam do Docker rodando (Testcontainers).
 - Web (em `web/`): `pnpm lint`, `pnpm typecheck`, `pnpm test`, `pnpm build`.
-- Na máquina do Caio, comandos pesados passam pela fila: `em-fila ./mvnw verify`,
-  `em-fila pnpm build`, `vitest-fila <arquivo>`. Rode só os testes ligados à mudança.
+- Na máquina do Caio, comandos pesados passam pela fila: `em-fila ./mvnw verify`, `em-fila pnpm build`.
+  Testes do web: `NODE_OPTIONS=--max-old-space-size=2048 em-fila pnpm exec vitest run --maxWorkers=2 <arquivos>`
+  (o `vitest-fila` passa `--minWorkers`, que o Vitest 5 removeu). Rode só os testes ligados à mudança.
 
 ## Git
 - Conventional Commits em português (`feat(sources): ...`, `fix: ...`, `docs(adr): ...`),
