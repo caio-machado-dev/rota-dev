@@ -1,0 +1,47 @@
+# Configuração da API. Cada valor ${VAR:padrao} lê a variável de ambiente VAR
+# e, se ela não existir, usa o padrão. Os padrões servem para desenvolvimento local;
+# em produção tudo vem do .env (ADR 0008).
+
+spring:
+  application:
+    name: rota-dev-api
+
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/rotadev}
+    username: ${DATABASE_USER:rotadev}
+    password: ${DATABASE_PASSWORD:rotadev}
+
+  jpa:
+    # O schema é responsabilidade do Flyway. O Hibernate só confere se as entidades
+    # batem com as tabelas e falha na subida se não baterem. Nunca deixe o Hibernate
+    # criar ou alterar tabelas sozinho.
+    hibernate:
+      ddl-auto: validate
+    # Desliga o "Open Session in View": por padrão o Spring mantém a conexão com o banco
+    # aberta até a resposta HTTP ser escrita, o que esconde consultas preguiçosas (lazy)
+    # disparadas fora do serviço. Desligado, todo acesso ao banco acontece dentro da
+    # camada de aplicação, onde a transação é explícita.
+    open-in-view: false
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+
+  flyway:
+    locations: classpath:db/migration
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      probes:
+        enabled: true
+
+# Configurações próprias do Rota Dev (ADR 0012: a marca fica num lugar só).
+rota:
+  brand:
+    name: Rota Dev
+    slug: rota-dev

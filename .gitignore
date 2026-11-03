@@ -1,0 +1,15 @@
+# Sistema
+.DS_Store
+
+# Segredos: nunca versionar
+.env
+.env.*
+!.env.example
+
+# Editores
+.idea/
+.vscode/
+*.iml
+
+# Logs
+*.log
