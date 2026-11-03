@@ -2,8 +2,8 @@
 
 # Rota Dev
 
-**An evidence-based career plan for software developers.**
-Connect your GitHub, LinkedIn and résumé. Get a living, trackable roadmap built from what you have actually shipped.
+**Um plano de carreira para devs baseado em evidência.**
+Conecte seu GitHub, LinkedIn e currículo. Receba um roadmap vivo e acompanhável, construído a partir do que você já entregou de verdade.
 
 [![api](https://github.com/caio-machado-dev/rota-dev/actions/workflows/api.yml/badge.svg?branch=develop)](https://github.com/caio-machado-dev/rota-dev/actions/workflows/api.yml)
 [![web](https://github.com/caio-machado-dev/rota-dev/actions/workflows/web.yml/badge.svg?branch=develop)](https://github.com/caio-machado-dev/rota-dev/actions/workflows/web.yml)
@@ -12,40 +12,40 @@ Connect your GitHub, LinkedIn and résumé. Get a living, trackable roadmap buil
 ![Next.js 16](https://img.shields.io/badge/Next.js-16-black?logo=nextdotjs&logoColor=white)
 ![PostgreSQL 17](https://img.shields.io/badge/PostgreSQL-17-4169E1?logo=postgresql&logoColor=white)
 
-**English** · [Português](README.pt-BR.md)
+**Português** · [English](README.en.md)
 
 </div>
 
 > [!NOTE]
-> **Status: early development.** The technical foundation is done (Phase 0). Product features are being built in public, one small pull request at a time. See the [roadmap](#roadmap).
+> **Status: em desenvolvimento inicial.** A fundação técnica está pronta (Fase 0). As funcionalidades do produto estão sendo construídas em público, um pull request pequeno de cada vez. Veja o [roadmap](#roadmap).
 
-## Why
+## Por quê
 
-Most career-planning tools start with a generic questionnaire and end with a generic plan. Rota Dev starts from **evidence**: the code in your repositories, the experience on your LinkedIn and résumé, and the hours you actually put in each week.
+A maioria das ferramentas de plano de carreira começa com um questionário genérico e termina com um plano genérico. O Rota Dev começa pela **evidência**: o código nos seus repositórios, a experiência no seu LinkedIn e currículo, e as horas que você realmente dedica a cada semana.
 
-- **Diagnosis with receipts.** Every conclusion cites its source ("3 Spring projects with integration tests", "no repository with CI"). No evidence, no claim: the item is marked *unverified*.
-- **A plan that adapts.** Weekly check-ins feed back into the plan, which proposes adjustments that you approve or reject. Every change is versioned with its reason.
-- **Learning, not just shipping.** A daily *anti vibe-coding* routine pushes you to read, explain and test the code AI agents write for you, and it counts toward your readiness score.
+- **Diagnóstico com prova.** Toda conclusão cita a fonte ("3 projetos Spring com testes de integração", "nenhum repositório com CI"). Sem evidência, não há afirmação: o item fica marcado como *não verificado*.
+- **Um plano que se ajusta.** O check-in semanal realimenta o plano, que propõe ajustes que você aprova ou recusa. Cada mudança é versionada com o motivo.
+- **Aprender, não só entregar.** Uma rotina diária *anti vibe coding* incentiva você a ler, explicar e testar o código que os agentes de IA escrevem, e esse hábito conta no seu índice de prontidão.
 
-## Features
+## Funcionalidades
 
-| Feature | Description | Status |
+| Funcionalidade | Descrição | Status |
 |---|---|---|
-| Sign in with GitHub | OAuth login, server-side session | 🔜 Phase 1 |
-| Source ingestion | GitHub repositories and languages, LinkedIn export (ZIP/PDF), résumé (PDF/DOCX), normalized into a profile snapshot with per-field provenance and confidence | 🔜 Phase 1 |
-| Diagnosis | Estimated level per skill axis, skill radar (current vs. target role) and prioritized gaps, all citing evidence | 🗓️ Phase 2 |
-| Career plan | Quarterly and weekly roadmap, verifiable milestones (*gates*), an anchor project based on your real history, courses and certifications only when they add value | 🗓️ Phase 2 |
-| Tracking | "Today" dashboard, study sessions, weekly tasks, Sunday check-in, readiness index (0–100) | 🗓️ Phase 3 |
-| Anti vibe-coding protocol | Daily routine to review AI-generated code: read the full diff, explain it, write a test, take a note | 🗓️ Phase 3 |
+| Login com GitHub | OAuth, sessão no servidor | 🔜 Fase 1 |
+| Ingestão de fontes | Repositórios e linguagens do GitHub, export do LinkedIn (ZIP/PDF), currículo (PDF/DOCX), normalizados num snapshot de perfil com origem e confiança de cada dado | 🔜 Fase 1 |
+| Diagnóstico | Nível estimado por eixo, radar de habilidades (atual x cargo-alvo) e lacunas priorizadas, sempre citando evidências | 🗓️ Fase 2 |
+| Plano de carreira | Roadmap por trimestre e semana, marcos verificáveis (*portões*), projeto-âncora baseado no seu histórico real, cursos e certificações só quando agregam | 🗓️ Fase 2 |
+| Acompanhamento | Painel "Agora", sessões de estudo, tarefas da semana, check-in de domingo, índice de prontidão (0–100) | 🗓️ Fase 3 |
+| Protocolo anti vibe coding | Rotina diária para revisar código gerado por IA: ler o diff inteiro, explicar, escrever um teste, registrar uma nota | 🗓️ Fase 3 |
 
-## Architecture
+## Arquitetura
 
 ```mermaid
 flowchart LR
-    U([Browser]) -->|"/  and  /api/*"| W["Next.js 16<br/>App Router"]
-    W -->|"rewrite /api/* (same origin)"| A
+    U([Navegador]) -->|"/  e  /api/*"| W["Next.js 16<br/>App Router"]
+    W -->|"rewrite /api/* (mesma origem)"| A
 
-    subgraph A["Spring Boot 4.1 API · modular monolith"]
+    subgraph A["API Spring Boot 4.1 · monólito modular"]
         direction TB
         M1[identity] ~~~ M2[sources] ~~~ M3[diagnosis]
         M4[plan] ~~~ M5[tracking] ~~~ M6[ai]
@@ -53,39 +53,39 @@ flowchart LR
 
     A --> DB[(PostgreSQL 17)]
     A -->|jobs: FOR UPDATE SKIP LOCKED| DB
-    A -.->|OAuth + REST/GraphQL| GH[GitHub API]
-    A -.->|schema-validated JSON| LLM[Claude API]
+    A -.->|OAuth + REST/GraphQL| GH[API do GitHub]
+    A -.->|JSON validado por schema| LLM[API do Claude]
 ```
 
-- **Modular monolith.** Each top-level package is a module with `domain → application → infrastructure / web` layers. [Spring Modulith](https://spring.io/projects/spring-modulith) verifies module boundaries in a test, so the build fails when one module reaches into another's internals.
-- **Same-origin session.** The API owns the OAuth flow and keeps the session server-side; the browser only holds an `HttpOnly` cookie. Next.js proxies `/api/*`, so there is no CORS and no token in `localStorage`.
-- **Row-level multi-tenancy.** Every user-owned table carries `user_id`, always taken from the authenticated session; every endpoint gets a cross-tenant isolation test.
-- **Durable background jobs.** GitHub ingestion, document parsing and AI calls run as idempotent jobs in a Postgres-backed queue with retries, so they survive restarts.
-- **AI behind an interface.** Versioned prompts, JSON output validated against a schema, and token/cost tracking per call. The provider can be swapped without touching use cases.
+- **Monólito modular.** Cada pacote de topo é um módulo com as camadas `domain → application → infrastructure / web`. O [Spring Modulith](https://spring.io/projects/spring-modulith) verifica as fronteiras num teste, e o build quebra se um módulo mexer nas entranhas de outro.
+- **Sessão na mesma origem.** A API conduz o OAuth e guarda a sessão no servidor; o navegador só tem um cookie `HttpOnly`. O Next.js repassa `/api/*`, então não há CORS nem token no `localStorage`.
+- **Multi-tenant por linha.** Toda tabela com dado de usuário tem `user_id`, sempre vindo da sessão autenticada, e todo endpoint tem um teste de isolamento entre usuários.
+- **Jobs duráveis.** Ingestão do GitHub, parsing de documentos e chamadas de IA rodam como jobs idempotentes numa fila no Postgres, com retry, e sobrevivem a reinícios.
+- **IA atrás de uma interface.** Prompts versionados, saída em JSON validada por schema e registro de tokens e custo por chamada. Dá para trocar de provedor sem mexer nos casos de uso.
 
-Every significant choice is recorded as an **[Architecture Decision Record](docs/adr/README.md)** (written in Portuguese), with context, alternatives and trade-offs.
+Toda decisão relevante está registrada como **[ADR (Architecture Decision Record)](docs/adr/README.md)**, com contexto, alternativas e trade-offs.
 
-## Tech stack
+## Stack
 
-| Layer | Technologies |
+| Camada | Tecnologias |
 |---|---|
 | Backend | Java 25 · Spring Boot 4.1 (Web MVC, Data JPA, Validation, Actuator) · Spring Modulith · Flyway |
-| Database | PostgreSQL 17 |
+| Banco | PostgreSQL 17 |
 | Frontend | Next.js 16 (App Router) · React 19 · TypeScript · Tailwind CSS 4 · shadcn/ui |
-| Testing | JUnit 5 · AssertJ · Testcontainers (real Postgres) · Vitest · Testing Library |
-| Infra | Docker (multi-stage, non-root images) · Docker Compose · GitHub Actions |
+| Testes | JUnit 5 · AssertJ · Testcontainers (Postgres real) · Vitest · Testing Library |
+| Infra | Docker (multi-stage, sem root) · Docker Compose · GitHub Actions |
 
-## Engineering practices
+## Práticas de engenharia
 
-- **Tests against real infrastructure.** Integration tests run against PostgreSQL in Testcontainers, the same version as production, not an in-memory substitute.
-- **Schema as code.** Flyway migrations only; Hibernate runs in `validate` mode and never alters the schema.
-- **CI on every pull request.** Separate path-filtered workflows for the API and the web app.
-- **Git Flow.** `feat/*` → `develop` → `main`, protected branches, Conventional Commits, small reviewable PRs.
-- **Sized for a real server.** Containers run with explicit memory limits. The whole stack idles at about 370 MB (measured locally).
+- **Testes contra infraestrutura real.** Os testes de integração rodam contra um PostgreSQL no Testcontainers, na mesma versão da produção, e não contra um banco em memória.
+- **Schema como código.** Só migrações Flyway; o Hibernate roda em modo `validate` e nunca altera o schema.
+- **CI em todo pull request.** Workflows separados para a API e para o front, disparados pelo caminho alterado.
+- **Git Flow.** `feat/*` → `develop` → `main`, branches protegidas, Conventional Commits, PRs pequenos e revisáveis.
+- **Dimensionado para um servidor real.** Os containers rodam com limite de memória explícito. O stack inteiro em repouso usa cerca de 370 MB (medido localmente).
 
-## Getting started
+## Como rodar
 
-Requirements: JDK 25, Docker and Node 24 (with `corepack enable`).
+Requisitos: JDK 25, Docker e Node 24 (com `corepack enable`).
 
 ```bash
 git clone https://github.com/caio-machado-dev/rota-dev.git
@@ -94,35 +94,35 @@ docker compose -f infra/compose.yaml up --build
 ```
 
 - Web: http://localhost:3000
-- API health: http://localhost:8080/actuator/health
+- Saúde da API: http://localhost:8080/actuator/health
 
-For hot reload, running the tests and a guided reading order of the code, see the **[development guide](docs/desenvolvimento.md)** (in Portuguese).
+Para hot reload, testes e uma ordem guiada de leitura do código, veja o **[guia de desenvolvimento](docs/desenvolvimento.md)**.
 
-## Project structure
+## Estrutura
 
 ```
-api/     Spring Boot API. Each package under dev.rotadev.* is a module
-web/     Next.js front end
+api/     API Spring Boot. Cada pacote em dev.rotadev.* é um módulo
+web/     Front-end Next.js
 infra/   Docker Compose
-docs/    Architecture decision records, domain glossary, development guide
+docs/    ADRs, glossário do domínio, guia de desenvolvimento
 ```
 
 ## Roadmap
 
-- [x] **Phase 0: foundation.** Monorepo, Docker Compose, CI, ADRs
-- [ ] **Phase 1: identity and sources.** GitHub login, repository ingestion, LinkedIn and résumé parsing, profile review
-- [ ] **Phase 2: diagnosis and plan.** Goals, AI-generated diagnosis and roadmap with validated output
-- [ ] **Phase 3: tracking.** Daily dashboard, sessions, weekly check-in, readiness index, plan adjustments
-- [ ] **Deploy.** Production images on GHCR, VPS deployment behind Caddy
-- [ ] **Phase 4: SaaS readiness.** Data export and deletion (LGPD), plan limits, observability
+- [x] **Fase 0: fundação.** Monorepo, Docker Compose, CI, ADRs
+- [ ] **Fase 1: identidade e fontes.** Login com GitHub, ingestão de repositórios, parsing de LinkedIn e currículo, revisão do perfil
+- [ ] **Fase 2: diagnóstico e plano.** Objetivos, diagnóstico e roadmap gerados por IA com saída validada
+- [ ] **Fase 3: acompanhamento.** Painel do dia, sessões, check-in semanal, índice de prontidão, reajustes do plano
+- [ ] **Deploy.** Imagens de produção no GHCR, deploy na VPS atrás do Caddy
+- [ ] **Fase 4: pronto para SaaS.** Exportação e exclusão de dados (LGPD), limites por plano, observabilidade
 
-## About
+## Sobre
 
-I'm **Caio Machado**, a backend engineer from Aracaju, Brazil, working mostly with Python (Django, FastAPI), PostgreSQL and Docker. Rota Dev began as the dashboard I use to plan my own move from junior to mid-level, and to shift my main stack to **Java and Spring**. I'm building it in public as my first large Java project. That's why the code is heavily commented and every decision is written down.
+Sou o **Caio Machado**, engenheiro backend de Aracaju/SE, trabalhando principalmente com Python (Django, FastAPI), PostgreSQL e Docker. O Rota Dev nasceu do painel que eu uso para planejar minha própria evolução de júnior a pleno e para migrar meu eixo principal para **Java e Spring**. Estou construindo em público como meu primeiro projeto Java grande. Por isso o código é bem comentado e cada decisão está documentada.
 
-[LinkedIn](https://www.linkedin.com/in/caio-machado-dev/) · [Website](https://caiomachadodev.com.br) · [X](https://x.com/caiodeveloper)
+[LinkedIn](https://www.linkedin.com/in/caio-machado-dev/) · [Site](https://caiomachadodev.com.br) · [X](https://x.com/caiodeveloper)
 
-## License
+## Licença
 
-Copyright © 2026 Caio Machado. All rights reserved.
-The source code is public for reading and evaluation. No license is granted to use, copy, modify or distribute it.
+Copyright © 2026 Caio Machado. Todos os direitos reservados.
+O código-fonte é público para leitura e avaliação. Nenhuma licença é concedida para usar, copiar, modificar ou distribuir.
