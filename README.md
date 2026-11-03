@@ -2,7 +2,7 @@
 
 Plataforma de plano de carreira para desenvolvedores. O dev conecta GitHub, LinkedIn e currículo, e recebe um plano personalizado e acompanhável, baseado em **evidência real** do que já construiu, e não em questionário genérico.
 
-> Status: **Fase 0 (fundação)**. Ainda não há funcionalidade de produto, só a base técnica.
+> Status: **Fase 0 concluída** (fundação técnica). Próxima: Fase 1.
 
 ## Stack
 
@@ -88,7 +88,7 @@ Para quem está aprendendo Spring, nesta ordem:
 
 ## Roadmap
 
-- [ ] **Fase 0:** fundação (monorepo, compose, CI, ADRs), em revisão no PR #1
+- [x] **Fase 0:** fundação (monorepo, compose, CI, ADRs)
 - [ ] **Fase 1:** login com GitHub, ingestão de repositórios, upload de LinkedIn e CV, revisão do perfil
 - [ ] **Fase 2:** objetivos, diagnóstico e plano via IA
 - [ ] **Fase 3:** painel do dia, sessões, check-in semanal, índice de prontidão
@@ -97,4 +97,4 @@ Para quem está aprendendo Spring, nesta ordem:
 
 ## Convenções
 
-Ver [AGENTS.md](AGENTS.md): camadas, testes, commits e o fluxo de trabalho.
+Ver [AGENTS.md](AGENTS.md): camadas, testes, commits e o fluxo de branches (`feat/*` → `develop` → `main`).
