@@ -46,6 +46,11 @@ Java grande dele, e ele lê e revisa cada linha. Trabalhe como um pleno que ensi
   Testes do web: `NODE_OPTIONS=--max-old-space-size=2048 em-fila pnpm exec vitest run --maxWorkers=2 <arquivos>`
   (o `vitest-fila` passa `--minWorkers`, que o Vitest 5 removeu). Rode só os testes ligados à mudança.
 
+## Documentação pública
+- `README.md` (inglês) e `README.pt-BR.md` andam juntos: mudou um, mude o outro no mesmo PR.
+- Uma funcionalidade só ganha status de pronta no README quando estiver na `main`. O README não promete o que não existe.
+- Detalhes de setup e de leitura do código ficam em `docs/desenvolvimento.md`, não no README.
+
 ## Git (Git Flow simplificado)
 - `main`: o que está (ou pode ir) em produção. Só recebe merge vindo da `develop`.
 - `develop`: integração, e branch padrão do repositório. Todo trabalho nasce dela e volta para ela.
