@@ -1,6 +1,6 @@
 # 0011. Monorepo e CI por caminho
 
-- **Status:** Aceito
+- **Status:** Aceito (a parte de CI foi substituída pelo [ADR 0014](0014-ci-workflow-unico-com-porteiro.md))
 - **Data:** 2026-11-02
 
 ## Decisão

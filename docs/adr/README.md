@@ -15,8 +15,9 @@ ADR aceito não se edita. Para mudar de ideia, crie um ADR novo que **substitui*
 | [0008](0008-segredos-em-repouso.md) | Segredos e arquivos em repouso | Aceito |
 | [0009](0009-convencoes-de-dados.md) | Convenções de dados (IDs, datas, dinheiro) | Aceito |
 | [0010](0010-contrato-openapi.md) | Contrato API↔web via OpenAPI | Aceito |
-| [0011](0011-monorepo-e-ci.md) | Monorepo e CI por caminho | Aceito |
+| [0011](0011-monorepo-e-ci.md) | Monorepo e CI por caminho | CI substituído por 0014 |
 | [0012](0012-marca-centralizada.md) | Marca centralizada | Aceito |
 | [0013](0013-deploy-vps-compose.md) | Deploy na VPS com Docker Compose | Aceito |
+| [0014](0014-ci-workflow-unico-com-porteiro.md) | CI com workflow único e check porteiro | Aceito |
 
 Modelo para novos ADRs: [0000-modelo.md](0000-modelo.md).
