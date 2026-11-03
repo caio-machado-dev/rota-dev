@@ -46,7 +46,13 @@ Java grande dele, e ele lê e revisa cada linha. Trabalhe como um pleno que ensi
   Testes do web: `NODE_OPTIONS=--max-old-space-size=2048 em-fila pnpm exec vitest run --maxWorkers=2 <arquivos>`
   (o `vitest-fila` passa `--minWorkers`, que o Vitest 5 removeu). Rode só os testes ligados à mudança.
 
-## Git
+## Git (Git Flow simplificado)
+- `main`: o que está (ou pode ir) em produção. Só recebe merge vindo da `develop`.
+- `develop`: integração, e branch padrão do repositório. Todo trabalho nasce dela e volta para ela.
+- Branches de trabalho saem da `develop` com prefixo do tipo: `feat/...`, `fix/...`, `chore/...`, `docs/...`.
+- Fluxo: branch → PR para `develop` (CI verde + revisão do Caio) → ao fim de uma fase ou entrega,
+  PR `develop` → `main`.
+- PRs pequenos: uma mudança revisável de cada vez (de preferência até ~400 linhas escritas à mão,
+  sem contar lockfile e código gerado). Uma fase vira vários PRs.
 - Conventional Commits em português (`feat(sources): ...`, `fix: ...`, `docs(adr): ...`),
   um commit por mudança lógica.
-- Um PR por funcionalidade, a partir de branch. A `main` só recebe merge com CI verde.
