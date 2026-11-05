@@ -5,8 +5,7 @@
 **An evidence-based career plan for software developers.**
 Connect your GitHub, LinkedIn and résumé. Get a living, trackable roadmap built from what you have actually shipped.
 
-[![api](https://github.com/caio-machado-dev/rota-dev/actions/workflows/api.yml/badge.svg?branch=develop)](https://github.com/caio-machado-dev/rota-dev/actions/workflows/api.yml)
-[![web](https://github.com/caio-machado-dev/rota-dev/actions/workflows/web.yml/badge.svg?branch=develop)](https://github.com/caio-machado-dev/rota-dev/actions/workflows/web.yml)
+[![CI](https://github.com/caio-machado-dev/rota-dev/actions/workflows/ci.yml/badge.svg?branch=develop)](https://github.com/caio-machado-dev/rota-dev/actions/workflows/ci.yml)
 ![Java 25](https://img.shields.io/badge/Java-25-orange?logo=openjdk&logoColor=white)
 ![Spring Boot 4.1](https://img.shields.io/badge/Spring_Boot-4.1-6DB33F?logo=springboot&logoColor=white)
 ![Next.js 16](https://img.shields.io/badge/Next.js-16-black?logo=nextdotjs&logoColor=white)

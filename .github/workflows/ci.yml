@@ -1,0 +1,106 @@
+name: ci
+
+# Um workflow só, que roda em TODO pull request e em todo push para develop/main.
+# Os jobs pesados (api, web) só executam se a pasta deles mudou; o job `ci-ok`
+# sempre executa e é o único check obrigatório nas branches protegidas.
+# Assim, um PR que só mexe em docs/ não fica travado esperando um check que nunca roda.
+
+on:
+  pull_request:
+  push:
+    branches: [main, develop]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      api: ${{ steps.diff.outputs.api }}
+      web: ${{ steps.diff.outputs.web }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - id: diff
+        env:
+          EVENT: ${{ github.event_name }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          # Em push para develop/main (só acontece via merge), roda tudo.
+          if [ "$EVENT" != "pull_request" ]; then
+            echo "api=true" >> "$GITHUB_OUTPUT"
+            echo "web=true" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          changed=$(git diff --name-only "$BASE_SHA" HEAD)
+          echo "Arquivos alterados:"; echo "$changed"
+          # O próprio workflow conta como mudança: alterar o CI testa os dois lados.
+          grep -qE '^(api/|\.github/workflows/)' <<< "$changed" && api=true || api=false
+          grep -qE '^(web/|\.github/workflows/)' <<< "$changed" && web=true || web=false
+          echo "api=$api" >> "$GITHUB_OUTPUT"
+          echo "web=$web" >> "$GITHUB_OUTPUT"
+
+  api:
+    needs: changes
+    if: needs.changes.outputs.api == 'true'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: api
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: "25"
+          cache: maven
+      # Compila, roda testes unitários e de integração (Testcontainers usa o Docker do runner)
+      # e o ModularityTest.
+      - run: ./mvnw -B verify
+
+  web:
+    needs: changes
+    if: needs.changes.outputs.web == 'true'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v7
+      - uses: pnpm/action-setup@v6
+        with:
+          package_json_file: web/package.json
+      - uses: actions/setup-node@v7
+        with:
+          node-version: "24"
+          cache: pnpm
+          cache-dependency-path: web/pnpm-lock.yaml
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm lint
+      - run: pnpm typecheck
+      - run: pnpm test
+      - run: pnpm build
+
+  # Porteiro: sempre roda, mesmo quando api/web foram pulados.
+  # Pulado conta como ok; falha ou cancelamento derrubam o check.
+  ci-ok:
+    needs: [changes, api, web]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - env:
+          RESULTS: ${{ join(needs.*.result, ' ') }}
+        run: |
+          echo "Resultados: $RESULTS"
+          for r in $RESULTS; do
+            if [ "$r" != "success" ] && [ "$r" != "skipped" ]; then
+              echo "::error::Algum job falhou ou foi cancelado ($r)."
+              exit 1
+            fi
+          done
