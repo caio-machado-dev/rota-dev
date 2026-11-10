@@ -78,7 +78,7 @@ Every significant choice is recorded as an **[Architecture Decision Record](docs
 
 - **Tests against real infrastructure.** Integration tests run against PostgreSQL in Testcontainers, the same version as production, not an in-memory substitute.
 - **Schema as code.** Flyway migrations only; Hibernate runs in `validate` mode and never alters the schema.
-- **CI on every pull request.** Separate path-filtered workflows for the API and the web app.
+- **CI on every pull request.** A single workflow: the API and web jobs run only when their folder changed, and the `ci-ok` gate check is the only one required to merge ([ADR 0014](docs/adr/0014-ci-workflow-unico-com-porteiro.md)).
 - **Git Flow.** `feat/*` → `develop` → `main`, protected branches, Conventional Commits, small reviewable PRs.
 - **Sized for a real server.** Containers run with explicit memory limits. The whole stack idles at about 370 MB (measured locally).
 

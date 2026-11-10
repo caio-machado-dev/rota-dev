@@ -78,7 +78,7 @@ Toda decisão relevante está registrada como **[ADR (Architecture Decision Reco
 
 - **Testes contra infraestrutura real.** Os testes de integração rodam contra um PostgreSQL no Testcontainers, na mesma versão da produção, e não contra um banco em memória.
 - **Schema como código.** Só migrações Flyway; o Hibernate roda em modo `validate` e nunca altera o schema.
-- **CI em todo pull request.** Workflows separados para a API e para o front, disparados pelo caminho alterado.
+- **CI em todo pull request.** Um workflow único: os jobs da API e do front só rodam se a pasta deles mudou, e o check porteiro `ci-ok` é o único obrigatório para o merge ([ADR 0014](docs/adr/0014-ci-workflow-unico-com-porteiro.md)).
 - **Git Flow.** `feat/*` → `develop` → `main`, branches protegidas, Conventional Commits, PRs pequenos e revisáveis.
 - **Dimensionado para um servidor real.** Os containers rodam com limite de memória explícito. O stack inteiro em repouso usa cerca de 370 MB (medido localmente).
 
