@@ -72,6 +72,12 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-session-jdbc</artifactId>
 		</dependency>
+		<!-- RestClient: cliente HTTP síncrono do Spring, usado para chamar a API do GitHub
+		     (o "requests" do Spring). O Boot 4 separou a configuração dele neste starter. -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-restclient</artifactId>
+		</dependency>
 		<!-- Contrato OpenAPI gerado a partir dos controllers, em /v3/api-docs, e o Swagger UI
 		     em /swagger-ui.html (ADR 0010). O springdoc não faz parte do Boot, por isso declara versão. -->
 		<dependency>

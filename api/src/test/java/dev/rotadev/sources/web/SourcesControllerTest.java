@@ -1,6 +1,7 @@
 package dev.rotadev.sources.web;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.oauth2Login;
 
 import java.util.Set;
@@ -54,6 +55,17 @@ class SourcesControllerTest {
 
         assertThat(mvc.get().uri("/api/sources").with(loggedAs(bob)))
                 .hasStatusOk().bodyJson().isEqualTo("[]");
+    }
+
+    @Test
+    void syncAcceptsWhenGithubIsConnectedAndNotFoundOtherwise() {
+        User erin = signIn.signIn(new GithubProfile(4003L, "erin-src", null, null, null));
+        User frank = signIn.signIn(new GithubProfile(4004L, "frank-src", null, null, null));
+        events.publishEvent(new GithubAccountLinked(erin.id(), "erin-src", "gho_erin", Set.of()));
+
+        assertThat(mvc.post().uri("/api/sources/github/sync").with(loggedAs(erin))).hasStatus(HttpStatus.FORBIDDEN);
+        assertThat(mvc.post().uri("/api/sources/github/sync").with(loggedAs(erin)).with(csrf())).hasStatus(HttpStatus.ACCEPTED);
+        assertThat(mvc.post().uri("/api/sources/github/sync").with(loggedAs(frank)).with(csrf())).hasStatus(HttpStatus.NOT_FOUND);
     }
 
     private static org.springframework.test.web.servlet.request.RequestPostProcessor loggedAs(User user) {

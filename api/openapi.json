@@ -91,6 +91,17 @@
         },
         "tags" : [ "sources-controller" ]
       }
+    },
+    "/api/sources/github/sync" : {
+      "post" : {
+        "operationId" : "syncGithub",
+        "responses" : {
+          "202" : {
+            "description" : "Accepted"
+          }
+        },
+        "tags" : [ "sources-controller" ]
+      }
     }
   },
   "components" : {
