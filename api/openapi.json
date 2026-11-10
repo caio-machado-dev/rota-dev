@@ -26,6 +26,51 @@
         "tags" : [ "me-controller" ]
       }
     },
+    "/api/profile" : {
+      "get" : {
+        "operationId" : "current",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProfileResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "profile-controller" ]
+      }
+    },
+    "/api/profile/snapshots/{id}" : {
+      "get" : {
+        "operationId" : "snapshot",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SnapshotResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "profile-controller" ]
+      }
+    },
     "/api/sources" : {
       "get" : {
         "operationId" : "list",
@@ -50,6 +95,34 @@
   },
   "components" : {
     "schemas" : {
+      "EvidenceResponse" : {
+        "type" : "object",
+        "properties" : {
+          "confidence" : {
+            "type" : "string"
+          },
+          "detail" : {
+            "type" : "string"
+          },
+          "id" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "kind" : {
+            "type" : "string"
+          },
+          "skill" : {
+            "type" : "string"
+          },
+          "title" : {
+            "type" : "string"
+          },
+          "url" : {
+            "type" : "string"
+          }
+        },
+        "required" : [ "confidence", "id", "kind", "title" ]
+      },
       "MeResponse" : {
         "type" : "object",
         "properties" : {
@@ -74,6 +147,63 @@
           }
         },
         "required" : [ "id", "login", "timeZone" ]
+      },
+      "ProfileResponse" : {
+        "type" : "object",
+        "properties" : {
+          "snapshots" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/SnapshotResponse"
+            }
+          }
+        },
+        "required" : [ "snapshots" ]
+      },
+      "SkillResponse" : {
+        "type" : "object",
+        "properties" : {
+          "confidence" : {
+            "type" : "string"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "weight" : {
+            "type" : "number",
+            "format" : "double"
+          }
+        },
+        "required" : [ "confidence", "name" ]
+      },
+      "SnapshotResponse" : {
+        "type" : "object",
+        "properties" : {
+          "createdAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "evidences" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/EvidenceResponse"
+            }
+          },
+          "id" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "skills" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/SkillResponse"
+            }
+          },
+          "sourceType" : {
+            "type" : "string"
+          }
+        },
+        "required" : [ "createdAt", "evidences", "id", "skills", "sourceType" ]
       },
       "SourceResponse" : {
         "type" : "object",
