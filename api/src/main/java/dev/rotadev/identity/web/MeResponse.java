@@ -17,5 +17,6 @@ public record MeResponse(
         String name,
         String email,
         String avatarUrl,
-        @NotNull String timeZone) {
+        @NotNull String timeZone,
+        @NotNull String tier) {
 }

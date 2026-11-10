@@ -4,6 +4,8 @@ import java.time.Instant;
 import java.time.ZoneId;
 import java.util.UUID;
 
+import dev.rotadev.identity.Tier;
+
 /**
  * Um usuário do Rota Dev, como o resto do código enxerga.
  *
@@ -19,7 +21,8 @@ public record User(
         String avatarUrl,
         ZoneId timeZone,
         Instant createdAt,
-        Instant updatedAt) {
+        Instant updatedAt,
+        Tier tier) {
 
     /** Fuso de quem ainda não escolheu um (ADR 0009). Igual ao DEFAULT da coluna em V2__users.sql. */
     public static final ZoneId DEFAULT_TIME_ZONE = ZoneId.of("America/Sao_Paulo");

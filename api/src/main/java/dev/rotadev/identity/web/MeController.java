@@ -35,6 +35,7 @@ class MeController {
         User user = lookup.byId(principal.id())
                 // Sessão de um usuário que já foi apagado: trata como não logado.
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED));
-        return new MeResponse(user.id(), user.login(), user.name(), user.email(), user.avatarUrl(), user.timeZone().getId());
+        return new MeResponse(user.id(), user.login(), user.name(), user.email(), user.avatarUrl(), user.timeZone().getId(),
+                user.tier().name());
     }
 }
