@@ -7,6 +7,8 @@ export type Upload = components["schemas"]["UploadResponse"];
 export type Profile = components["schemas"]["ProfileResponse"];
 export type Snapshot = components["schemas"]["SnapshotResponse"];
 export type UploadKind = "LINKEDIN" | "RESUME";
+export type Goal = components["schemas"]["GoalResponse"];
+export type GoalInput = components["schemas"]["GoalRequest"];
 
 /** Onde o login começa. É um link comum (navegação inteira), não uma chamada `fetch`. */
 export const LOGIN_URL = "/api/oauth2/authorization/github";
@@ -89,4 +91,21 @@ export async function uploadDocument(kind: UploadKind, file: File): Promise<Uplo
   form.append("kind", kind);
   form.append("file", file);
   return json(await apiFetch("/api/sources/uploads", { method: "POST", body: form }));
+}
+
+/** O objetivo de carreira, ou `null` se o usuário ainda não definiu um (a API responde 404). */
+export async function getGoal(): Promise<Goal | null> {
+  const response = await apiFetch("/api/goal");
+  if (response.status === 404) return null;
+  return json(response);
+}
+
+export async function saveGoal(goal: GoalInput): Promise<Goal> {
+  return json(
+    await apiFetch("/api/goal", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(goal),
+    }),
+  );
 }

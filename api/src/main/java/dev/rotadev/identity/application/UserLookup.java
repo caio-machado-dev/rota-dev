@@ -1,16 +1,18 @@
 package dev.rotadev.identity.application;
 
+import java.time.ZoneId;
 import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import dev.rotadev.identity.UserTimeZones;
 import dev.rotadev.identity.domain.User;
 
-/** Consulta de usuário por id, para o {@code GET /api/me}. */
+/** Consulta de usuário por id, para o {@code GET /api/me}, e o fuso para os outros módulos. */
 @Service
-public class UserLookup {
+public class UserLookup implements UserTimeZones {
 
     private final UserRepository users;
 
@@ -25,5 +27,11 @@ public class UserLookup {
     @Transactional(readOnly = true)
     public Optional<User> byId(UUID id) {
         return users.findById(id);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public ZoneId of(UUID userId) {
+        return users.findById(userId).map(User::timeZone).orElse(User.DEFAULT_TIME_ZONE);
     }
 }
