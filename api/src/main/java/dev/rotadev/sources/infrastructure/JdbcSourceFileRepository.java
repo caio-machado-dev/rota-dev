@@ -58,6 +58,20 @@ class JdbcSourceFileRepository implements SourceFileRepository {
                 .query(JdbcSourceFileRepository::map).list();
     }
 
+    @Override
+    public Optional<SourceFile> findById(UUID userId, UUID id) {
+        return jdbc.sql("SELECT " + COLUMNS + " FROM source_files WHERE user_id = :userId AND id = :id")
+                .param("userId", userId).param("id", id)
+                .query(JdbcSourceFileRepository::map).optional();
+    }
+
+    @Override
+    public void updateStatus(UUID userId, UUID id, String status) {
+        jdbc.sql("UPDATE source_files SET status = :status WHERE user_id = :userId AND id = :id")
+                .param("status", status).param("userId", userId).param("id", id)
+                .update();
+    }
+
     private static SourceFile map(ResultSet rs, int row) throws SQLException {
         return new SourceFile(
                 rs.getObject("id", UUID.class),
