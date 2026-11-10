@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import { AccountData } from "@/components/profile/account-data";
 import { ProfileReview } from "@/components/profile/profile-review";
 
 export const metadata: Metadata = { title: "Perfil" };
@@ -13,6 +14,9 @@ export default function ProfilePage() {
       </p>
       <div className="mt-8">
         <ProfileReview />
+      </div>
+      <div className="mt-16 border-t border-border pt-8">
+        <AccountData />
       </div>
     </section>
   );
