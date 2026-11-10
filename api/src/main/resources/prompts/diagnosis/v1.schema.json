@@ -1,0 +1,35 @@
+{
+  "type": "object",
+  "properties": {
+    "summary": { "type": "string" },
+    "estimatedLevel": { "type": "string", "enum": ["JUNIOR", "PLENO", "SENIOR", "ESPECIALISTA"] },
+    "axes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "key": { "type": "string" },
+          "score": { "type": "integer" },
+          "evidenceIds": { "type": "array", "items": { "type": "string" } },
+          "rationale": { "type": "string" }
+        },
+        "required": ["key", "score", "evidenceIds", "rationale"],
+        "additionalProperties": false
+      }
+    },
+    "gaps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "axisKey": { "type": "string" },
+          "description": { "type": "string" }
+        },
+        "required": ["axisKey", "description"],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": ["summary", "estimatedLevel", "axes", "gaps"],
+  "additionalProperties": false
+}

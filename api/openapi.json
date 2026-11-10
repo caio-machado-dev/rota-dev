@@ -8,6 +8,69 @@
     "url" : "/"
   } ],
   "paths" : {
+    "/api/diagnosis" : {
+      "post" : {
+        "operationId" : "create_1",
+        "responses" : {
+          "202" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/Created"
+                }
+              }
+            },
+            "description" : "Accepted"
+          }
+        },
+        "tags" : [ "diagnosis-controller" ]
+      }
+    },
+    "/api/diagnosis/latest" : {
+      "get" : {
+        "operationId" : "latest",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DiagnosisResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "diagnosis-controller" ]
+      }
+    },
+    "/api/diagnosis/{id}" : {
+      "get" : {
+        "operationId" : "get_1",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/DiagnosisResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "diagnosis-controller" ]
+      }
+    },
     "/api/goal" : {
       "get" : {
         "operationId" : "get",
@@ -212,6 +275,102 @@
   },
   "components" : {
     "schemas" : {
+      "AxisResponse" : {
+        "type" : "object",
+        "properties" : {
+          "evidences" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/CitedEvidence"
+            }
+          },
+          "key" : {
+            "type" : "string"
+          },
+          "name" : {
+            "type" : "string"
+          },
+          "rationale" : {
+            "type" : "string"
+          },
+          "required" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "score" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "verified" : {
+            "type" : "boolean"
+          }
+        },
+        "required" : [ "evidences", "key", "name", "required", "score", "verified" ]
+      },
+      "CitedEvidence" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "title" : {
+            "type" : "string"
+          },
+          "url" : {
+            "type" : "string"
+          }
+        },
+        "required" : [ "id" ]
+      },
+      "Created" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        },
+        "required" : [ "id" ]
+      },
+      "DiagnosisResponse" : {
+        "type" : "object",
+        "properties" : {
+          "axes" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/AxisResponse"
+            }
+          },
+          "createdAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "error" : {
+            "type" : "string"
+          },
+          "estimatedLevel" : {
+            "type" : "string"
+          },
+          "gaps" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/GapResponse"
+            }
+          },
+          "id" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "status" : {
+            "type" : "string"
+          },
+          "summary" : {
+            "type" : "string"
+          }
+        },
+        "required" : [ "axes", "createdAt", "gaps", "id", "status" ]
+      },
       "EvidenceResponse" : {
         "type" : "object",
         "properties" : {
@@ -239,6 +398,29 @@
           }
         },
         "required" : [ "confidence", "id", "kind", "title" ]
+      },
+      "GapResponse" : {
+        "type" : "object",
+        "properties" : {
+          "axisKey" : {
+            "type" : "string"
+          },
+          "axisName" : {
+            "type" : "string"
+          },
+          "description" : {
+            "type" : "string"
+          },
+          "priority" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "size" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        },
+        "required" : [ "axisKey", "axisName", "description", "priority", "size" ]
       },
       "GoalRequest" : {
         "type" : "object",
