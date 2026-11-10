@@ -111,7 +111,7 @@
     },
     "/api/diagnosis/{id}" : {
       "get" : {
-        "operationId" : "get_1",
+        "operationId" : "get_2",
         "parameters" : [ {
           "in" : "path",
           "name" : "id",
@@ -408,6 +408,24 @@
           }
         },
         "tags" : [ "profile-controller" ]
+      }
+    },
+    "/api/readiness" : {
+      "get" : {
+        "operationId" : "get_1",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ReadinessResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "readiness-controller" ]
       }
     },
     "/api/sources" : {
@@ -1386,6 +1404,60 @@
           }
         },
         "required" : [ "snapshots" ]
+      },
+      "ReadinessBreakdown" : {
+        "type" : "object",
+        "properties" : {
+          "gates" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "habit" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "score" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "skills" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "study" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        },
+        "required" : [ "gates", "habit", "score", "skills", "study" ]
+      },
+      "ReadinessPoint" : {
+        "type" : "object",
+        "properties" : {
+          "value" : {
+            "$ref" : "#/components/schemas/ReadinessBreakdown"
+          },
+          "weekStart" : {
+            "type" : "string",
+            "format" : "date"
+          }
+        },
+        "required" : [ "value", "weekStart" ]
+      },
+      "ReadinessResponse" : {
+        "type" : "object",
+        "properties" : {
+          "current" : {
+            "$ref" : "#/components/schemas/ReadinessBreakdown"
+          },
+          "history" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/ReadinessPoint"
+            }
+          }
+        },
+        "required" : [ "current", "history" ]
       },
       "SessionRequest" : {
         "type" : "object",
