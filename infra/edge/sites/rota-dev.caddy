@@ -1,0 +1,19 @@
+# Rota Dev: tudo vai para o Next.js, que repassa /api/* para a API pela rede interna (ADR 0005).
+# Troque o domínio pelo definitivo.
+{$ROTA_DEV_DOMAIN:rota.caiomachadodev.com.br} {
+	encode zstd gzip
+
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "strict-origin-when-cross-origin"
+		-Server
+	}
+
+	# Mesmo limite de upload da API (10 MB), com folga para o formulário.
+	request_body {
+		max_size 11MB
+	}
+
+	reverse_proxy rota-dev-web:3000
+}
