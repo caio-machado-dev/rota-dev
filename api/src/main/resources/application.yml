@@ -98,6 +98,20 @@ rota:
   storage:
     # Pasta dos arquivos enviados (ADR 0008). No Docker, um volume montado em /data/uploads.
     path: ${ROTA_STORAGE_PATH:./data/uploads}
+  # IA (ADR 0007). Modelo e preços conferidos na documentação da Anthropic em 2026-11-10.
+  ai:
+    api-key: ${ANTHROPIC_API_KEY:}
+    model: ${ROTA_AI_MODEL:claude-opus-5-5}
+    # low | medium | high | xhigh | max. Diagnóstico e plano pedem raciocínio cuidadoso.
+    effort: high
+    max-tokens: 16000
+    # Tentativas quando o JSON volta inválido. Recusa e resposta cortada não são repetidas.
+    max-attempts: 2
+    # USD por milhão de tokens. Gravação no cache = 1,25 × entrada (cache de 5 minutos).
+    pricing:
+      claude-opus-5-5: { input: 4.00, output: 20.00, cache-read: 0.20, cache-write: 5.00 }
+      claude-opus-5: { input: 5.00, output: 25.00, cache-read: 0.50, cache-write: 6.25 }
+      claude-opus-4-8: { input: 5.00, output: 25.00, cache-read: 0.50, cache-write: 6.25 }
   github:
     # Trocável nos testes e para GitHub Enterprise.
     api-url: https://api.github.com

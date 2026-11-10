@@ -64,6 +64,13 @@ export ROTA_ENCRYPTION_KEY=$(openssl rand -base64 32)
 
 Os testes usam a chave de `api/src/test/resources/application.properties`.
 
+### IA (diagnóstico e plano)
+
+As chamadas ao Claude precisam de `ANTHROPIC_API_KEY` (no `infra/.env` ou exportada no terminal).
+Sem ela, tudo sobe normalmente e só a geração de diagnóstico e plano falha. Os testes nunca chamam a
+API: o `LlmGateway` é trocado por um falso. Cada chamada fica registrada na tabela `ai_calls`, com
+tokens e custo estimado (ADR 0015).
+
 ## Testes
 
 ```bash
