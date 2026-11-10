@@ -34,6 +34,8 @@ class SecurityConfiguration {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/actuator/health/**", "/actuator/info").permitAll()
                         .requestMatchers("/api/oauth2/**", "/api/login/**").permitAll()
+                        // O contrato da API é público: o repositório também é.
+                        .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                         .anyRequest().authenticated())
                 .oauth2Login(login -> login
                         .authorizationEndpoint(endpoint -> endpoint.baseUri("/api/oauth2/authorization"))

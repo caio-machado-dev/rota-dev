@@ -42,7 +42,8 @@ jobs:
           echo "Arquivos alterados:"; echo "$changed"
           # O próprio workflow conta como mudança: alterar o CI testa os dois lados.
           grep -qE '^(api/|\.github/workflows/)' <<< "$changed" && api=true || api=false
-          grep -qE '^(web/|\.github/workflows/)' <<< "$changed" && web=true || web=false
+          # O contrato da API (api/openapi.json) gera os tipos do front: mudou, o web roda também.
+          grep -qE '^(web/|api/openapi\.json|\.github/workflows/)' <<< "$changed" && web=true || web=false
           echo "api=$api" >> "$GITHUB_OUTPUT"
           echo "web=$web" >> "$GITHUB_OUTPUT"
 
@@ -82,6 +83,14 @@ jobs:
           cache: pnpm
           cache-dependency-path: web/pnpm-lock.yaml
       - run: pnpm install --frozen-lockfile
+      # Os tipos versionados têm que bater com api/openapi.json (ADR 0010).
+      - name: Tipos da API atualizados
+        run: |
+          pnpm api:types
+          git diff --exit-code -- src/lib/api/schema.d.ts || {
+            echo "::error::Rode 'pnpm api:types' em web/ e comite src/lib/api/schema.d.ts."
+            exit 1
+          }
       - run: pnpm lint
       - run: pnpm typecheck
       - run: pnpm test

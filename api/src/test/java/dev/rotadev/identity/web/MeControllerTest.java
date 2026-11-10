@@ -67,6 +67,16 @@ class MeControllerTest {
         assertThat(mvc.post().uri("/api/logout").with(loggedAs(dave)).with(csrf())).hasStatus(HttpStatus.NO_CONTENT);
     }
 
+    /** O front lê este cookie para mandar o cabeçalho X-XSRF-TOKEN (web/src/lib/api/client.ts). */
+    @Test
+    void sessionRequestHandsOutCsrfCookie() {
+        User erin = signIn.signIn(new GithubProfile(1005L, "erin", null, null, null));
+
+        assertThat(mvc.get().uri("/api/me").with(loggedAs(erin)))
+                .hasStatusOk()
+                .cookies().containsCookie("XSRF-TOKEN");
+    }
+
     @Test
     void loginStartsAtApiPrefix() {
         assertThat(mvc.get().uri("/api/oauth2/authorization/github"))

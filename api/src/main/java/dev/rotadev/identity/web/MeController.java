@@ -1,6 +1,7 @@
 package dev.rotadev.identity.web;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,7 +30,7 @@ class MeController {
      * {@code @AuthenticationPrincipal} injeta o usuário da sessão. O id vem sempre dali,
      * nunca da URL nem do corpo (ADR 0004).
      */
-    @GetMapping
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     MeResponse me(@AuthenticationPrincipal AuthenticatedUser principal) {
         User user = lookup.byId(principal.id())
                 // Sessão de um usuário que já foi apagado: trata como não logado.

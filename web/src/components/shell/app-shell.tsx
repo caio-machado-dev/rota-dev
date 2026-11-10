@@ -7,6 +7,8 @@ import { brand } from "@/config/brand";
 import { isActive, navItems } from "@/config/navigation";
 import { cn } from "@/lib/utils";
 
+import { UserMenu } from "./user-menu";
+
 /**
  * Estrutura de navegação: barra lateral fixa a partir de `md` (desktop) e barra inferior
  * no celular. É um Client Component porque precisa da rota atual (`usePathname`).
@@ -39,9 +41,18 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             );
           })}
         </nav>
+        <div className="mt-auto border-t border-border pt-4">
+          <UserMenu />
+        </div>
       </aside>
 
-      <main className="flex-1 px-5 pb-24 pt-8 md:px-10 md:pb-10">{children}</main>
+      <main className="flex-1 px-5 pb-24 pt-8 md:px-10 md:pb-10">
+        {/* No celular não há barra lateral: o menu do usuário fica no topo. */}
+        <div className="mb-6 flex justify-end md:hidden">
+          <UserMenu />
+        </div>
+        {children}
+      </main>
 
       <nav
         aria-label="Navegação principal"
