@@ -1,0 +1,84 @@
+{
+  "type": "object",
+  "properties": {
+    "summary": { "type": "string" },
+    "anchorProject": {
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "deliverables": { "type": "array", "items": { "type": "string" } },
+        "evidenceIds": { "type": "array", "items": { "type": "string" } }
+      },
+      "required": ["title", "description", "deliverables", "evidenceIds"],
+      "additionalProperties": false
+    },
+    "quarters": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "index": { "type": "integer" },
+          "title": { "type": "string" },
+          "focus": { "type": "string" },
+          "milestones": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "title": { "type": "string" },
+                "axisKey": { "type": "string" },
+                "criteria": { "type": "array", "items": { "type": "string" } }
+              },
+              "required": ["title", "axisKey", "criteria"],
+              "additionalProperties": false
+            }
+          },
+          "weeks": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "index": { "type": "integer" },
+                "theme": { "type": "string" },
+                "tasks": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "title": { "type": "string" },
+                      "kind": { "type": "string", "enum": ["STUDY", "BUILD", "REVIEW", "CERT"] },
+                      "minutes": { "type": "integer" }
+                    },
+                    "required": ["title", "kind", "minutes"],
+                    "additionalProperties": false
+                  }
+                }
+              },
+              "required": ["index", "theme", "tasks"],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": ["index", "title", "focus", "milestones", "weeks"],
+        "additionalProperties": false
+      }
+    },
+    "resources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "title": { "type": "string" },
+          "kind": { "type": "string", "enum": ["COURSE", "BOOK", "CERT"] },
+          "axisKey": { "type": "string" },
+          "reason": { "type": "string" }
+        },
+        "required": ["title", "kind", "axisKey", "reason"],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": ["summary", "anchorProject", "quarters", "resources"],
+  "additionalProperties": false
+}
