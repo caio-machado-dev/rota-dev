@@ -44,6 +44,12 @@ spring:
             # {baseUrl} é a origem que o navegador vê (localhost:3000, pelo rewrite do Next).
             redirect-uri: "{baseUrl}/api/login/oauth2/code/{registrationId}"
 
+  servlet:
+    multipart:
+      # Mesmo limite do caso de uso UploadDocument (10 MB), com folga para os campos do formulário.
+      max-file-size: 10MB
+      max-request-size: 11MB
+
   session:
     jdbc:
       # As tabelas da sessão vêm da migração V3; o Spring Session não cria nada sozinho.
@@ -83,6 +89,9 @@ rota:
   # Sem padrão de propósito: a API não sobe sem ela. Gere com: openssl rand -base64 32
   encryption:
     key: ${ROTA_ENCRYPTION_KEY:}
+  storage:
+    # Pasta dos arquivos enviados (ADR 0008). No Docker, um volume montado em /data/uploads.
+    path: ${ROTA_STORAGE_PATH:./data/uploads}
   github:
     # Trocável nos testes e para GitHub Enterprise.
     api-url: https://api.github.com

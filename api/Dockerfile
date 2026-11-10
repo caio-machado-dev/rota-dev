@@ -22,8 +22,11 @@ FROM eclipse-temurin:25-jre
 WORKDIR /app
 
 # Roda como usuário sem privilégios: se a aplicação for comprometida, o invasor não é root.
-RUN useradd --system --uid 1001 rotadev
+# A pasta de uploads já nasce do usuário rotadev: um volume novo montado nela herda o dono.
+RUN useradd --system --uid 1001 rotadev \
+    && mkdir -p /data/uploads && chown rotadev /data/uploads
 USER rotadev
+ENV ROTA_STORAGE_PATH=/data/uploads
 
 COPY --from=build /app/app.jar app.jar
 

@@ -30,3 +30,6 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Uploads de quem roda a API fora do Docker (rota.storage.path padrão).
+data/
