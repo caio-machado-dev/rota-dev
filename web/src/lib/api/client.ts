@@ -10,6 +10,7 @@ export type UploadKind = "LINKEDIN" | "RESUME";
 export type Goal = components["schemas"]["GoalResponse"];
 export type GoalInput = components["schemas"]["GoalRequest"];
 export type Diagnosis = components["schemas"]["DiagnosisResponse"];
+export type PlanVersion = components["schemas"]["PlanResponse"];
 
 /** Onde o login começa. É um link comum (navegação inteira), não uma chamada `fetch`. */
 export const LOGIN_URL = "/api/oauth2/authorization/github";
@@ -121,4 +122,20 @@ export async function getLatestDiagnosis(): Promise<Diagnosis | null> {
 /** Pede um diagnóstico novo. A API responde 202 e gera num job; consulte `getLatestDiagnosis`. */
 export async function requestDiagnosis(): Promise<void> {
   await json(await apiFetch("/api/diagnosis", { method: "POST" }));
+}
+
+/** A versão mais recente do plano (pode estar sendo gerada), ou `null` se nunca houve uma. */
+export async function getLatestPlan(): Promise<PlanVersion | null> {
+  const response = await apiFetch("/api/plan/latest");
+  if (response.status === 404) return null;
+  return json(response);
+}
+
+export async function listPlanVersions(): Promise<PlanVersion[]> {
+  return json(await apiFetch("/api/plan/versions"));
+}
+
+/** Pede uma versão nova do plano. A API responde 202 e gera num job. */
+export async function requestPlan(): Promise<void> {
+  await json(await apiFetch("/api/plan", { method: "POST" }));
 }
