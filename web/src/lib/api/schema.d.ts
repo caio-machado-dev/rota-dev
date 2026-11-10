@@ -75,7 +75,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["get_1"];
+        get: operations["get_2"];
         put?: never;
         post?: never;
         delete?: never;
@@ -252,6 +252,22 @@ export interface paths {
             cookie?: never;
         };
         get: operations["snapshot"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/readiness": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get_1"];
         put?: never;
         post?: never;
         delete?: never;
@@ -627,6 +643,27 @@ export interface components {
         ProfileResponse: {
             snapshots: components["schemas"]["SnapshotResponse"][];
         };
+        ReadinessBreakdown: {
+            /** Format: int32 */
+            gates: number;
+            /** Format: int32 */
+            habit: number;
+            /** Format: int32 */
+            score: number;
+            /** Format: int32 */
+            skills: number;
+            /** Format: int32 */
+            study: number;
+        };
+        ReadinessPoint: {
+            value: components["schemas"]["ReadinessBreakdown"];
+            /** Format: date */
+            weekStart: string;
+        };
+        ReadinessResponse: {
+            current: components["schemas"]["ReadinessBreakdown"];
+            history: components["schemas"]["ReadinessPoint"][];
+        };
         SessionRequest: {
             /** Format: date */
             day?: string;
@@ -809,7 +846,7 @@ export interface operations {
             };
         };
     };
-    get_1: {
+    get_2: {
         parameters: {
             query?: never;
             header?: never;
@@ -1099,6 +1136,26 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["SnapshotResponse"];
+                };
+            };
+        };
+    };
+    get_1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ReadinessResponse"];
                 };
             };
         };
