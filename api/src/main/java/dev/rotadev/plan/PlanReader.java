@@ -23,6 +23,7 @@ public interface PlanReader {
     record WeekTask(String title, String kind, int minutes) {
     }
 
-    record CurrentPlan(UUID id, int version, LocalDate startsOn, int milestoneCount, int quarterCount) {
+    /** @param milestones títulos de todos os portões do plano, em ordem */
+    record CurrentPlan(UUID id, int version, LocalDate startsOn, List<String> milestones, int quarterCount) {
     }
 }

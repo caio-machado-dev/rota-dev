@@ -2,6 +2,7 @@ package dev.rotadev.plan.application;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -41,7 +42,8 @@ class PlanQueries implements PlanReader {
     @Transactional(readOnly = true)
     public Optional<CurrentPlan> current(UUID userId) {
         return plans.current(userId).map(p -> new CurrentPlan(p.id(), p.version(), p.startsOn(),
-                p.content() == null ? 0 : p.content().quarters().stream().mapToInt(q -> q.milestones().size()).sum(),
+                p.content() == null ? List.of()
+                        : p.content().quarters().stream().flatMap(q -> q.milestones().stream()).map(m -> m.title()).toList(),
                 p.content() == null ? 0 : p.content().quarters().size()));
     }
 }
