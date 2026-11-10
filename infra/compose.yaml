@@ -35,6 +35,8 @@ services:
       # Sem estas duas, a API sobe, mas o login com GitHub não funciona (docs/desenvolvimento.md).
       GITHUB_CLIENT_ID: ${GITHUB_CLIENT_ID:-dev-sem-oauth}
       GITHUB_CLIENT_SECRET: ${GITHUB_CLIENT_SECRET:-dev-sem-oauth}
+      # O padrão é uma chave só de desenvolvimento, pública neste arquivo. Produção usa outra (ADR 0008).
+      ROTA_ENCRYPTION_KEY: ${ROTA_ENCRYPTION_KEY:-Y2hhdmUtZGUtZGV2LWxvY2FsLW5hby11c2FyLXByb2Q=}
     ports:
       - "127.0.0.1:8080:8080"
     depends_on:

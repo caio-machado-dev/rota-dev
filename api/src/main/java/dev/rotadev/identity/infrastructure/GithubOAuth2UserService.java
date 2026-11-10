@@ -2,12 +2,14 @@ package dev.rotadev.identity.infrastructure;
 
 import java.util.Map;
 
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Component;
 
 import dev.rotadev.identity.AuthenticatedUser;
+import dev.rotadev.identity.GithubAccountLinked;
 import dev.rotadev.identity.application.GithubSignIn;
 import dev.rotadev.identity.domain.GithubProfile;
 import dev.rotadev.identity.domain.User;
@@ -24,15 +26,20 @@ import dev.rotadev.identity.domain.User;
 class GithubOAuth2UserService extends DefaultOAuth2UserService {
 
     private final GithubSignIn signIn;
+    private final ApplicationEventPublisher events;
 
-    GithubOAuth2UserService(GithubSignIn signIn) {
+    GithubOAuth2UserService(GithubSignIn signIn, ApplicationEventPublisher events) {
         this.signIn = signIn;
+        this.events = events;
     }
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest request) {
         OAuth2User github = super.loadUser(request);
         User user = signIn.signIn(toProfile(github.getAttributes()));
+        // O módulo sources escuta este evento e guarda o token cifrado (ADR 0008).
+        events.publishEvent(new GithubAccountLinked(
+                user.id(), user.login(), request.getAccessToken().getTokenValue(), request.getAccessToken().getScopes()));
         return new AuthenticatedUser(user.id(), user.login());
     }
 
