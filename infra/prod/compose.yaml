@@ -1,0 +1,72 @@
+# Produção na VPS (ADR 0013). Fica em /opt/rota-dev na VPS, junto com o .env (fora do git).
+#
+#   docker compose pull && docker compose up -d      (deploy)
+#   ROTA_VERSION=<sha anterior> docker compose up -d (rollback)
+#
+# Nada aqui publica porta no host: o único caminho de entrada é o Caddy do compose "edge",
+# pela rede Docker compartilhada "edge". O banco e a API ficam só na rede interna.
+
+name: rota-dev
+
+services:
+  postgres:
+    image: postgres:17
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-rotadev}
+      POSTGRES_USER: ${POSTGRES_USER:-rotadev}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?defina POSTGRES_PASSWORD no .env}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 3s
+      retries: 10
+    mem_limit: 512m
+    networks: [internal]
+
+  api:
+    image: ghcr.io/caio-machado-dev/rota-dev-api:${ROTA_VERSION:?defina ROTA_VERSION (sha do commit) no .env}
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-rotadev}
+      DATABASE_USER: ${POSTGRES_USER:-rotadev}
+      DATABASE_PASSWORD: ${POSTGRES_PASSWORD}
+      GITHUB_CLIENT_ID: ${GITHUB_CLIENT_ID:?}
+      GITHUB_CLIENT_SECRET: ${GITHUB_CLIENT_SECRET:?}
+      ROTA_ENCRYPTION_KEY: ${ROTA_ENCRYPTION_KEY:?}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:?}
+      # HTTPS em produção: o cookie de sessão só trafega com Secure.
+      SESSION_COOKIE_SECURE: "true"
+    volumes:
+      - uploads:/data/uploads
+    depends_on:
+      postgres:
+        condition: service_healthy
+    # Sem healthcheck de container: a imagem do JRE não tem curl nem wget, e não vale aumentar a
+    # imagem só por isso. A conferência de saúde do deploy usa o node do container web (docs/deploy.md).
+    mem_limit: 768m
+    networks: [internal]
+
+  web:
+    image: ghcr.io/caio-machado-dev/rota-dev-web:${ROTA_VERSION}
+    restart: unless-stopped
+    depends_on:
+      - api
+    mem_limit: 256m
+    # "internal" para falar com a API; "edge" para o Caddy alcançar o web pelo nome rota-dev-web.
+    networks:
+      internal: {}
+      edge:
+        aliases: [rota-dev-web]
+
+volumes:
+  pgdata:
+  uploads:
+
+networks:
+  internal: {}
+  # Criada uma vez na VPS: docker network create edge (docs/deploy.md).
+  edge:
+    external: true

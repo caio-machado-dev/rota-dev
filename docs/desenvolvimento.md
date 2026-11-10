@@ -1,6 +1,6 @@
 # Guia de desenvolvimento
 
-Como preparar a máquina, rodar e testar o Rota Dev localmente. Convenções de código e de Git: [AGENTS.md](../AGENTS.md).
+Como preparar a máquina, rodar e testar o Rota Dev localmente. Convenções de código e de Git: [AGENTS.md](../AGENTS.md). Produção: [deploy.md](deploy.md).
 
 ## Pré-requisitos (macOS, Apple Silicon)
 

@@ -1,0 +1,53 @@
+name: release
+
+# Publica as imagens de produção no GitHub Container Registry (ADR 0013).
+# Roda a cada merge na main (só chega lá o que passou no CI e na revisão) ou à mão.
+# As imagens são linux/amd64, a arquitetura da VPS: nunca compilamos na VPS.
+# O deploy em si (docker compose pull && up -d) é manual por enquanto: docs/deploy.md.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  image:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        app: [api, web]
+    steps:
+      - uses: actions/checkout@v7
+      - uses: docker/setup-buildx-action@v4
+      - uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      # Duas tags: o sha do commit (imutável, é a que o deploy usa e a que permite rollback)
+      # e "main" (conveniência para ver a última).
+      - id: meta
+        uses: docker/metadata-action@v6
+        with:
+          images: ghcr.io/${{ github.repository_owner }}/rota-dev-${{ matrix.app }}
+          tags: |
+            type=sha,format=long,prefix=
+            type=raw,value=main
+      - uses: docker/build-push-action@v7
+        with:
+          context: ${{ matrix.app }}
+          platforms: linux/amd64
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          # Cache das camadas no próprio GitHub Actions: o build da API não baixa o Maven inteiro a cada vez.
+          cache-from: type=gha,scope=${{ matrix.app }}
+          cache-to: type=gha,mode=max,scope=${{ matrix.app }}

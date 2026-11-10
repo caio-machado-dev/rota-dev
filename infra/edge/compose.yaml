@@ -1,0 +1,32 @@
+# Caddy compartilhado da VPS (ADR 0013): termina o HTTPS de todas as aplicações e encaminha
+# cada domínio para o container certo pela rede Docker "edge".
+#
+# Hoje o Caddy mora no compose do Gasto Certo (em produção). Mover para cá é uma janela combinada,
+# passo a passo em docs/deploy.md ("Migração do Caddy"). Até lá este arquivo não sobe.
+
+name: edge
+
+services:
+  caddy:
+    image: caddy:2
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./sites:/etc/caddy/sites:ro
+      # Certificados e estado do ACME: perder isso = emitir tudo de novo (com limite de taxa).
+      - caddy_data:/data
+      - caddy_config:/config
+    mem_limit: 128m
+    networks: [edge]
+
+volumes:
+  caddy_data:
+  caddy_config:
+
+networks:
+  edge:
+    external: true

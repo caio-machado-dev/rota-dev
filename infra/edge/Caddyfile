@@ -1,0 +1,6 @@
+# Cada aplicação tem o seu arquivo em sites/. Adicionar um app = um arquivo novo + caddy reload.
+{
+	email {$ACME_EMAIL}
+}
+
+import sites/*.caddy
