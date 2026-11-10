@@ -133,6 +133,24 @@
         "tags" : [ "me-controller" ]
       }
     },
+    "/api/now" : {
+      "get" : {
+        "operationId" : "now",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/NowResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "tracking-controller" ]
+      }
+    },
     "/api/plan" : {
       "post" : {
         "operationId" : "create_1",
@@ -373,6 +391,168 @@
         },
         "tags" : [ "uploads-controller" ]
       }
+    },
+    "/api/tracking/review-habit" : {
+      "put" : {
+        "operationId" : "saveHabit",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/HabitRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/HabitResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "tracking-controller" ]
+      }
+    },
+    "/api/tracking/sessions" : {
+      "get" : {
+        "operationId" : "sessions",
+        "parameters" : [ {
+          "in" : "query",
+          "name" : "from",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "date"
+          }
+        }, {
+          "in" : "query",
+          "name" : "to",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "date"
+          }
+        } ],
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/SessionResponse"
+                  }
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "tracking-controller" ]
+      },
+      "post" : {
+        "operationId" : "logSession",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/SessionRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/SessionResponse"
+                }
+              }
+            },
+            "description" : "Created"
+          }
+        },
+        "tags" : [ "tracking-controller" ]
+      }
+    },
+    "/api/tracking/sessions/{id}" : {
+      "delete" : {
+        "operationId" : "deleteSession",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "No Content"
+          }
+        },
+        "tags" : [ "tracking-controller" ]
+      }
+    },
+    "/api/tracking/template" : {
+      "get" : {
+        "operationId" : "template",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/TemplateSlotDto"
+                  }
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "tracking-controller" ]
+      },
+      "put" : {
+        "operationId" : "saveTemplate",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/TemplateRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/TemplateSlotDto"
+                  }
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "tracking-controller" ]
+      }
     }
   },
   "components" : {
@@ -598,6 +778,59 @@
         },
         "required" : [ "deadline", "hoursPerWeek", "targetLevel", "targetRole", "track", "wantsCertifications" ]
       },
+      "HabitRequest" : {
+        "type" : "object",
+        "properties" : {
+          "day" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "explained" : {
+            "type" : "boolean"
+          },
+          "note" : {
+            "type" : "string",
+            "maxLength" : 1000,
+            "minLength" : 0
+          },
+          "readDiff" : {
+            "type" : "boolean"
+          },
+          "tested" : {
+            "type" : "boolean"
+          }
+        },
+        "required" : [ "day" ]
+      },
+      "HabitResponse" : {
+        "type" : "object",
+        "properties" : {
+          "complete" : {
+            "type" : "boolean"
+          },
+          "day" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "explained" : {
+            "type" : "boolean"
+          },
+          "note" : {
+            "type" : "string"
+          },
+          "readDiff" : {
+            "type" : "boolean"
+          },
+          "stepsDone" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "tested" : {
+            "type" : "boolean"
+          }
+        },
+        "required" : [ "complete", "day", "explained", "readDiff", "stepsDone", "tested" ]
+      },
       "MeResponse" : {
         "type" : "object",
         "properties" : {
@@ -622,6 +855,93 @@
           }
         },
         "required" : [ "id", "login", "timeZone" ]
+      },
+      "NowPlanWeek" : {
+        "type" : "object",
+        "properties" : {
+          "index" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "planVersion" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "tasks" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/NowTask"
+            }
+          },
+          "theme" : {
+            "type" : "string"
+          },
+          "totalMinutes" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        },
+        "required" : [ "index", "planVersion", "tasks", "theme", "totalMinutes" ]
+      },
+      "NowResponse" : {
+        "type" : "object",
+        "properties" : {
+          "habitToday" : {
+            "$ref" : "#/components/schemas/HabitResponse"
+          },
+          "minutesThisWeek" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "minutesToday" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "planWeek" : {
+            "$ref" : "#/components/schemas/NowPlanWeek"
+          },
+          "sessionsToday" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/SessionResponse"
+            }
+          },
+          "templateToday" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/TemplateSlotDto"
+            }
+          },
+          "today" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "weekday" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "weeklyBudgetMinutes" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        },
+        "required" : [ "minutesThisWeek", "minutesToday", "sessionsToday", "templateToday", "today", "weekday" ]
+      },
+      "NowTask" : {
+        "type" : "object",
+        "properties" : {
+          "kind" : {
+            "type" : "string"
+          },
+          "minutes" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "title" : {
+            "type" : "string"
+          }
+        },
+        "required" : [ "kind", "minutes", "title" ]
       },
       "PlanAnchor" : {
         "type" : "object",
@@ -835,6 +1155,63 @@
         },
         "required" : [ "snapshots" ]
       },
+      "SessionRequest" : {
+        "type" : "object",
+        "properties" : {
+          "day" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "kind" : {
+            "type" : "string",
+            "enum" : [ "STUDY", "BUILD", "REVIEW", "CERT" ]
+          },
+          "learning" : {
+            "type" : "string",
+            "maxLength" : 500,
+            "minLength" : 0
+          },
+          "minutes" : {
+            "type" : "integer",
+            "format" : "int32",
+            "maximum" : 600,
+            "minimum" : 5
+          },
+          "topic" : {
+            "type" : "string",
+            "maxLength" : 200,
+            "minLength" : 0
+          }
+        },
+        "required" : [ "kind", "topic" ]
+      },
+      "SessionResponse" : {
+        "type" : "object",
+        "properties" : {
+          "day" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "id" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "kind" : {
+            "type" : "string"
+          },
+          "learning" : {
+            "type" : "string"
+          },
+          "minutes" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "topic" : {
+            "type" : "string"
+          }
+        },
+        "required" : [ "day", "id", "kind", "minutes", "topic" ]
+      },
       "SkillResponse" : {
         "type" : "object",
         "properties" : {
@@ -903,6 +1280,42 @@
           }
         },
         "required" : [ "connectedAt", "id", "type" ]
+      },
+      "TemplateRequest" : {
+        "type" : "object",
+        "properties" : {
+          "slots" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/TemplateSlotDto"
+            },
+            "maxItems" : 28,
+            "minItems" : 0
+          }
+        },
+        "required" : [ "slots" ]
+      },
+      "TemplateSlotDto" : {
+        "type" : "object",
+        "properties" : {
+          "kind" : {
+            "type" : "string",
+            "enum" : [ "STUDY", "BUILD", "REVIEW", "CERT" ]
+          },
+          "minutes" : {
+            "type" : "integer",
+            "format" : "int32",
+            "maximum" : 600,
+            "minimum" : 5
+          },
+          "weekday" : {
+            "type" : "integer",
+            "format" : "int32",
+            "maximum" : 7,
+            "minimum" : 1
+          }
+        },
+        "required" : [ "kind", "minutes", "weekday" ]
       },
       "UploadResponse" : {
         "type" : "object",

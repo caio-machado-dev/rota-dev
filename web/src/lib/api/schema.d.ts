@@ -84,6 +84,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/now": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["now"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/plan": {
         parameters: {
             query?: never;
@@ -244,6 +260,70 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/tracking/review-habit": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["saveHabit"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/tracking/sessions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["sessions"];
+        put?: never;
+        post: operations["logSession"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/tracking/sessions/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        delete: operations["deleteSession"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/tracking/template": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["template"];
+        put: operations["saveTemplate"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -326,6 +406,25 @@ export interface components {
             track: string;
             wantsCertifications: boolean;
         };
+        HabitRequest: {
+            /** Format: date */
+            day: string;
+            explained?: boolean;
+            note?: string;
+            readDiff?: boolean;
+            tested?: boolean;
+        };
+        HabitResponse: {
+            complete: boolean;
+            /** Format: date */
+            day: string;
+            explained: boolean;
+            note?: string;
+            readDiff: boolean;
+            /** Format: int32 */
+            stepsDone: number;
+            tested: boolean;
+        };
         MeResponse: {
             avatarUrl?: string;
             email?: string;
@@ -334,6 +433,38 @@ export interface components {
             login: string;
             name?: string;
             timeZone: string;
+        };
+        NowPlanWeek: {
+            /** Format: int32 */
+            index: number;
+            /** Format: int32 */
+            planVersion: number;
+            tasks: components["schemas"]["NowTask"][];
+            theme: string;
+            /** Format: int32 */
+            totalMinutes: number;
+        };
+        NowResponse: {
+            habitToday?: components["schemas"]["HabitResponse"];
+            /** Format: int32 */
+            minutesThisWeek: number;
+            /** Format: int32 */
+            minutesToday: number;
+            planWeek?: components["schemas"]["NowPlanWeek"];
+            sessionsToday: components["schemas"]["SessionResponse"][];
+            templateToday: components["schemas"]["TemplateSlotDto"][];
+            /** Format: date */
+            today: string;
+            /** Format: int32 */
+            weekday: number;
+            /** Format: int32 */
+            weeklyBudgetMinutes?: number;
+        };
+        NowTask: {
+            kind: string;
+            /** Format: int32 */
+            minutes: number;
+            title: string;
         };
         PlanAnchor: {
             deliverables: string[];
@@ -403,6 +534,27 @@ export interface components {
         ProfileResponse: {
             snapshots: components["schemas"]["SnapshotResponse"][];
         };
+        SessionRequest: {
+            /** Format: date */
+            day?: string;
+            /** @enum {string} */
+            kind: "STUDY" | "BUILD" | "REVIEW" | "CERT";
+            learning?: string;
+            /** Format: int32 */
+            minutes?: number;
+            topic: string;
+        };
+        SessionResponse: {
+            /** Format: date */
+            day: string;
+            /** Format: uuid */
+            id: string;
+            kind: string;
+            learning?: string;
+            /** Format: int32 */
+            minutes: number;
+            topic: string;
+        };
         SkillResponse: {
             confidence: string;
             name: string;
@@ -427,6 +579,17 @@ export interface components {
             /** Format: date-time */
             lastSyncedAt?: string;
             type: string;
+        };
+        TemplateRequest: {
+            slots: components["schemas"]["TemplateSlotDto"][];
+        };
+        TemplateSlotDto: {
+            /** @enum {string} */
+            kind: "STUDY" | "BUILD" | "REVIEW" | "CERT";
+            /** Format: int32 */
+            minutes: number;
+            /** Format: int32 */
+            weekday: number;
         };
         UploadResponse: {
             /** Format: date-time */
@@ -571,6 +734,26 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["MeResponse"];
+                };
+            };
+        };
+    };
+    now: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NowResponse"];
                 };
             };
         };
@@ -802,6 +985,141 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["UploadResponse"];
+                };
+            };
+        };
+    };
+    saveHabit: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["HabitRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["HabitResponse"];
+                };
+            };
+        };
+    };
+    sessions: {
+        parameters: {
+            query: {
+                from: string;
+                to: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SessionResponse"][];
+                };
+            };
+        };
+    };
+    logSession: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SessionRequest"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SessionResponse"];
+                };
+            };
+        };
+    };
+    deleteSession: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    template: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TemplateSlotDto"][];
+                };
+            };
+        };
+    };
+    saveTemplate: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TemplateRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TemplateSlotDto"][];
                 };
             };
         };
