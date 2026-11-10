@@ -5,7 +5,10 @@ import java.util.UUID;
 
 import org.hibernate.annotations.UuidGenerator;
 
+import dev.rotadev.identity.Tier;
 import jakarta.persistence.Column;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
@@ -51,6 +54,11 @@ class UserEntity {
     @Column(name = "updated_at", nullable = false)
     private Instant updatedAt;
 
+    // insertable = false: a coluna tem DEFAULT 'FREE' no banco (V16) e só muda por fora do login.
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, insertable = false, updatable = false)
+    private Tier tier;
+
     /** Exigido pelo JPA. {@code protected} para ninguém usar por engano. */
     protected UserEntity() {
     }
@@ -80,4 +88,5 @@ class UserEntity {
     String getTimeZone() { return timeZone; }
     Instant getCreatedAt() { return createdAt; }
     Instant getUpdatedAt() { return updatedAt; }
+    Tier getTier() { return tier; }
 }

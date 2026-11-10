@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Repository;
 
+import dev.rotadev.identity.Tier;
 import dev.rotadev.identity.application.UserRepository;
 import dev.rotadev.identity.domain.GithubProfile;
 import dev.rotadev.identity.domain.User;
@@ -58,6 +59,8 @@ class JpaUserRepository implements UserRepository {
                 e.getAvatarUrl(),
                 ZoneId.of(e.getTimeZone()),
                 e.getCreatedAt(),
-                e.getUpdatedAt());
+                e.getUpdatedAt(),
+                // Logo depois do INSERT o Hibernate ainda não leu o DEFAULT do banco: é FREE.
+                e.getTier() == null ? Tier.FREE : e.getTier());
     }
 }

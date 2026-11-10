@@ -627,6 +627,7 @@ export interface components {
             id: string;
             login: string;
             name?: string;
+            tier: string;
             timeZone: string;
         };
         MilestoneAchievementResponse: {

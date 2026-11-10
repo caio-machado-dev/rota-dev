@@ -1226,11 +1226,14 @@
           "name" : {
             "type" : "string"
           },
+          "tier" : {
+            "type" : "string"
+          },
           "timeZone" : {
             "type" : "string"
           }
         },
-        "required" : [ "id", "login", "timeZone" ]
+        "required" : [ "id", "login", "tier", "timeZone" ]
       },
       "MilestoneAchievementResponse" : {
         "type" : "object",

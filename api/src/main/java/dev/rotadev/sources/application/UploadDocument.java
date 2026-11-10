@@ -13,6 +13,8 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import dev.rotadev.identity.TierLimits;
+import dev.rotadev.identity.UserTiers;
 import dev.rotadev.jobs.JobQueue;
 import dev.rotadev.shared.FileStorage;
 import dev.rotadev.shared.UuidV7;
@@ -36,12 +38,16 @@ public class UploadDocument {
     private final FileStorage storage;
     private final SourceFileRepository files;
     private final JobQueue jobs;
+    private final UserTiers tiers;
+    private final TierLimits limits;
     private final Clock clock;
 
-    public UploadDocument(FileStorage storage, SourceFileRepository files, JobQueue jobs, Clock clock) {
+    public UploadDocument(FileStorage storage, SourceFileRepository files, JobQueue jobs, UserTiers tiers, TierLimits limits, Clock clock) {
         this.storage = storage;
         this.files = files;
         this.jobs = jobs;
+        this.tiers = tiers;
+        this.limits = limits;
         this.clock = clock;
     }
 
@@ -63,6 +69,11 @@ public class UploadDocument {
         var existing = files.findBySha256(userId, sha256);
         if (existing.isPresent()) {
             return existing.get();
+        }
+
+        int limit = limits.uploads(tiers.tierOf(userId));
+        if (files.findAllByUser(userId).size() >= limit) {
+            throw new InvalidUploadException("Você já tem " + limit + " arquivos enviados, o limite do seu plano.");
         }
 
         Instant now = clock.instant();

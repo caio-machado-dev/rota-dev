@@ -16,6 +16,7 @@ import java.util.UUID;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+import dev.rotadev.identity.Tier;
 import dev.rotadev.identity.domain.GithubProfile;
 import dev.rotadev.identity.domain.User;
 
@@ -57,6 +58,6 @@ class GithubSignInTest {
     }
 
     private static User userWithId(UUID id) {
-        return new User(id, 42L, "octocat", "Mona", null, null, User.DEFAULT_TIME_ZONE, NOW, NOW);
+        return new User(id, 42L, "octocat", "Mona", null, null, User.DEFAULT_TIME_ZONE, NOW, NOW, Tier.FREE);
     }
 }

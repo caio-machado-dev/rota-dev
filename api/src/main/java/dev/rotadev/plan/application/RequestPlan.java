@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import dev.rotadev.diagnosis.DiagnosisReader;
+import dev.rotadev.ai.AiQuota;
 import dev.rotadev.goals.GoalReader;
 import dev.rotadev.identity.UserTimeZones;
 import dev.rotadev.jobs.JobQueue;
@@ -26,14 +27,17 @@ public class RequestPlan implements PlanWriter {
     private final PlanStore plans;
     private final JobQueue jobs;
     private final UserTimeZones timeZones;
+    private final AiQuota quota;
     private final Clock clock;
 
-    public RequestPlan(GoalReader goals, DiagnosisReader diagnoses, PlanStore plans, JobQueue jobs, UserTimeZones timeZones, Clock clock) {
+    public RequestPlan(GoalReader goals, DiagnosisReader diagnoses, PlanStore plans, JobQueue jobs, UserTimeZones timeZones, AiQuota quota,
+            Clock clock) {
         this.goals = goals;
         this.diagnoses = diagnoses;
         this.plans = plans;
         this.jobs = jobs;
         this.timeZones = timeZones;
+        this.quota = quota;
         this.clock = clock;
     }
 
@@ -57,6 +61,8 @@ public class RequestPlan implements PlanWriter {
         }
         var diagnosis = diagnoses.latestReady(userId)
                 .orElseThrow(() -> new PlanNotPossibleException("Gere o diagnóstico antes do plano."));
+        // Antes de enfileirar: barrar depois da chamada à IA já seria custo gasto.
+        quota.requireAvailable(userId);
         Instant now = clock.instant();
         LocalDate today = LocalDate.now(clock.withZone(timeZones.of(userId)));
         int version = plans.nextVersion(userId);

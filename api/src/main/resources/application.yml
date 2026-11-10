@@ -112,6 +112,10 @@ rota:
       claude-opus-5-5: { input: 4.00, output: 20.00, cache-read: 0.20, cache-write: 5.00 }
       claude-opus-5: { input: 5.00, output: 25.00, cache-read: 0.50, cache-write: 6.25 }
       claude-opus-4-8: { input: 5.00, output: 25.00, cache-read: 0.50, cache-write: 6.25 }
+  # Limites por nível (Fase 4). Gerações de IA contam só as que deram certo, por mês (UTC).
+  limits:
+    ai-generations-per-month: { FREE: 10, PRO: 100 }
+    uploads: { FREE: 10, PRO: 100 }
   github:
     # Trocável nos testes e para GitHub Enterprise.
     api-url: https://api.github.com
