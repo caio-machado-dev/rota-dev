@@ -12,13 +12,14 @@ import dev.rotadev.diagnosis.DiagnosisReader;
 import dev.rotadev.goals.GoalReader;
 import dev.rotadev.identity.UserTimeZones;
 import dev.rotadev.jobs.JobQueue;
+import dev.rotadev.plan.PlanWriter;
 
 /**
  * Caso de uso: gerar uma versão nova do plano a partir do objetivo e do diagnóstico pronto mais recente.
  * Cada pedido vira uma versão; a anterior continua no histórico.
  */
 @Service
-public class RequestPlan {
+public class RequestPlan implements PlanWriter {
 
     private final GoalReader goals;
     private final DiagnosisReader diagnoses;
@@ -41,6 +42,16 @@ public class RequestPlan {
 
     @Transactional
     public Created request(UUID userId, String reason) {
+        return request(userId, reason, null);
+    }
+
+    @Override
+    @Transactional
+    public UUID requestVersion(UUID userId, String reason, String guidance) {
+        return request(userId, reason, guidance).id();
+    }
+
+    private Created request(UUID userId, String reason, String guidance) {
         if (goals.find(userId).isEmpty()) {
             throw new PlanNotPossibleException("Defina o seu objetivo de carreira antes do plano.");
         }
@@ -50,7 +61,7 @@ public class RequestPlan {
         LocalDate today = LocalDate.now(clock.withZone(timeZones.of(userId)));
         int version = plans.nextVersion(userId);
         String why = reason != null ? reason : version == 1 ? "Primeira versão" : "Plano refeito a pedido";
-        UUID id = plans.insertPending(userId, version, why, diagnosis.id(), today, now);
+        UUID id = plans.insertPending(userId, version, why, diagnosis.id(), today, guidance, now);
         jobs.enqueue(userId, GeneratePlan.TYPE, "{\"planVersionId\": \"" + id + "\"}", GeneratePlan.TYPE + ":" + id);
         return new Created(id, version);
     }

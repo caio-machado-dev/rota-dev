@@ -1,6 +1,7 @@
 package dev.rotadev.tracking;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 /** API pública de leitura do acompanhamento, para a prontidão e os reajustes. */
@@ -14,6 +15,12 @@ public interface TrackingReader {
 
     /** Quantos portões a pessoa já declarou alcançados. */
     int milestonesAchieved(UUID userId);
+
+    /** Os {@code limit} check-ins mais recentes, do mais novo ao mais antigo. */
+    List<CheckinSummary> recentCheckins(UUID userId, int limit);
+
+    record CheckinSummary(LocalDate weekStart, int minutesLogged, int reviewDays, int energy, String blockers) {
+    }
 
     /** "Hoje" no fuso do usuário. */
     LocalDate today(UUID userId);

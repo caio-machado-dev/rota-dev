@@ -35,7 +35,8 @@ import tools.jackson.databind.json.JsonMapper;
 public class GeneratePlan implements JobHandler {
 
     public static final String TYPE = "plan.generate";
-    static final int PROMPT_VERSION = 1;
+    /** v2: aceita a orientação de um reajuste ({@code adjustment}). */
+    static final int PROMPT_VERSION = 2;
 
     private final PlanStore plans;
     private final GoalReader goals;
@@ -75,7 +76,7 @@ public class GeneratePlan implements JobHandler {
 
         AiResult result;
         try {
-            result = ai.run(new AiRequest(job.userId(), "plan", PROMPT_VERSION, input(goal, stored.startsOn().toString(), quarters, diagnosis, evidences)));
+            result = ai.run(new AiRequest(job.userId(), "plan", PROMPT_VERSION, input(goal, stored.startsOn().toString(), quarters, diagnosis, evidences, stored.guidance())));
         } catch (AiCallFailedException e) {
             if (e.retryable()) {
                 throw e;
@@ -92,13 +93,17 @@ public class GeneratePlan implements JobHandler {
         plans.markReady(job.userId(), id, content, result.callId(), clock.instant());
     }
 
-    private String input(CareerGoal goal, String today, int quarters, DiagnosisReader.ReadyDiagnosis diagnosis, List<Evidence> evidences) {
+    private String input(CareerGoal goal, String today, int quarters, DiagnosisReader.ReadyDiagnosis diagnosis, List<Evidence> evidences,
+            String guidance) {
         Map<String, Object> in = new LinkedHashMap<>();
         in.put("goal", Map.of("targetRole", goal.targetRole(), "targetLevel", goal.targetLevel(), "track", goal.track(),
                 "deadline", goal.deadline().toString(), "hoursPerWeek", goal.hoursPerWeek()));
         in.put("today", today);
         in.put("quarters", quarters);
         in.put("wantsCertifications", goal.wantsCertifications());
+        if (guidance != null) {
+            in.put("adjustment", guidance);
+        }
         in.put("diagnosis", Map.of("estimatedLevel", diagnosis.estimatedLevel(), "axes", diagnosis.axes(), "gaps", diagnosis.gaps()));
         in.put("evidences", evidences.stream().map(e -> {
             Map<String, Object> m = new LinkedHashMap<>();

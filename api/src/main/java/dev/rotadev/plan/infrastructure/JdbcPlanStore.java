@@ -22,7 +22,7 @@ import tools.jackson.databind.json.JsonMapper;
 class JdbcPlanStore implements PlanStore {
 
     private static final String COLUMNS =
-            "id, version, status, reason, diagnosis_id, starts_on, content::text AS content, error, created_at";
+            "id, version, status, reason, diagnosis_id, starts_on, content::text AS content, error, created_at, guidance";
 
     private final JdbcClient jdbc;
     private final JsonMapper json;
@@ -43,14 +43,15 @@ class JdbcPlanStore implements PlanStore {
     }
 
     @Override
-    public UUID insertPending(UUID userId, int version, String reason, UUID diagnosisId, LocalDate startsOn, Instant now) {
+    public UUID insertPending(UUID userId, int version, String reason, UUID diagnosisId, LocalDate startsOn, String guidance, Instant now) {
         UUID id = UuidV7.generate(now);
         jdbc.sql("""
-                INSERT INTO plan_versions (id, user_id, version, status, reason, diagnosis_id, starts_on, created_at)
-                VALUES (:id, :userId, :version, 'PENDING', :reason, :diagnosisId, :startsOn, :now)
+                INSERT INTO plan_versions (id, user_id, version, status, reason, diagnosis_id, starts_on, guidance, created_at)
+                VALUES (:id, :userId, :version, 'PENDING', :reason, :diagnosisId, :startsOn, :guidance, :now)
                 """)
                 .param("id", id).param("userId", userId).param("version", version).param("reason", reason)
-                .param("diagnosisId", diagnosisId).param("startsOn", Date.valueOf(startsOn)).param("now", Timestamp.from(now))
+                .param("diagnosisId", diagnosisId).param("startsOn", Date.valueOf(startsOn)).param("guidance", guidance)
+                .param("now", Timestamp.from(now))
                 .update();
         return id;
     }
@@ -108,6 +109,7 @@ class JdbcPlanStore implements PlanStore {
                 rs.getDate("starts_on").toLocalDate(),
                 content == null ? null : json.readValue(content, PlanContent.class),
                 rs.getString("error"),
-                rs.getTimestamp("created_at").toInstant());
+                rs.getTimestamp("created_at").toInstant(),
+                rs.getString("guidance"));
     }
 }

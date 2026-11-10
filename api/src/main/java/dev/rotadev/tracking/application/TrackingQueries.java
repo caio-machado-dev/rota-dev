@@ -2,6 +2,7 @@ package dev.rotadev.tracking.application;
 
 import java.time.Clock;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 import org.springframework.stereotype.Service;
@@ -41,6 +42,14 @@ class TrackingQueries implements TrackingReader {
     @Transactional(readOnly = true)
     public int milestonesAchieved(UUID userId) {
         return store.achievements(userId).size();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<CheckinSummary> recentCheckins(UUID userId, int limit) {
+        return store.checkins(userId).stream().limit(limit)
+                .map(c -> new CheckinSummary(c.weekStart(), c.minutesLogged(), c.reviewDays(), c.energy(), c.blockers()))
+                .toList();
     }
 
     @Override
