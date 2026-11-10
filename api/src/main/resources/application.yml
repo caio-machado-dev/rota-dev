@@ -30,6 +30,39 @@ spring:
   flyway:
     locations: classpath:db/migration
 
+  # Login com GitHub (ADR 0005). Crie uma OAuth App em github.com/settings/developers com o
+  # callback http://localhost:3000/api/login/oauth2/code/github. Os padrões "dev-sem-oauth"
+  # só deixam a API subir; o login de verdade precisa das variáveis no .env.
+  security:
+    oauth2:
+      client:
+        registration:
+          github:
+            client-id: ${GITHUB_CLIENT_ID:dev-sem-oauth}
+            client-secret: ${GITHUB_CLIENT_SECRET:dev-sem-oauth}
+            scope: read:user, user:email
+            # {baseUrl} é a origem que o navegador vê (localhost:3000, pelo rewrite do Next).
+            redirect-uri: "{baseUrl}/api/login/oauth2/code/{registrationId}"
+
+  session:
+    jdbc:
+      # As tabelas da sessão vêm da migração V3; o Spring Session não cria nada sozinho.
+      initialize-schema: never
+
+server:
+  # Atrás do Next (e do Caddy, em produção), a API lê os cabeçalhos X-Forwarded-* para saber
+  # a origem real. Sem isso, o redirect do OAuth apontaria para http://api:8080.
+  forward-headers-strategy: framework
+  servlet:
+    session:
+      timeout: 14d
+      cookie:
+        name: ROTA_SESSION
+        http-only: true
+        same-site: lax
+        # Em produção (HTTPS) fica true pelo .env; em localhost (HTTP) o navegador recusaria o cookie.
+        secure: ${SESSION_COOKIE_SECURE:false}
+
 management:
   endpoints:
     web:

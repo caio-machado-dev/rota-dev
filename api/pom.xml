@@ -61,6 +61,16 @@
 			<artifactId>postgresql</artifactId>
 			<scope>runtime</scope>
 		</dependency>
+		<!-- Spring Security + cliente OAuth2: o login com GitHub é feito pela API (ADR 0005). -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security-oauth2-client</artifactId>
+		</dependency>
+		<!-- Sessão guardada no Postgres, não na memória do processo: sobrevive a reinícios (ADR 0005). -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-session-jdbc</artifactId>
+		</dependency>
 		<!-- Spring Modulith: entende os pacotes como módulos e verifica as fronteiras (ADR 0002). -->
 		<dependency>
 			<groupId>org.springframework.modulith</groupId>
@@ -86,6 +96,12 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<!-- Simula um usuário logado nos testes (oauth2Login()) sem passar pelo GitHub. -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security-oauth2-client-test</artifactId>
 			<scope>test</scope>
 		</dependency>
 		<!-- Testcontainers: sobe um Postgres de verdade em Docker durante os testes. -->

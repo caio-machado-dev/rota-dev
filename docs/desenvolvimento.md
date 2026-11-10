@@ -42,6 +42,17 @@ O front chama `/api/...` na própria origem (porta 3000), e o Next.js repassa pa
 
 Alternativa sem compose: `cd api && ./mvnw spring-boot:test-run` sobe a API com um Postgres temporário via Testcontainers.
 
+### Login com GitHub
+
+1. Em https://github.com/settings/developers, crie uma **OAuth App** com:
+   - Homepage URL: `http://localhost:3000`
+   - Authorization callback URL: `http://localhost:3000/api/login/oauth2/code/github`
+2. Copie `infra/.env.example` para `infra/.env` e preencha `GITHUB_CLIENT_ID` e `GITHUB_CLIENT_SECRET`.
+   Rodando a API fora do Docker, exporte as duas variáveis no terminal antes do `./mvnw spring-boot:run`.
+3. Abra http://localhost:3000/api/oauth2/authorization/github. Depois do login, `GET /api/me` devolve o usuário.
+
+Sem as variáveis a API sobe normalmente, mas o GitHub recusa o login.
+
 ## Testes
 
 ```bash
