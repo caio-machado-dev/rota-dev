@@ -587,9 +587,9 @@ export interface components {
             /** @enum {string} */
             kind: "STUDY" | "BUILD" | "REVIEW" | "CERT";
             /** Format: int32 */
-            minutes?: number;
+            minutes: number;
             /** Format: int32 */
-            weekday?: number;
+            weekday: number;
         };
         UploadResponse: {
             /** Format: date-time */

@@ -42,7 +42,7 @@ final class TrackingDtos {
     }
 
     /** @param weekday 1 = segunda ... 7 = domingo */
-    record TemplateSlotDto(@Min(1) @Max(7) int weekday, @NotNull ActivityKind kind, @Min(5) @Max(600) int minutes) {
+    record TemplateSlotDto(@NotNull @Min(1) @Max(7) int weekday, @NotNull ActivityKind kind, @NotNull @Min(5) @Max(600) int minutes) {
 
         static TemplateSlotDto from(TemplateSlot s) {
             return new TemplateSlotDto(s.weekday().getValue(), s.kind(), s.minutes());
