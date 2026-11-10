@@ -16,6 +16,10 @@ export type StudySession = components["schemas"]["SessionResponse"];
 export type SessionInput = components["schemas"]["SessionRequest"];
 export type HabitInput = components["schemas"]["HabitRequest"];
 export type Habit = components["schemas"]["HabitResponse"];
+export type Readiness = components["schemas"]["ReadinessResponse"];
+export type CheckinStatus = components["schemas"]["CheckinStatusResponse"];
+export type CheckinInput = components["schemas"]["CheckinRequest"];
+export type MilestoneAchievement = components["schemas"]["MilestoneAchievementResponse"];
 
 /** Onde o login começa. É um link comum (navegação inteira), não uma chamada `fetch`. */
 export const LOGIN_URL = "/api/oauth2/authorization/github";
@@ -170,6 +174,45 @@ export async function saveHabit(habit: HabitInput): Promise<Habit> {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(habit),
+    }),
+  );
+}
+
+export async function getReadiness(): Promise<Readiness> {
+  return json(await apiFetch("/api/readiness"));
+}
+
+export async function getCheckinStatus(): Promise<CheckinStatus> {
+  return json(await apiFetch("/api/checkin"));
+}
+
+export async function submitCheckin(input: CheckinInput): Promise<void> {
+  await json(
+    await apiFetch("/api/checkin", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(input),
+    }),
+  );
+}
+
+/** O plano em vigor (a versão pronta mais recente), ou `null`. */
+export async function getCurrentPlan(): Promise<PlanVersion | null> {
+  const response = await apiFetch("/api/plan/current");
+  if (response.status === 404) return null;
+  return json(response);
+}
+
+export async function listMilestones(): Promise<MilestoneAchievement[]> {
+  return json(await apiFetch("/api/milestones"));
+}
+
+export async function achieveMilestone(milestone: string, evidenceUrl: string): Promise<void> {
+  await json(
+    await apiFetch("/api/milestones", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ milestone, evidenceUrl }),
     }),
   );
 }
