@@ -17,6 +17,8 @@ import dev.rotadev.identity.domain.User;
  */
 public interface UserRepository {
 
+    Optional<User> findById(UUID id);
+
     Optional<User> findByGithubId(long githubId);
 
     /** Cria um usuário novo com id UUID v7 e o fuso padrão. */

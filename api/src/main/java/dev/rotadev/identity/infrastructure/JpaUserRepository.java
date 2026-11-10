@@ -25,6 +25,11 @@ class JpaUserRepository implements UserRepository {
     }
 
     @Override
+    public Optional<User> findById(UUID id) {
+        return jpa.findById(id).map(JpaUserRepository::toDomain);
+    }
+
+    @Override
     public Optional<User> findByGithubId(long githubId) {
         return jpa.findByGithubId(githubId).map(JpaUserRepository::toDomain);
     }

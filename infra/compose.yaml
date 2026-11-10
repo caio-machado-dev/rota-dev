@@ -32,6 +32,9 @@ services:
       DATABASE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-rotadev}
       DATABASE_USER: ${POSTGRES_USER:-rotadev}
       DATABASE_PASSWORD: ${POSTGRES_PASSWORD:-rotadev}
+      # Sem estas duas, a API sobe, mas o login com GitHub não funciona (docs/desenvolvimento.md).
+      GITHUB_CLIENT_ID: ${GITHUB_CLIENT_ID:-dev-sem-oauth}
+      GITHUB_CLIENT_SECRET: ${GITHUB_CLIENT_SECRET:-dev-sem-oauth}
     ports:
       - "127.0.0.1:8080:8080"
     depends_on:
