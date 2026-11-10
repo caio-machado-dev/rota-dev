@@ -16,7 +16,7 @@ import org.testcontainers.utility.DockerImageName;
  * (ou contra H2 em memória) esconde diferenças de SQL.
  */
 @TestConfiguration(proxyBeanMethods = false)
-class TestcontainersConfiguration {
+public class TestcontainersConfiguration {
 
     @Bean
     @ServiceConnection
