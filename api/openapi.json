@@ -8,6 +8,53 @@
     "url" : "/"
   } ],
   "paths" : {
+    "/api/account" : {
+      "delete" : {
+        "operationId" : "delete",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/DeleteRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "*/*" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/ProblemDetail"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "account-controller" ]
+      }
+    },
+    "/api/account/export" : {
+      "get" : {
+        "operationId" : "export",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "object",
+                  "additionalProperties" : { }
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "account-controller" ]
+      }
+    },
     "/api/adjustments" : {
       "get" : {
         "operationId" : "list_2",
@@ -934,6 +981,16 @@
         },
         "required" : [ "id" ]
       },
+      "DeleteRequest" : {
+        "type" : "object",
+        "properties" : {
+          "confirmLogin" : {
+            "type" : "string",
+            "minLength" : 1
+          }
+        },
+        "required" : [ "confirmLogin" ]
+      },
       "DiagnosisResponse" : {
         "type" : "object",
         "properties" : {
@@ -1501,6 +1558,33 @@
           }
         },
         "required" : [ "index", "tasks", "theme", "totalMinutes" ]
+      },
+      "ProblemDetail" : {
+        "type" : "object",
+        "properties" : {
+          "detail" : {
+            "type" : "string"
+          },
+          "instance" : {
+            "type" : "string",
+            "format" : "uri"
+          },
+          "properties" : {
+            "type" : "object",
+            "additionalProperties" : { }
+          },
+          "status" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "title" : {
+            "type" : "string"
+          },
+          "type" : {
+            "type" : "string",
+            "format" : "uri"
+          }
+        }
       },
       "ProfileResponse" : {
         "type" : "object",

@@ -227,3 +227,19 @@ export async function decideAdjustment(id: string, decision: "accept" | "reject"
   const response = await apiFetch(`/api/adjustments/${id}/${decision}`, { method: "POST" });
   if (!response.ok) throw new ApiError(response.status, "Não consegui registrar a decisão.");
 }
+
+/** Endereço do download com todos os dados do usuário (LGPD). Link comum: o navegador baixa o arquivo. */
+export const EXPORT_URL = "/api/account/export";
+
+/** Exclui a conta de vez. O corpo repete o login do GitHub como confirmação. */
+export async function deleteAccount(confirmLogin: string): Promise<void> {
+  const response = await apiFetch("/api/account", {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ confirmLogin }),
+  });
+  if (!response.ok) {
+    const problem = (await response.json().catch(() => null)) as { detail?: string } | null;
+    throw new ApiError(response.status, problem?.detail ?? "Não consegui excluir a conta.");
+  }
+}
