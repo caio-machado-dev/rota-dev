@@ -9,6 +9,7 @@ export type Snapshot = components["schemas"]["SnapshotResponse"];
 export type UploadKind = "LINKEDIN" | "RESUME";
 export type Goal = components["schemas"]["GoalResponse"];
 export type GoalInput = components["schemas"]["GoalRequest"];
+export type Diagnosis = components["schemas"]["DiagnosisResponse"];
 
 /** Onde o login começa. É um link comum (navegação inteira), não uma chamada `fetch`. */
 export const LOGIN_URL = "/api/oauth2/authorization/github";
@@ -108,4 +109,16 @@ export async function saveGoal(goal: GoalInput): Promise<Goal> {
       body: JSON.stringify(goal),
     }),
   );
+}
+
+/** O diagnóstico mais recente, ou `null` se o usuário nunca pediu um. */
+export async function getLatestDiagnosis(): Promise<Diagnosis | null> {
+  const response = await apiFetch("/api/diagnosis/latest");
+  if (response.status === 404) return null;
+  return json(response);
+}
+
+/** Pede um diagnóstico novo. A API responde 202 e gera num job; consulte `getLatestDiagnosis`. */
+export async function requestDiagnosis(): Promise<void> {
+  await json(await apiFetch("/api/diagnosis", { method: "POST" }));
 }

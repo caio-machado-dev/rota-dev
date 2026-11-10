@@ -5,6 +5,10 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
+  /* Gráficos: duas séries validadas com o validador de paleta da skill dataviz
+     (scripts/validate_palette.js), uma por tema. Texto nunca usa estas cores. */
+  --color-viz-current: var(--viz-current);
+  --color-viz-required: var(--viz-required);
   --color-brand: var(--brand);
   --color-brand-foreground: var(--brand-foreground);
   --color-background: var(--background);
@@ -51,6 +55,9 @@
 }
 
 :root {
+  /* Fundo claro: aqua com contraste 2,8:1, por isso os gráficos sempre trazem os números em texto. */
+  --viz-current: #1baf7a;
+  --viz-required: #2a78d6;
   --background: oklch(1 0 0);
   --foreground: oklch(0.145 0 0);
   --card: oklch(1 0 0);
@@ -86,6 +93,8 @@
 }
 
 .dark {
+  --viz-current: #199e70;
+  --viz-required: #3987e5;
   /* primária e foco seguem a cor da marca (src/config/brand.ts) */
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
