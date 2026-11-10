@@ -1,13 +1,19 @@
 import type { Metadata } from "next";
 
-import { Placeholder } from "@/components/shell/placeholder";
+import { ProfileReview } from "@/components/profile/profile-review";
 
 export const metadata: Metadata = { title: "Perfil" };
 
 export default function ProfilePage() {
   return (
-    <Placeholder title="Perfil" phase="Fase 1">
-      Fontes conectadas (GitHub, LinkedIn, currículo) e revisão do perfil extraído.
-    </Placeholder>
+    <section className="max-w-3xl">
+      <h1 className="text-2xl font-semibold tracking-tight">Perfil</h1>
+      <p className="mt-2 text-sm text-muted-foreground">
+        O que as suas fontes mostram, sempre com a evidência ao lado. É a base do diagnóstico.
+      </p>
+      <div className="mt-8">
+        <ProfileReview />
+      </div>
+    </section>
   );
 }
