@@ -46,6 +46,6 @@ class PlanQueriesTest {
                 new PlanContent.Week(2, "Testes", List.of()));
         var content = new PlanContent("", new PlanContent.AnchorProject("", "", List.of(), List.of()),
                 List.of(new PlanContent.Quarter(1, "T1", "", List.of(), weeks)), List.of());
-        return new PlanStore.StoredPlan(UUID.randomUUID(), 1, "READY", "Primeira versão", UUID.randomUUID(), START, content, null, Instant.now());
+        return new PlanStore.StoredPlan(UUID.randomUUID(), 1, "READY", "Primeira versão", UUID.randomUUID(), START, content, null, Instant.now(), null);
     }
 }

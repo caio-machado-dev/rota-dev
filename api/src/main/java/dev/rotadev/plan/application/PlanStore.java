@@ -12,7 +12,7 @@ public interface PlanStore {
 
     int nextVersion(UUID userId);
 
-    UUID insertPending(UUID userId, int version, String reason, UUID diagnosisId, LocalDate startsOn, Instant now);
+    UUID insertPending(UUID userId, int version, String reason, UUID diagnosisId, LocalDate startsOn, String guidance, Instant now);
 
     void markReady(UUID userId, UUID id, PlanContent content, UUID aiCallId, Instant now);
 
@@ -28,7 +28,8 @@ public interface PlanStore {
 
     List<StoredPlan> history(UUID userId);
 
+    /** @param guidance orientação extra para a IA (reajuste), ou nula */
     record StoredPlan(UUID id, int version, String status, String reason, UUID diagnosisId, LocalDate startsOn,
-            PlanContent content, String error, Instant createdAt) {
+            PlanContent content, String error, Instant createdAt, String guidance) {
     }
 }

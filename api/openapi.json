@@ -8,6 +8,74 @@
     "url" : "/"
   } ],
   "paths" : {
+    "/api/adjustments" : {
+      "get" : {
+        "operationId" : "list_2",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/AdjustmentResponse"
+                  }
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "adjustment-controller" ]
+      }
+    },
+    "/api/adjustments/{id}/accept" : {
+      "post" : {
+        "operationId" : "accept",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "202" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/AdjustmentAccepted"
+                }
+              }
+            },
+            "description" : "Accepted"
+          }
+        },
+        "tags" : [ "adjustment-controller" ]
+      }
+    },
+    "/api/adjustments/{id}/reject" : {
+      "post" : {
+        "operationId" : "reject",
+        "parameters" : [ {
+          "in" : "path",
+          "name" : "id",
+          "required" : true,
+          "schema" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        } ],
+        "responses" : {
+          "204" : {
+            "description" : "No Content"
+          }
+        },
+        "tags" : [ "adjustment-controller" ]
+      }
+    },
     "/api/checkin" : {
       "get" : {
         "operationId" : "status",
@@ -687,6 +755,47 @@
   },
   "components" : {
     "schemas" : {
+      "AdjustmentAccepted" : {
+        "type" : "object",
+        "properties" : {
+          "planVersionId" : {
+            "type" : "string",
+            "format" : "uuid"
+          }
+        },
+        "required" : [ "planVersionId" ]
+      },
+      "AdjustmentResponse" : {
+        "type" : "object",
+        "properties" : {
+          "createdAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "id" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "kind" : {
+            "type" : "string"
+          },
+          "planVersionId" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "reason" : {
+            "type" : "string"
+          },
+          "status" : {
+            "type" : "string"
+          },
+          "weekStart" : {
+            "type" : "string",
+            "format" : "date"
+          }
+        },
+        "required" : [ "createdAt", "id", "kind", "reason", "status", "weekStart" ]
+      },
       "AxisResponse" : {
         "type" : "object",
         "properties" : {
