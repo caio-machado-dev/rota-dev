@@ -10,6 +10,7 @@ import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
 import org.springframework.context.annotation.Import;
 
 import dev.rotadev.TestcontainersConfiguration;
+import dev.rotadev.shared.SecretCipher;
 import dev.rotadev.identity.domain.GithubProfile;
 import dev.rotadev.identity.domain.User;
 
@@ -21,7 +22,9 @@ import dev.rotadev.identity.domain.User;
  * transação que sofre rollback no fim, então um teste não enxerga os dados do outro.
  */
 @DataJpaTest
-@Import({TestcontainersConfiguration.class, JpaUserRepository.class})
+// SecretCipher: a fatia de JPA carrega todas as entidades do projeto, e a de connected_sources
+// usa um conversor que cifra o token (ADR 0008). Sem a cifra no contexto, o Hibernate não sobe.
+@Import({TestcontainersConfiguration.class, JpaUserRepository.class, SecretCipher.class})
 class JpaUserRepositoryTest {
 
     private static final Instant T0 = Instant.parse("2026-11-10T12:00:00Z");

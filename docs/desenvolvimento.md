@@ -32,7 +32,7 @@ docker compose -f infra/compose.yaml up --build
 docker compose -f infra/compose.yaml up postgres
 
 # 2. API (outro terminal)
-cd api && ./mvnw spring-boot:run
+cd api && ROTA_ENCRYPTION_KEY=Y2hhdmUtZGUtZGV2LWxvY2FsLW5hby11c2FyLXByb2Q= ./mvnw spring-boot:run
 
 # 3. Web (outro terminal)
 cd web && pnpm install && pnpm dev
@@ -52,6 +52,17 @@ Alternativa sem compose: `cd api && ./mvnw spring-boot:test-run` sobe a API com 
 3. Abra http://localhost:3000/api/oauth2/authorization/github. Depois do login, `GET /api/me` devolve o usuário.
 
 Sem as variáveis a API sobe normalmente, mas o GitHub recusa o login.
+
+### Chave de cifra
+
+O token do GitHub é gravado cifrado (ADR 0008), e a API não sobe sem `ROTA_ENCRYPTION_KEY`.
+O `infra/compose.yaml` já traz uma chave de desenvolvimento. Rodando a API fora do Docker:
+
+```bash
+export ROTA_ENCRYPTION_KEY=$(openssl rand -base64 32)
+```
+
+Os testes usam a chave de `api/src/test/resources/application.properties`.
 
 ## Testes
 

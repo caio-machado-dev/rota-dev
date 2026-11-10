@@ -79,6 +79,10 @@ management:
 
 # Configurações próprias do Rota Dev (ADR 0012: a marca fica num lugar só).
 rota:
+  # Chave AES-256 (base64, 32 bytes) que cifra os tokens OAuth no banco (ADR 0008).
+  # Sem padrão de propósito: a API não sobe sem ela. Gere com: openssl rand -base64 32
+  encryption:
+    key: ${ROTA_ENCRYPTION_KEY:}
   brand:
     name: Rota Dev
     slug: rota-dev

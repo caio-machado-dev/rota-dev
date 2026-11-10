@@ -25,6 +25,27 @@
         },
         "tags" : [ "me-controller" ]
       }
+    },
+    "/api/sources" : {
+      "get" : {
+        "operationId" : "list",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/SourceResponse"
+                  }
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "sources-controller" ]
+      }
     }
   },
   "components" : {
@@ -53,6 +74,30 @@
           }
         },
         "required" : [ "id", "login", "timeZone" ]
+      },
+      "SourceResponse" : {
+        "type" : "object",
+        "properties" : {
+          "connectedAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "externalLogin" : {
+            "type" : "string"
+          },
+          "id" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "lastSyncedAt" : {
+            "type" : "string",
+            "format" : "date-time"
+          },
+          "type" : {
+            "type" : "string"
+          }
+        },
+        "required" : [ "connectedAt", "id", "type" ]
       }
     }
   }
