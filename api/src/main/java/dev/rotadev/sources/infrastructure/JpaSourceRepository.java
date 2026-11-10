@@ -34,6 +34,19 @@ class JpaSourceRepository implements SourceRepository {
     }
 
     @Override
+    public boolean exists(UUID userId, SourceType type) {
+        return jpa.findByUserIdAndType(userId, type).isPresent();
+    }
+
+    @Override
+    public void markSynced(UUID userId, SourceType type, Instant now) {
+        jpa.findByUserIdAndType(userId, type).ifPresent(entity -> {
+            entity.markSynced(now);
+            jpa.save(entity);
+        });
+    }
+
+    @Override
     public Optional<String> findGithubToken(UUID userId) {
         return jpa.findByUserIdAndType(userId, SourceType.GITHUB).map(ConnectedSourceEntity::getAccessToken);
     }

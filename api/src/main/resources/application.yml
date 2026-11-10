@@ -83,6 +83,9 @@ rota:
   # Sem padrão de propósito: a API não sobe sem ela. Gere com: openssl rand -base64 32
   encryption:
     key: ${ROTA_ENCRYPTION_KEY:}
+  github:
+    # Trocável nos testes e para GitHub Enterprise.
+    api-url: https://api.github.com
   brand:
     name: Rota Dev
     slug: rota-dev
