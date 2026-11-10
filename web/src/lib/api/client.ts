@@ -20,6 +20,7 @@ export type Readiness = components["schemas"]["ReadinessResponse"];
 export type CheckinStatus = components["schemas"]["CheckinStatusResponse"];
 export type CheckinInput = components["schemas"]["CheckinRequest"];
 export type MilestoneAchievement = components["schemas"]["MilestoneAchievementResponse"];
+export type Adjustment = components["schemas"]["AdjustmentResponse"];
 
 /** Onde o login começa. É um link comum (navegação inteira), não uma chamada `fetch`. */
 export const LOGIN_URL = "/api/oauth2/authorization/github";
@@ -215,4 +216,14 @@ export async function achieveMilestone(milestone: string, evidenceUrl: string): 
       body: JSON.stringify({ milestone, evidenceUrl }),
     }),
   );
+}
+
+export async function listAdjustments(): Promise<Adjustment[]> {
+  return json(await apiFetch("/api/adjustments"));
+}
+
+/** Aceita o reajuste: a API gera uma versão nova do plano num job. */
+export async function decideAdjustment(id: string, decision: "accept" | "reject"): Promise<void> {
+  const response = await apiFetch(`/api/adjustments/${id}/${decision}`, { method: "POST" });
+  if (!response.ok) throw new ApiError(response.status, "Não consegui registrar a decisão.");
 }
