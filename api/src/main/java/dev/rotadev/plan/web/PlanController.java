@@ -35,14 +35,15 @@ class PlanController {
         this.plans = plans;
     }
 
-    record Created(@NotNull UUID id, @NotNull int version) {
+    /** Nome com prefixo: o OpenAPI usa o nome simples, e o diagnóstico já tem um "Created". */
+    record PlanCreated(@NotNull UUID id, @NotNull int version) {
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.ACCEPTED)
-    Created create(@AuthenticationPrincipal AuthenticatedUser user) {
+    PlanCreated create(@AuthenticationPrincipal AuthenticatedUser user) {
         var created = request.request(user.id(), null);
-        return new Created(created.id(), created.version());
+        return new PlanCreated(created.id(), created.version());
     }
 
     /** A versão mais recente, em qualquer status: o front mostra "gerando…" enquanto PENDING. */

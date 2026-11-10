@@ -141,7 +141,7 @@
             "content" : {
               "application/json" : {
                 "schema" : {
-                  "$ref" : "#/components/schemas/Created"
+                  "$ref" : "#/components/schemas/PlanCreated"
                 }
               }
             },
@@ -377,31 +377,6 @@
   },
   "components" : {
     "schemas" : {
-      "Anchor" : {
-        "type" : "object",
-        "properties" : {
-          "deliverables" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string"
-            }
-          },
-          "description" : {
-            "type" : "string"
-          },
-          "evidenceIds" : {
-            "type" : "array",
-            "items" : {
-              "type" : "string",
-              "format" : "uuid"
-            }
-          },
-          "title" : {
-            "type" : "string"
-          }
-        },
-        "required" : [ "deliverables", "description", "evidenceIds", "title" ]
-      },
       "AxisResponse" : {
         "type" : "object",
         "properties" : {
@@ -450,43 +425,15 @@
         },
         "required" : [ "id" ]
       },
-      "Content" : {
-        "type" : "object",
-        "properties" : {
-          "anchorProject" : {
-            "$ref" : "#/components/schemas/Anchor"
-          },
-          "quarters" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/Quarter"
-            }
-          },
-          "resources" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/Resource"
-            }
-          },
-          "summary" : {
-            "type" : "string"
-          }
-        },
-        "required" : [ "anchorProject", "quarters", "resources", "summary" ]
-      },
       "Created" : {
         "type" : "object",
         "properties" : {
           "id" : {
             "type" : "string",
             "format" : "uuid"
-          },
-          "version" : {
-            "type" : "integer",
-            "format" : "int32"
           }
         },
-        "required" : [ "id", "version" ]
+        "required" : [ "id" ]
       },
       "DiagnosisResponse" : {
         "type" : "object",
@@ -676,7 +623,70 @@
         },
         "required" : [ "id", "login", "timeZone" ]
       },
-      "Milestone" : {
+      "PlanAnchor" : {
+        "type" : "object",
+        "properties" : {
+          "deliverables" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string"
+            }
+          },
+          "description" : {
+            "type" : "string"
+          },
+          "evidenceIds" : {
+            "type" : "array",
+            "items" : {
+              "type" : "string",
+              "format" : "uuid"
+            }
+          },
+          "title" : {
+            "type" : "string"
+          }
+        },
+        "required" : [ "deliverables", "description", "evidenceIds", "title" ]
+      },
+      "PlanContentView" : {
+        "type" : "object",
+        "properties" : {
+          "anchorProject" : {
+            "$ref" : "#/components/schemas/PlanAnchor"
+          },
+          "quarters" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/PlanQuarter"
+            }
+          },
+          "resources" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/PlanResource"
+            }
+          },
+          "summary" : {
+            "type" : "string"
+          }
+        },
+        "required" : [ "anchorProject", "quarters", "resources", "summary" ]
+      },
+      "PlanCreated" : {
+        "type" : "object",
+        "properties" : {
+          "id" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "version" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        },
+        "required" : [ "id", "version" ]
+      },
+      "PlanMilestone" : {
         "type" : "object",
         "properties" : {
           "axisKey" : {
@@ -694,11 +704,57 @@
         },
         "required" : [ "axisKey", "criteria", "title" ]
       },
+      "PlanQuarter" : {
+        "type" : "object",
+        "properties" : {
+          "focus" : {
+            "type" : "string"
+          },
+          "index" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "milestones" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/PlanMilestone"
+            }
+          },
+          "title" : {
+            "type" : "string"
+          },
+          "weeks" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/PlanWeek"
+            }
+          }
+        },
+        "required" : [ "focus", "index", "milestones", "title", "weeks" ]
+      },
+      "PlanResource" : {
+        "type" : "object",
+        "properties" : {
+          "axisKey" : {
+            "type" : "string"
+          },
+          "kind" : {
+            "type" : "string"
+          },
+          "reason" : {
+            "type" : "string"
+          },
+          "title" : {
+            "type" : "string"
+          }
+        },
+        "required" : [ "axisKey", "kind", "reason", "title" ]
+      },
       "PlanResponse" : {
         "type" : "object",
         "properties" : {
           "content" : {
-            "$ref" : "#/components/schemas/Content"
+            "$ref" : "#/components/schemas/PlanContentView"
           },
           "createdAt" : {
             "type" : "string",
@@ -728,6 +784,45 @@
         },
         "required" : [ "createdAt", "id", "reason", "startsOn", "status", "version" ]
       },
+      "PlanTask" : {
+        "type" : "object",
+        "properties" : {
+          "kind" : {
+            "type" : "string"
+          },
+          "minutes" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "title" : {
+            "type" : "string"
+          }
+        },
+        "required" : [ "kind", "minutes", "title" ]
+      },
+      "PlanWeek" : {
+        "type" : "object",
+        "properties" : {
+          "index" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "tasks" : {
+            "type" : "array",
+            "items" : {
+              "$ref" : "#/components/schemas/PlanTask"
+            }
+          },
+          "theme" : {
+            "type" : "string"
+          },
+          "totalMinutes" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        },
+        "required" : [ "index", "tasks", "theme", "totalMinutes" ]
+      },
       "ProfileResponse" : {
         "type" : "object",
         "properties" : {
@@ -739,52 +834,6 @@
           }
         },
         "required" : [ "snapshots" ]
-      },
-      "Quarter" : {
-        "type" : "object",
-        "properties" : {
-          "focus" : {
-            "type" : "string"
-          },
-          "index" : {
-            "type" : "integer",
-            "format" : "int32"
-          },
-          "milestones" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/Milestone"
-            }
-          },
-          "title" : {
-            "type" : "string"
-          },
-          "weeks" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/Week"
-            }
-          }
-        },
-        "required" : [ "focus", "index", "milestones", "title", "weeks" ]
-      },
-      "Resource" : {
-        "type" : "object",
-        "properties" : {
-          "axisKey" : {
-            "type" : "string"
-          },
-          "kind" : {
-            "type" : "string"
-          },
-          "reason" : {
-            "type" : "string"
-          },
-          "title" : {
-            "type" : "string"
-          }
-        },
-        "required" : [ "axisKey", "kind", "reason", "title" ]
       },
       "SkillResponse" : {
         "type" : "object",
@@ -855,22 +904,6 @@
         },
         "required" : [ "connectedAt", "id", "type" ]
       },
-      "Task" : {
-        "type" : "object",
-        "properties" : {
-          "kind" : {
-            "type" : "string"
-          },
-          "minutes" : {
-            "type" : "integer",
-            "format" : "int32"
-          },
-          "title" : {
-            "type" : "string"
-          }
-        },
-        "required" : [ "kind", "minutes", "title" ]
-      },
       "UploadResponse" : {
         "type" : "object",
         "properties" : {
@@ -900,29 +933,6 @@
           }
         },
         "required" : [ "createdAt", "format", "id", "kind", "originalName", "sizeBytes", "status" ]
-      },
-      "Week" : {
-        "type" : "object",
-        "properties" : {
-          "index" : {
-            "type" : "integer",
-            "format" : "int32"
-          },
-          "tasks" : {
-            "type" : "array",
-            "items" : {
-              "$ref" : "#/components/schemas/Task"
-            }
-          },
-          "theme" : {
-            "type" : "string"
-          },
-          "totalMinutes" : {
-            "type" : "integer",
-            "format" : "int32"
-          }
-        },
-        "required" : [ "index", "tasks", "theme", "totalMinutes" ]
       }
     }
   }

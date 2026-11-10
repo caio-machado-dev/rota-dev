@@ -248,12 +248,6 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
-        Anchor: {
-            deliverables: string[];
-            description: string;
-            evidenceIds: string[];
-            title: string;
-        };
         AxisResponse: {
             evidences: components["schemas"]["CitedEvidence"][];
             key: string;
@@ -271,17 +265,9 @@ export interface components {
             title?: string;
             url?: string;
         };
-        Content: {
-            anchorProject: components["schemas"]["Anchor"];
-            quarters: components["schemas"]["Quarter"][];
-            resources: components["schemas"]["Resource"][];
-            summary: string;
-        };
         Created: {
             /** Format: uuid */
             id: string;
-            /** Format: int32 */
-            version: number;
         };
         DiagnosisResponse: {
             axes: components["schemas"]["AxisResponse"][];
@@ -349,13 +335,45 @@ export interface components {
             name?: string;
             timeZone: string;
         };
-        Milestone: {
+        PlanAnchor: {
+            deliverables: string[];
+            description: string;
+            evidenceIds: string[];
+            title: string;
+        };
+        PlanContentView: {
+            anchorProject: components["schemas"]["PlanAnchor"];
+            quarters: components["schemas"]["PlanQuarter"][];
+            resources: components["schemas"]["PlanResource"][];
+            summary: string;
+        };
+        PlanCreated: {
+            /** Format: uuid */
+            id: string;
+            /** Format: int32 */
+            version: number;
+        };
+        PlanMilestone: {
             axisKey: string;
             criteria: string[];
             title: string;
         };
+        PlanQuarter: {
+            focus: string;
+            /** Format: int32 */
+            index: number;
+            milestones: components["schemas"]["PlanMilestone"][];
+            title: string;
+            weeks: components["schemas"]["PlanWeek"][];
+        };
+        PlanResource: {
+            axisKey: string;
+            kind: string;
+            reason: string;
+            title: string;
+        };
         PlanResponse: {
-            content?: components["schemas"]["Content"];
+            content?: components["schemas"]["PlanContentView"];
             /** Format: date-time */
             createdAt: string;
             error?: string;
@@ -368,22 +386,22 @@ export interface components {
             /** Format: int32 */
             version: number;
         };
-        ProfileResponse: {
-            snapshots: components["schemas"]["SnapshotResponse"][];
+        PlanTask: {
+            kind: string;
+            /** Format: int32 */
+            minutes: number;
+            title: string;
         };
-        Quarter: {
-            focus: string;
+        PlanWeek: {
             /** Format: int32 */
             index: number;
-            milestones: components["schemas"]["Milestone"][];
-            title: string;
-            weeks: components["schemas"]["Week"][];
+            tasks: components["schemas"]["PlanTask"][];
+            theme: string;
+            /** Format: int32 */
+            totalMinutes: number;
         };
-        Resource: {
-            axisKey: string;
-            kind: string;
-            reason: string;
-            title: string;
+        ProfileResponse: {
+            snapshots: components["schemas"]["SnapshotResponse"][];
         };
         SkillResponse: {
             confidence: string;
@@ -410,12 +428,6 @@ export interface components {
             lastSyncedAt?: string;
             type: string;
         };
-        Task: {
-            kind: string;
-            /** Format: int32 */
-            minutes: number;
-            title: string;
-        };
         UploadResponse: {
             /** Format: date-time */
             createdAt: string;
@@ -427,14 +439,6 @@ export interface components {
             /** Format: int64 */
             sizeBytes: number;
             status: string;
-        };
-        Week: {
-            /** Format: int32 */
-            index: number;
-            tasks: components["schemas"]["Task"][];
-            theme: string;
-            /** Format: int32 */
-            totalMinutes: number;
         };
     };
     responses: never;
@@ -586,7 +590,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["Created"];
+                    "application/json": components["schemas"]["PlanCreated"];
                 };
             };
         };
