@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 
 import { DiagnosisPanel } from "@/components/plan/diagnosis-panel";
 import { GoalForm } from "@/components/plan/goal-form";
+import { PlanView } from "@/components/plan/plan-view";
 
 export const metadata: Metadata = { title: "Plano" };
 
@@ -22,6 +23,13 @@ export default function PlanPage() {
       </p>
       <div className="mt-4">
         <DiagnosisPanel />
+      </div>
+      <h2 className="mt-12 text-sm font-semibold">Roadmap</h2>
+      <p className="mt-1 text-sm text-muted-foreground">
+        Gerado a partir do diagnóstico, cabendo nas suas horas da semana. Cada mudança vira uma versão nova, com o motivo.
+      </p>
+      <div className="mt-4">
+        <PlanView />
       </div>
     </section>
   );
