@@ -19,6 +19,7 @@ import org.junit.jupiter.api.Test;
 import dev.rotadev.ai.AiCallFailedException;
 import dev.rotadev.ai.AiRequest;
 import dev.rotadev.ai.domain.TokenUsage;
+import io.micrometer.core.instrument.simple.SimpleMeterRegistry;
 import tools.jackson.databind.json.JsonMapper;
 
 /**
@@ -34,6 +35,8 @@ class CareerAiServiceTest {
 
     private final Deque<LlmGateway.LlmResponse> responses = new ArrayDeque<>();
     private final List<AiCallLog.Entry> logged = new ArrayList<>();
+    /** Registry em memória: o teste lê os contadores direto, sem Prometheus. */
+    private final SimpleMeterRegistry meters = new SimpleMeterRegistry();
     private final AiProperties properties = new AiProperties("chave", "claude-opus-5-5", "high", 16000, 2,
             Map.of("claude-opus-5-5", new AiProperties.Price(new BigDecimal("4"), new BigDecimal("20"), new BigDecimal("0.2"), new BigDecimal("5"))));
 
@@ -46,7 +49,8 @@ class CareerAiServiceTest {
             },
             properties,
             JsonMapper.builder().build(),
-            Clock.fixed(Instant.parse("2026-11-10T12:00:00Z"), ZoneOffset.UTC));
+            Clock.fixed(Instant.parse("2026-11-10T12:00:00Z"), ZoneOffset.UTC),
+            meters);
 
     private final AiRequest request = new AiRequest(UUID.randomUUID(), "diagnosis", 1, "{}");
 
@@ -62,6 +66,8 @@ class CareerAiServiceTest {
             // 1000 × $4/M + 500 × $20/M = $0,004 + $0,01 = 14.000 micro-dólares
             assertThat(e.costUsdMicros()).isEqualTo(14_000L);
         });
+        assertThat(meters.get("rota.ai.calls").tags("status", "SUCCEEDED", "prompt", "diagnosis").counter().count()).isEqualTo(1.0);
+        assertThat(meters.get("rota.ai.cost").summary().totalAmount()).isEqualTo(14_000.0);
     }
 
     @Test

@@ -32,7 +32,7 @@ class SecurityConfiguration {
     SecurityFilterChain securityFilterChain(HttpSecurity http, GithubOAuth2UserService githubUsers) {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/actuator/health/**", "/actuator/info").permitAll()
+                        .requestMatchers("/actuator/health/**", "/actuator/info", "/actuator/prometheus").permitAll()
                         .requestMatchers("/api/oauth2/**", "/api/login/**").permitAll()
                         // O contrato da API é público: o repositório também é.
                         .requestMatchers("/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()

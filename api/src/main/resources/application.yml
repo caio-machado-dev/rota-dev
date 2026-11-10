@@ -83,7 +83,13 @@ management:
   endpoints:
     web:
       exposure:
-        include: health,info
+        # prometheus: lido pelo coletor de métricas. A API não é alcançável de fora (só /api/* passa pelo
+        # Next), então o endpoint fica liberado na rede interna sem login (SecurityConfiguration).
+        include: health,info,prometheus
+  metrics:
+    tags:
+      # Toda métrica sai com a aplicação, para separar do Gasto Certo num coletor compartilhado.
+      application: rota-dev-api
   endpoint:
     health:
       probes:
