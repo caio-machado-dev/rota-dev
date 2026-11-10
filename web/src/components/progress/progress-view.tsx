@@ -5,6 +5,8 @@ import { useCallback, useEffect, useState } from "react";
 import { CartesianGrid, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 
 import { Button } from "@/components/ui/button";
+
+import { AdjustmentsList } from "./adjustments-list";
 import {
   achieveMilestone,
   ApiError,
@@ -76,6 +78,7 @@ export function ProgressView() {
     <div className="flex flex-col gap-10">
       <ReadinessSection readiness={readiness} />
       <CheckinSection checkin={checkin} onDone={load} />
+      <AdjustmentsList />
       <MilestonesSection plan={plan} achieved={achieved} onDone={load} />
     </div>
   );
