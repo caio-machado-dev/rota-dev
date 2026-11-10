@@ -27,6 +27,8 @@
 		<springdoc.version>3.2.0</springdoc.version>
 		<pdfbox.version>3.0.8</pdfbox.version>
 		<commons-csv.version>1.14.1</commons-csv.version>
+		<anthropic-java.version>3.3.0</anthropic-java.version>
+		<json-schema-validator.version>3.0.6</json-schema-validator.version>
 	</properties>
 
 	<dependencies>
@@ -91,6 +93,18 @@
 			<groupId>org.apache.commons</groupId>
 			<artifactId>commons-csv</artifactId>
 			<version>${commons-csv.version}</version>
+		</dependency>
+		<!-- SDK oficial da Anthropic para chamar o Claude (ADR 0007). Só o módulo ai usa. -->
+		<dependency>
+			<groupId>com.anthropic</groupId>
+			<artifactId>anthropic-java</artifactId>
+			<version>${anthropic-java.version}</version>
+		</dependency>
+		<!-- Valida a saída da IA contra o JSON Schema versionado junto do prompt (ADR 0007). -->
+		<dependency>
+			<groupId>com.networknt</groupId>
+			<artifactId>json-schema-validator</artifactId>
+			<version>${json-schema-validator.version}</version>
 		</dependency>
 		<!-- Contrato OpenAPI gerado a partir dos controllers, em /v3/api-docs, e o Swagger UI
 		     em /swagger-ui.html (ADR 0010). O springdoc não faz parte do Boot, por isso declara versão. -->
