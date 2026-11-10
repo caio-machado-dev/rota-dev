@@ -1,9 +1,10 @@
-import { Placeholder } from "@/components/shell/placeholder";
+import { NowPanel } from "@/components/now/now-panel";
 
 export default function NowPage() {
   return (
-    <Placeholder title="Agora" phase="Fase 3">
-      O que fazer hoje, segundo a sua semana padrão: sessão do dia, tarefas e o protocolo de revisão.
-    </Placeholder>
+    <section className="max-w-3xl">
+      <h1 className="sr-only">Agora</h1>
+      <NowPanel />
+    </section>
   );
 }
