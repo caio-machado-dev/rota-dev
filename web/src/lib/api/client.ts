@@ -2,6 +2,11 @@ import type { components } from "./schema";
 
 /** Tipos gerados do contrato da API (`pnpm api:types`, ADR 0010). Nunca escreva estes tipos à mão. */
 export type Me = components["schemas"]["MeResponse"];
+export type Source = components["schemas"]["SourceResponse"];
+export type Upload = components["schemas"]["UploadResponse"];
+export type Profile = components["schemas"]["ProfileResponse"];
+export type Snapshot = components["schemas"]["SnapshotResponse"];
+export type UploadKind = "LINKEDIN" | "RESUME";
 
 /** Onde o login começa. É um link comum (navegação inteira), não uma chamada `fetch`. */
 export const LOGIN_URL = "/api/oauth2/authorization/github";
@@ -37,4 +42,51 @@ export async function getMe(): Promise<Me | null> {
 export async function logout(): Promise<void> {
   const response = await apiFetch("/api/logout", { method: "POST" });
   if (!response.ok) throw new Error(`POST /api/logout respondeu ${response.status}`);
+}
+
+/** Erro de uma chamada à API, com a mensagem do `ProblemDetail` quando houver. */
+export class ApiError extends Error {
+  constructor(
+    readonly status: number,
+    message: string,
+  ) {
+    super(message);
+  }
+}
+
+async function json<T>(response: Response): Promise<T> {
+  if (!response.ok) {
+    const problem = (await response.json().catch(() => null)) as { detail?: string } | null;
+    throw new ApiError(response.status, problem?.detail ?? `A API respondeu ${response.status}`);
+  }
+  return (await response.json()) as T;
+}
+
+export async function listSources(): Promise<Source[]> {
+  return json(await apiFetch("/api/sources"));
+}
+
+export async function listUploads(): Promise<Upload[]> {
+  return json(await apiFetch("/api/sources/uploads"));
+}
+
+export async function getProfile(): Promise<Profile> {
+  return json(await apiFetch("/api/profile"));
+}
+
+/** Pede uma nova leitura do GitHub. A API responde 202 e o trabalho roda num job. */
+export async function syncGithub(): Promise<void> {
+  const response = await apiFetch("/api/sources/github/sync", { method: "POST" });
+  if (!response.ok) throw new ApiError(response.status, "Não consegui pedir a atualização do GitHub.");
+}
+
+/**
+ * Envia o arquivo como `multipart/form-data`. Não defina o Content-Type à mão: o navegador
+ * monta o cabeçalho com o `boundary` que separa os campos.
+ */
+export async function uploadDocument(kind: UploadKind, file: File): Promise<Upload> {
+  const form = new FormData();
+  form.append("kind", kind);
+  form.append("file", file);
+  return json(await apiFetch("/api/sources/uploads", { method: "POST", body: form }));
 }

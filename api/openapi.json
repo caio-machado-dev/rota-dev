@@ -247,7 +247,7 @@
             "format" : "double"
           }
         },
-        "required" : [ "confidence", "name" ]
+        "required" : [ "confidence", "name", "weight" ]
       },
       "SnapshotResponse" : {
         "type" : "object",
@@ -330,7 +330,7 @@
             "type" : "string"
           }
         },
-        "required" : [ "createdAt", "format", "id", "kind", "originalName", "status" ]
+        "required" : [ "createdAt", "format", "id", "kind", "originalName", "sizeBytes", "status" ]
       }
     }
   }

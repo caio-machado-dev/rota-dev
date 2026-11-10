@@ -130,7 +130,7 @@ export interface components {
             confidence: string;
             name: string;
             /** Format: double */
-            weight?: number;
+            weight: number;
         };
         SnapshotResponse: {
             /** Format: date-time */
@@ -160,7 +160,7 @@ export interface components {
             kind: string;
             originalName: string;
             /** Format: int64 */
-            sizeBytes?: number;
+            sizeBytes: number;
             status: string;
         };
     };

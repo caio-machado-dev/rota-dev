@@ -35,7 +35,8 @@ final class ProfileResponses {
         }
     }
 
-    record SkillResponse(@NotNull String name, double weight, @NotNull String confidence) {
+    // @NotNull num primitivo nunca falha: aqui só marca o campo como obrigatório no OpenAPI.
+    record SkillResponse(@NotNull String name, @NotNull double weight, @NotNull String confidence) {
 
         static SkillResponse from(SkillSignal s) {
             return new SkillResponse(s.name(), s.weight(), s.confidence().name());
