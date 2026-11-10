@@ -44,6 +44,12 @@ spring:
             # {baseUrl} é a origem que o navegador vê (localhost:3000, pelo rewrite do Next).
             redirect-uri: "{baseUrl}/api/login/oauth2/code/{registrationId}"
 
+  mvc:
+    # Erros do Spring (validação, JSON inválido, 404) saem no formato ProblemDetail (RFC 9457),
+    # o mesmo que os nossos controllers usam.
+    problemdetails:
+      enabled: true
+
   servlet:
     multipart:
       # Mesmo limite do caso de uso UploadDocument (10 MB), com folga para os campos do formulário.

@@ -8,6 +8,50 @@
     "url" : "/"
   } ],
   "paths" : {
+    "/api/goal" : {
+      "get" : {
+        "operationId" : "get",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GoalResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "goal-controller" ]
+      },
+      "put" : {
+        "operationId" : "save",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/GoalRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/GoalResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "goal-controller" ]
+      }
+    },
     "/api/me" : {
       "get" : {
         "operationId" : "me",
@@ -195,6 +239,80 @@
           }
         },
         "required" : [ "confidence", "id", "kind", "title" ]
+      },
+      "GoalRequest" : {
+        "type" : "object",
+        "properties" : {
+          "deadline" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "hoursPerWeek" : {
+            "type" : "integer",
+            "format" : "int32",
+            "maximum" : 60,
+            "minimum" : 1
+          },
+          "notes" : {
+            "type" : "string",
+            "maxLength" : 2000,
+            "minLength" : 0
+          },
+          "primaryStack" : {
+            "type" : "string",
+            "maxLength" : 200,
+            "minLength" : 0
+          },
+          "targetLevel" : {
+            "type" : "string",
+            "enum" : [ "JUNIOR", "PLENO", "SENIOR", "ESPECIALISTA" ]
+          },
+          "targetRole" : {
+            "type" : "string",
+            "maxLength" : 120,
+            "minLength" : 0
+          },
+          "track" : {
+            "type" : "string",
+            "enum" : [ "BACKEND", "FRONTEND", "FULLSTACK", "DADOS", "DEVOPS", "MOBILE" ]
+          },
+          "wantsCertifications" : {
+            "type" : "boolean"
+          }
+        },
+        "required" : [ "deadline", "targetLevel", "targetRole", "track" ]
+      },
+      "GoalResponse" : {
+        "type" : "object",
+        "properties" : {
+          "deadline" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "hoursPerWeek" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "notes" : {
+            "type" : "string"
+          },
+          "primaryStack" : {
+            "type" : "string"
+          },
+          "targetLevel" : {
+            "type" : "string"
+          },
+          "targetRole" : {
+            "type" : "string"
+          },
+          "track" : {
+            "type" : "string"
+          },
+          "wantsCertifications" : {
+            "type" : "boolean"
+          }
+        },
+        "required" : [ "deadline", "hoursPerWeek", "targetLevel", "targetRole", "track", "wantsCertifications" ]
       },
       "MeResponse" : {
         "type" : "object",

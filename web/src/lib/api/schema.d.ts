@@ -4,6 +4,22 @@
  */
 
 export interface paths {
+    "/api/goal": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["get"];
+        put: operations["save"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/me": {
         parameters: {
             query?: never;
@@ -114,6 +130,32 @@ export interface components {
             title: string;
             url?: string;
         };
+        GoalRequest: {
+            /** Format: date */
+            deadline: string;
+            /** Format: int32 */
+            hoursPerWeek?: number;
+            notes?: string;
+            primaryStack?: string;
+            /** @enum {string} */
+            targetLevel: "JUNIOR" | "PLENO" | "SENIOR" | "ESPECIALISTA";
+            targetRole: string;
+            /** @enum {string} */
+            track: "BACKEND" | "FRONTEND" | "FULLSTACK" | "DADOS" | "DEVOPS" | "MOBILE";
+            wantsCertifications?: boolean;
+        };
+        GoalResponse: {
+            /** Format: date */
+            deadline: string;
+            /** Format: int32 */
+            hoursPerWeek: number;
+            notes?: string;
+            primaryStack?: string;
+            targetLevel: string;
+            targetRole: string;
+            track: string;
+            wantsCertifications: boolean;
+        };
         MeResponse: {
             avatarUrl?: string;
             email?: string;
@@ -172,6 +214,50 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    get: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GoalResponse"];
+                };
+            };
+        };
+    };
+    save: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GoalRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GoalResponse"];
+                };
+            };
+        };
+    };
     me: {
         parameters: {
             query?: never;
