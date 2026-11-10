@@ -8,6 +8,71 @@
     "url" : "/"
   } ],
   "paths" : {
+    "/api/checkin" : {
+      "get" : {
+        "operationId" : "status",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/CheckinStatusResponse"
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "checkin-controller" ]
+      },
+      "post" : {
+        "operationId" : "submit",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/CheckinRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/CheckinResponse"
+                }
+              }
+            },
+            "description" : "Created"
+          }
+        },
+        "tags" : [ "checkin-controller" ]
+      }
+    },
+    "/api/checkin/history" : {
+      "get" : {
+        "operationId" : "history_1",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/CheckinResponse"
+                  }
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "checkin-controller" ]
+      }
+    },
     "/api/diagnosis" : {
       "post" : {
         "operationId" : "create_2",
@@ -131,6 +196,53 @@
           }
         },
         "tags" : [ "me-controller" ]
+      }
+    },
+    "/api/milestones" : {
+      "get" : {
+        "operationId" : "achievements",
+        "responses" : {
+          "200" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "type" : "array",
+                  "items" : {
+                    "$ref" : "#/components/schemas/MilestoneAchievementResponse"
+                  }
+                }
+              }
+            },
+            "description" : "OK"
+          }
+        },
+        "tags" : [ "checkin-controller" ]
+      },
+      "post" : {
+        "operationId" : "achieve",
+        "requestBody" : {
+          "content" : {
+            "application/json" : {
+              "schema" : {
+                "$ref" : "#/components/schemas/MilestoneRequest"
+              }
+            }
+          },
+          "required" : true
+        },
+        "responses" : {
+          "201" : {
+            "content" : {
+              "application/json" : {
+                "schema" : {
+                  "$ref" : "#/components/schemas/MilestoneAchievementResponse"
+                }
+              }
+            },
+            "description" : "Created"
+          }
+        },
+        "tags" : [ "checkin-controller" ]
       }
     },
     "/api/now" : {
@@ -589,6 +701,86 @@
         },
         "required" : [ "evidences", "key", "name", "required", "score", "verified" ]
       },
+      "CheckinRequest" : {
+        "type" : "object",
+        "properties" : {
+          "blockers" : {
+            "type" : "string",
+            "maxLength" : 2000,
+            "minLength" : 0
+          },
+          "commits" : {
+            "type" : "integer",
+            "format" : "int32",
+            "maximum" : 1000,
+            "minimum" : 0
+          },
+          "energy" : {
+            "type" : "integer",
+            "format" : "int32",
+            "maximum" : 5,
+            "minimum" : 1
+          },
+          "notes" : {
+            "type" : "string",
+            "maxLength" : 2000,
+            "minLength" : 0
+          }
+        }
+      },
+      "CheckinResponse" : {
+        "type" : "object",
+        "properties" : {
+          "blockers" : {
+            "type" : "string"
+          },
+          "commits" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "energy" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "minutesLogged" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "notes" : {
+            "type" : "string"
+          },
+          "reviewDays" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "weekStart" : {
+            "type" : "string",
+            "format" : "date"
+          }
+        },
+        "required" : [ "commits", "energy", "minutesLogged", "reviewDays", "weekStart" ]
+      },
+      "CheckinStatusResponse" : {
+        "type" : "object",
+        "properties" : {
+          "done" : {
+            "$ref" : "#/components/schemas/CheckinResponse"
+          },
+          "minutesLogged" : {
+            "type" : "integer",
+            "format" : "int32"
+          },
+          "openWeek" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "reviewDays" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        },
+        "required" : [ "minutesLogged", "reviewDays" ]
+      },
       "CitedEvidence" : {
         "type" : "object",
         "properties" : {
@@ -855,6 +1047,46 @@
           }
         },
         "required" : [ "id", "login", "timeZone" ]
+      },
+      "MilestoneAchievementResponse" : {
+        "type" : "object",
+        "properties" : {
+          "achievedOn" : {
+            "type" : "string",
+            "format" : "date"
+          },
+          "evidenceUrl" : {
+            "type" : "string"
+          },
+          "id" : {
+            "type" : "string",
+            "format" : "uuid"
+          },
+          "milestone" : {
+            "type" : "string"
+          },
+          "planVersion" : {
+            "type" : "integer",
+            "format" : "int32"
+          }
+        },
+        "required" : [ "achievedOn", "evidenceUrl", "id", "milestone", "planVersion" ]
+      },
+      "MilestoneRequest" : {
+        "type" : "object",
+        "properties" : {
+          "evidenceUrl" : {
+            "type" : "string",
+            "maxLength" : 500,
+            "minLength" : 0
+          },
+          "milestone" : {
+            "type" : "string",
+            "maxLength" : 300,
+            "minLength" : 0
+          }
+        },
+        "required" : [ "evidenceUrl", "milestone" ]
       },
       "NowPlanWeek" : {
         "type" : "object",

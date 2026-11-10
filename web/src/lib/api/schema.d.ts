@@ -4,6 +4,38 @@
  */
 
 export interface paths {
+    "/api/checkin": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["status"];
+        put?: never;
+        post: operations["submit"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/checkin/history": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["history_1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/diagnosis": {
         parameters: {
             query?: never;
@@ -78,6 +110,22 @@ export interface paths {
         get: operations["me"];
         put?: never;
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/milestones": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["achievements"];
+        put?: never;
+        post: operations["achieve"];
         delete?: never;
         options?: never;
         head?: never;
@@ -339,6 +387,37 @@ export interface components {
             score: number;
             verified: boolean;
         };
+        CheckinRequest: {
+            blockers?: string;
+            /** Format: int32 */
+            commits?: number;
+            /** Format: int32 */
+            energy?: number;
+            notes?: string;
+        };
+        CheckinResponse: {
+            blockers?: string;
+            /** Format: int32 */
+            commits: number;
+            /** Format: int32 */
+            energy: number;
+            /** Format: int32 */
+            minutesLogged: number;
+            notes?: string;
+            /** Format: int32 */
+            reviewDays: number;
+            /** Format: date */
+            weekStart: string;
+        };
+        CheckinStatusResponse: {
+            done?: components["schemas"]["CheckinResponse"];
+            /** Format: int32 */
+            minutesLogged: number;
+            /** Format: date */
+            openWeek?: string;
+            /** Format: int32 */
+            reviewDays: number;
+        };
         CitedEvidence: {
             /** Format: uuid */
             id: string;
@@ -433,6 +512,20 @@ export interface components {
             login: string;
             name?: string;
             timeZone: string;
+        };
+        MilestoneAchievementResponse: {
+            /** Format: date */
+            achievedOn: string;
+            evidenceUrl: string;
+            /** Format: uuid */
+            id: string;
+            milestone: string;
+            /** Format: int32 */
+            planVersion: number;
+        };
+        MilestoneRequest: {
+            evidenceUrl: string;
+            milestone: string;
         };
         NowPlanWeek: {
             /** Format: int32 */
@@ -612,6 +705,70 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    status: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CheckinStatusResponse"];
+                };
+            };
+        };
+    };
+    submit: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CheckinRequest"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CheckinResponse"];
+                };
+            };
+        };
+    };
+    history_1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CheckinResponse"][];
+                };
+            };
+        };
+    };
     create_2: {
         parameters: {
             query?: never;
@@ -734,6 +891,50 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["MeResponse"];
+                };
+            };
+        };
+    };
+    achievements: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MilestoneAchievementResponse"][];
+                };
+            };
+        };
+    };
+    achieve: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MilestoneRequest"];
+            };
+        };
+        responses: {
+            /** @description Created */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["MilestoneAchievementResponse"];
                 };
             };
         };

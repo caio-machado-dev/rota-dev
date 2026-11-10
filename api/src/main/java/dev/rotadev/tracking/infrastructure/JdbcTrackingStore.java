@@ -1,11 +1,14 @@
 package dev.rotadev.tracking.infrastructure;
 
 import java.sql.Date;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.DayOfWeek;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.jdbc.core.simple.JdbcClient;
@@ -13,9 +16,11 @@ import org.springframework.stereotype.Repository;
 
 import dev.rotadev.tracking.application.TrackingStore;
 import dev.rotadev.tracking.domain.ActivityKind;
+import dev.rotadev.tracking.domain.MilestoneAchievement;
 import dev.rotadev.tracking.domain.ReviewHabit;
 import dev.rotadev.tracking.domain.StudySession;
 import dev.rotadev.tracking.domain.TemplateSlot;
+import dev.rotadev.tracking.domain.WeeklyCheckin;
 
 @Repository
 class JdbcTrackingStore implements TrackingStore {
@@ -100,5 +105,58 @@ class JdbcTrackingStore implements TrackingStore {
                 .query((rs, n) -> new ReviewHabit(rs.getDate("day").toLocalDate(), rs.getBoolean("read_diff"),
                         rs.getBoolean("explained"), rs.getBoolean("tested"), rs.getString("note")))
                 .list();
+    }
+
+    /** {@code ON CONFLICT DO NOTHING}: o segundo check-in da mesma semana não altera nada e devolve 0 linhas. */
+    @Override
+    public boolean insertCheckin(UUID userId, WeeklyCheckin c, Instant now) {
+        return jdbc.sql("""
+                INSERT INTO weekly_checkins (user_id, week_start, minutes_logged, review_days, commits, energy, blockers, notes, created_at)
+                VALUES (:userId, :week, :minutes, :reviewDays, :commits, :energy, :blockers, :notes, :now)
+                ON CONFLICT (user_id, week_start) DO NOTHING
+                """)
+                .param("userId", userId).param("week", Date.valueOf(c.weekStart())).param("minutes", c.minutesLogged())
+                .param("reviewDays", c.reviewDays()).param("commits", c.commits()).param("energy", c.energy())
+                .param("blockers", c.blockers()).param("notes", c.notes()).param("now", Timestamp.from(now))
+                .update() == 1;
+    }
+
+    @Override
+    public Optional<WeeklyCheckin> checkin(UUID userId, LocalDate weekStart) {
+        return jdbc.sql("SELECT * FROM weekly_checkins WHERE user_id = :userId AND week_start = :week")
+                .param("userId", userId).param("week", Date.valueOf(weekStart))
+                .query(JdbcTrackingStore::mapCheckin).optional();
+    }
+
+    @Override
+    public List<WeeklyCheckin> checkins(UUID userId) {
+        return jdbc.sql("SELECT * FROM weekly_checkins WHERE user_id = :userId ORDER BY week_start DESC")
+                .param("userId", userId).query(JdbcTrackingStore::mapCheckin).list();
+    }
+
+    @Override
+    public boolean insertAchievement(UUID userId, MilestoneAchievement a, Instant now) {
+        return jdbc.sql("""
+                INSERT INTO milestone_achievements (id, user_id, plan_version, milestone, evidence_url, achieved_on, created_at)
+                VALUES (:id, :userId, :version, :milestone, :url, :on, :now)
+                ON CONFLICT (user_id, milestone) DO NOTHING
+                """)
+                .param("id", a.id()).param("userId", userId).param("version", a.planVersion()).param("milestone", a.milestone())
+                .param("url", a.evidenceUrl()).param("on", Date.valueOf(a.achievedOn())).param("now", Timestamp.from(now))
+                .update() == 1;
+    }
+
+    @Override
+    public List<MilestoneAchievement> achievements(UUID userId) {
+        return jdbc.sql("SELECT id, plan_version, milestone, evidence_url, achieved_on FROM milestone_achievements WHERE user_id = :userId ORDER BY achieved_on DESC")
+                .param("userId", userId)
+                .query((rs, n) -> new MilestoneAchievement(rs.getObject("id", UUID.class), rs.getInt("plan_version"),
+                        rs.getString("milestone"), rs.getString("evidence_url"), rs.getDate("achieved_on").toLocalDate()))
+                .list();
+    }
+
+    private static WeeklyCheckin mapCheckin(ResultSet rs, int row) throws SQLException {
+        return new WeeklyCheckin(rs.getDate("week_start").toLocalDate(), rs.getInt("minutes_logged"), rs.getInt("review_days"),
+                rs.getInt("commits"), rs.getInt("energy"), rs.getString("blockers"), rs.getString("notes"));
     }
 }
