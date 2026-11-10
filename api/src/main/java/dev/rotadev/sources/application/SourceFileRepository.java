@@ -13,4 +13,8 @@ public interface SourceFileRepository {
     Optional<SourceFile> findBySha256(UUID userId, String sha256);
 
     List<SourceFile> findAllByUser(UUID userId);
+
+    Optional<SourceFile> findById(UUID userId, UUID id);
+
+    void updateStatus(UUID userId, UUID id, String status);
 }

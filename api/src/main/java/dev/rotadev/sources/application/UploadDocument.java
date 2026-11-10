@@ -13,6 +13,7 @@ import java.util.UUID;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import dev.rotadev.jobs.JobQueue;
 import dev.rotadev.shared.FileStorage;
 import dev.rotadev.shared.UuidV7;
 import dev.rotadev.sources.domain.DocumentFormat;
@@ -23,8 +24,8 @@ import dev.rotadev.sources.domain.UploadKind;
  * Caso de uso: o usuário enviou o export do LinkedIn ou o currículo.
  *
  * <p>Confere o formato pelo conteúdo, grava o arquivo no {@link FileStorage} e os metadados no
- * banco. O mesmo arquivo (mesmo SHA-256) enviado de novo devolve o registro que já existe.
- * A leitura do conteúdo vira um job no próximo passo da Fase 1.
+ * banco, e enfileira a leitura do conteúdo ({@link DocumentParsing}). O mesmo arquivo (mesmo
+ * SHA-256) enviado de novo devolve o registro que já existe, sem novo job.
  */
 @Service
 public class UploadDocument {
@@ -34,11 +35,13 @@ public class UploadDocument {
 
     private final FileStorage storage;
     private final SourceFileRepository files;
+    private final JobQueue jobs;
     private final Clock clock;
 
-    public UploadDocument(FileStorage storage, SourceFileRepository files, Clock clock) {
+    public UploadDocument(FileStorage storage, SourceFileRepository files, JobQueue jobs, Clock clock) {
         this.storage = storage;
         this.files = files;
+        this.jobs = jobs;
         this.clock = clock;
     }
 
@@ -72,6 +75,7 @@ public class UploadDocument {
         var file = new SourceFile(UuidV7.generate(now), userId, kind, format, safeName(originalName), content.length,
                 sha256, key, "RECEIVED", now);
         files.insert(file);
+        jobs.enqueue(userId, DocumentParsing.TYPE, "{\"fileId\": \"" + file.id() + "\"}", DocumentParsing.TYPE + ":" + file.id());
         return file;
     }
 

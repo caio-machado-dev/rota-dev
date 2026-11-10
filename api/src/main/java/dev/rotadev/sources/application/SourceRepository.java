@@ -20,6 +20,9 @@ public interface SourceRepository {
 
     void markSynced(UUID userId, SourceType type, Instant now);
 
+    /** Cria a fonte (LinkedIn, currículo) se ainda não existir e marca a leitura. */
+    void markUploaded(UUID userId, SourceType type, Instant now);
+
     /** O token em texto puro, já decifrado. Use só para chamar a API do GitHub. */
     Optional<String> findGithubToken(UUID userId);
 }
