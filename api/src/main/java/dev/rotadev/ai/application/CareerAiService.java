@@ -1,6 +1,7 @@
 package dev.rotadev.ai.application;
 
 import java.time.Clock;
+import java.time.Duration;
 import java.util.List;
 import java.util.UUID;
 
@@ -10,6 +11,11 @@ import org.springframework.boot.context.properties.EnableConfigurationProperties
 import org.springframework.stereotype.Service;
 
 import com.networknt.schema.Error;
+
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.DistributionSummary;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micrometer.core.instrument.Timer;
 import com.networknt.schema.Schema;
 import com.networknt.schema.SchemaRegistry;
 import com.networknt.schema.SpecificationVersion;
@@ -48,15 +54,18 @@ public class CareerAiService implements CareerAiClient {
     private final AiProperties properties;
     private final JsonMapper json;
     private final Clock clock;
+    private final MeterRegistry meters;
     private final SchemaRegistry schemas = SchemaRegistry.withDefaultDialect(SpecificationVersion.DRAFT_2020_12);
 
-    public CareerAiService(PromptCatalog prompts, LlmGateway llm, AiCallLog calls, AiProperties properties, JsonMapper json, Clock clock) {
+    public CareerAiService(PromptCatalog prompts, LlmGateway llm, AiCallLog calls, AiProperties properties, JsonMapper json, Clock clock,
+            MeterRegistry meters) {
         this.prompts = prompts;
         this.llm = llm;
         this.calls = calls;
         this.properties = properties;
         this.json = json;
         this.clock = clock;
+        this.meters = meters;
     }
 
     @Override
@@ -114,7 +123,26 @@ public class CareerAiService implements CareerAiClient {
         var price = properties.pricing() == null ? null : properties.pricing().get(model);
         Long cost = price == null ? null : price.toPricing().costUsdMicros(usage);
         long latencyMs = (System.nanoTime() - startedNanos) / 1_000_000;
+        observe(request.prompt(), model, status, cost, latencyMs);
         return calls.record(new AiCallLog.Entry(request.userId(), request.prompt(), request.version(), model, attempt, status,
                 usage, cost, latencyMs, error, clock.instant()));
+    }
+
+    /**
+     * Métricas para o Prometheus ({@code /actuator/prometheus}). O Micrometer é o "statsd" do Spring:
+     * o código conta e mede, e o registry decide o formato. Tags com poucos valores possíveis (prompt,
+     * modelo, status), nunca o usuário: uma tag por usuário criaria uma série por pessoa.
+     */
+    private void observe(String prompt, String model, String status, Long costMicros, long latencyMs) {
+        Counter.builder("rota.ai.calls").description("Chamadas à IA, por tentativa")
+                .tags("prompt", prompt, "model", model, "status", status)
+                .register(meters).increment();
+        Timer.builder("rota.ai.latency").tags("prompt", prompt, "model", model)
+                .register(meters).record(Duration.ofMillis(latencyMs));
+        if (costMicros != null) {
+            DistributionSummary.builder("rota.ai.cost").baseUnit("usd_micros").description("Custo estimado por chamada")
+                    .tags("prompt", prompt, "model", model)
+                    .register(meters).record(costMicros);
+        }
     }
 }

@@ -101,6 +101,27 @@ gunzip -c /tmp/rota-dev-<data>.sql.gz | docker compose exec -T postgres psql -U 
 docker compose start api web
 ```
 
+## Observabilidade
+
+- **Métricas:** `GET http://api:8080/actuator/prometheus` (só pela rede interna; o Next não repassa `/actuator`).
+  Além das métricas da JVM, do Tomcat e do pool de conexões, a API publica:
+
+  | Métrica | O que mostra |
+  |---|---|
+  | `rota_ai_calls_total{prompt, model, status}` | chamadas à IA por resultado (`SUCCEEDED`, `INVALID_OUTPUT`, `REFUSED`…) |
+  | `rota_ai_cost_usd_micros_sum` | custo estimado acumulado, em micro-dólares |
+  | `rota_ai_latency_seconds` | latência das chamadas à IA |
+  | `rota_jobs_executed_total{type, outcome}` | jobs por resultado (`succeeded`, `rescheduled`, `failed`) |
+
+  Na VPS não cabe um Prometheus completo com folga; o caminho leve é um agente (Grafana Alloy) que
+  raspa o endpoint e envia para o Grafana Cloud (plano gratuito). Alertas que valem a pena desde o
+  começo: `rate(rota_jobs_executed_total{outcome="failed"}[1h]) > 0`, custo de IA do dia acima de um
+  teto e a API fora do ar.
+- **Logs:** JSON no formato ECS em produção (`LOGGING_STRUCTURED_FORMAT_CONSOLE=ecs`), com rotação pelo
+  Docker (5 × 20 MB). `docker compose logs api | jq 'select(.["log.level"] == "ERROR")'` filtra os erros.
+- **Custo da IA por usuário:** a tabela `ai_calls` tem tokens e custo por chamada; o painel de custo é
+  uma consulta SQL, sem mais infraestrutura.
+
 ## Segurança
 
 - Só o Caddy publica portas. Banco e API ficam na rede interna; o web fica nas redes `internal` e `edge`.

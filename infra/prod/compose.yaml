@@ -39,11 +39,16 @@ services:
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:?}
       # HTTPS em produção: o cookie de sessão só trafega com Secure.
       SESSION_COOKIE_SECURE: "true"
+      # Logs em JSON (formato ECS, suportado nativamente pelo Spring Boot): um coletor lê campos, não texto.
+      LOGGING_STRUCTURED_FORMAT_CONSOLE: ecs
     volumes:
       - uploads:/data/uploads
     depends_on:
       postgres:
         condition: service_healthy
+    logging:
+      driver: json-file
+      options: { max-size: "20m", max-file: "5" }
     # Sem healthcheck de container: a imagem do JRE não tem curl nem wget, e não vale aumentar a
     # imagem só por isso. A conferência de saúde do deploy usa o node do container web (docs/deploy.md).
     mem_limit: 768m

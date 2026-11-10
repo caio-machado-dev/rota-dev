@@ -47,6 +47,12 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
 		</dependency>
+		<!-- Métricas no formato do Prometheus em /actuator/prometheus (Fase 4: observabilidade).
+		     A versão vem do Boot, que importa o BOM do Micrometer. -->
+		<dependency>
+			<groupId>io.micrometer</groupId>
+			<artifactId>micrometer-registry-prometheus</artifactId>
+		</dependency>
 		<!-- Persistência: JPA/Hibernate (o ORM, como o do Django) + Spring Data (repositórios). -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

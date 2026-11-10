@@ -12,6 +12,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import io.micrometer.core.instrument.Counter;
+import io.micrometer.core.instrument.MeterRegistry;
+
 import dev.rotadev.jobs.Job;
 import dev.rotadev.jobs.JobHandler;
 import dev.rotadev.jobs.domain.Backoff;
@@ -35,15 +38,17 @@ public class JobWorker {
     private final Map<String, JobHandler> handlers;
     private final Backoff backoff = new Backoff(Duration.ofSeconds(30), Duration.ofHours(1));
     private final Clock clock;
+    private final MeterRegistry meters;
 
     /**
      * O Spring injeta numa {@code List} todos os beans que implementam {@link JobHandler}, de
      * qualquer módulo. Montamos um mapa tipo → handler, e um tipo duplicado falha na subida.
      */
-    public JobWorker(JobStore store, List<JobHandler> handlers, Clock clock) {
+    public JobWorker(JobStore store, List<JobHandler> handlers, Clock clock, MeterRegistry meters) {
         this.store = store;
         this.handlers = handlers.stream().collect(Collectors.toMap(JobHandler::type, Function.identity()));
         this.clock = clock;
+        this.meters = meters;
     }
 
     /** Processa um lote. Devolve quantos jobs pegou (o agendador chama de novo depois). */
@@ -59,20 +64,29 @@ public class JobWorker {
         JobHandler handler = handlers.get(job.type());
         if (handler == null) {
             store.markFailed(job.id(), "nenhum handler para o tipo " + job.type(), clock.instant());
+            count(job, "failed");
             return;
         }
         try {
             handler.handle(job);
             store.markSucceeded(job.id(), clock.instant());
+            count(job, "succeeded");
         } catch (Exception e) {
             String error = e.getClass().getSimpleName() + ": " + e.getMessage();
             Instant now = clock.instant();
             if (job.attempts() >= claimed.maxAttempts()) {
                 log.warn("Job {} ({}) falhou de vez na tentativa {}: {}", job.id(), job.type(), job.attempts(), error);
                 store.markFailed(job.id(), error, now);
+                count(job, "failed");
             } else {
                 store.reschedule(job.id(), now.plus(backoff.delayAfter(job.attempts())), error, now);
+                count(job, "rescheduled");
             }
         }
+    }
+
+    /** {@code rota_jobs_executed_total{type, outcome}}: um "failed" crescendo é o primeiro sinal de problema. */
+    private void count(Job job, String outcome) {
+        Counter.builder("rota.jobs.executed").tags("type", job.type(), "outcome", outcome).register(meters).increment();
     }
 }
