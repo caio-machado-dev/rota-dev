@@ -11,6 +11,11 @@ export type Goal = components["schemas"]["GoalResponse"];
 export type GoalInput = components["schemas"]["GoalRequest"];
 export type Diagnosis = components["schemas"]["DiagnosisResponse"];
 export type PlanVersion = components["schemas"]["PlanResponse"];
+export type Now = components["schemas"]["NowResponse"];
+export type StudySession = components["schemas"]["SessionResponse"];
+export type SessionInput = components["schemas"]["SessionRequest"];
+export type HabitInput = components["schemas"]["HabitRequest"];
+export type Habit = components["schemas"]["HabitResponse"];
 
 /** Onde o login começa. É um link comum (navegação inteira), não uma chamada `fetch`. */
 export const LOGIN_URL = "/api/oauth2/authorization/github";
@@ -138,4 +143,33 @@ export async function listPlanVersions(): Promise<PlanVersion[]> {
 /** Pede uma versão nova do plano. A API responde 202 e gera num job. */
 export async function requestPlan(): Promise<void> {
   await json(await apiFetch("/api/plan", { method: "POST" }));
+}
+
+export async function getNow(): Promise<Now> {
+  return json(await apiFetch("/api/now"));
+}
+
+export async function logSession(session: SessionInput): Promise<StudySession> {
+  return json(
+    await apiFetch("/api/tracking/sessions", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(session),
+    }),
+  );
+}
+
+export async function deleteSession(id: string): Promise<void> {
+  const response = await apiFetch(`/api/tracking/sessions/${id}`, { method: "DELETE" });
+  if (!response.ok) throw new ApiError(response.status, "Não consegui apagar a sessão.");
+}
+
+export async function saveHabit(habit: HabitInput): Promise<Habit> {
+  return json(
+    await apiFetch("/api/tracking/review-habit", {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(habit),
+    }),
+  );
 }
