@@ -13,7 +13,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["create_1"];
+        post: operations["create_2"];
         delete?: never;
         options?: never;
         head?: never;
@@ -27,7 +27,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get: operations["latest"];
+        get: operations["latest_1"];
         put?: never;
         post?: never;
         delete?: never;
@@ -76,6 +76,86 @@ export interface paths {
             cookie?: never;
         };
         get: operations["me"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/plan": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["create_1"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/plan/current": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["current_1"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/plan/latest": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["latest"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/plan/versions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["history"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/plan/versions/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["version"];
         put?: never;
         post?: never;
         delete?: never;
@@ -255,6 +335,71 @@ export interface components {
             name?: string;
             timeZone: string;
         };
+        PlanAnchor: {
+            deliverables: string[];
+            description: string;
+            evidenceIds: string[];
+            title: string;
+        };
+        PlanContentView: {
+            anchorProject: components["schemas"]["PlanAnchor"];
+            quarters: components["schemas"]["PlanQuarter"][];
+            resources: components["schemas"]["PlanResource"][];
+            summary: string;
+        };
+        PlanCreated: {
+            /** Format: uuid */
+            id: string;
+            /** Format: int32 */
+            version: number;
+        };
+        PlanMilestone: {
+            axisKey: string;
+            criteria: string[];
+            title: string;
+        };
+        PlanQuarter: {
+            focus: string;
+            /** Format: int32 */
+            index: number;
+            milestones: components["schemas"]["PlanMilestone"][];
+            title: string;
+            weeks: components["schemas"]["PlanWeek"][];
+        };
+        PlanResource: {
+            axisKey: string;
+            kind: string;
+            reason: string;
+            title: string;
+        };
+        PlanResponse: {
+            content?: components["schemas"]["PlanContentView"];
+            /** Format: date-time */
+            createdAt: string;
+            error?: string;
+            /** Format: uuid */
+            id: string;
+            reason: string;
+            /** Format: date */
+            startsOn: string;
+            status: string;
+            /** Format: int32 */
+            version: number;
+        };
+        PlanTask: {
+            kind: string;
+            /** Format: int32 */
+            minutes: number;
+            title: string;
+        };
+        PlanWeek: {
+            /** Format: int32 */
+            index: number;
+            tasks: components["schemas"]["PlanTask"][];
+            theme: string;
+            /** Format: int32 */
+            totalMinutes: number;
+        };
         ProfileResponse: {
             snapshots: components["schemas"]["SnapshotResponse"][];
         };
@@ -304,7 +449,7 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
-    create_1: {
+    create_2: {
         parameters: {
             query?: never;
             header?: never;
@@ -324,7 +469,7 @@ export interface operations {
             };
         };
     };
-    latest: {
+    latest_1: {
         parameters: {
             query?: never;
             header?: never;
@@ -426,6 +571,108 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["MeResponse"];
+                };
+            };
+        };
+    };
+    create_1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Accepted */
+            202: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlanCreated"];
+                };
+            };
+        };
+    };
+    current_1: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlanResponse"];
+                };
+            };
+        };
+    };
+    latest: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlanResponse"];
+                };
+            };
+        };
+    };
+    history: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlanResponse"][];
+                };
+            };
+        };
+    };
+    version: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["PlanResponse"];
                 };
             };
         };

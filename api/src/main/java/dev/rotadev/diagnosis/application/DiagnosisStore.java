@@ -18,6 +18,8 @@ public interface DiagnosisStore {
 
     Optional<StoredDiagnosis> latest(UUID userId);
 
+    Optional<StoredDiagnosis> latestReady(UUID userId);
+
     /** Diagnóstico como está no banco. {@code result} é nulo enquanto PENDING ou se FAILED. */
     record StoredDiagnosis(UUID id, String status, String goalJson, DiagnosisResult result, String error, Instant createdAt) {
     }

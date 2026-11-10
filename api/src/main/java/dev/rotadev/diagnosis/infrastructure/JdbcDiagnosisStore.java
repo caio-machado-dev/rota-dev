@@ -69,6 +69,13 @@ class JdbcDiagnosisStore implements DiagnosisStore {
                 .query(this::map).optional();
     }
 
+    @Override
+    public Optional<StoredDiagnosis> latestReady(UUID userId) {
+        return jdbc.sql("SELECT " + COLUMNS + " FROM diagnoses WHERE user_id = :userId AND status = 'READY' ORDER BY created_at DESC LIMIT 1")
+                .param("userId", userId)
+                .query(this::map).optional();
+    }
+
     private StoredDiagnosis map(ResultSet rs, int row) throws SQLException {
         String result = rs.getString("result");
         return new StoredDiagnosis(
