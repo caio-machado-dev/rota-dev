@@ -24,6 +24,7 @@
 	<properties>
 		<java.version>25</java.version>
 		<spring-modulith.version>2.1.1</spring-modulith.version>
+		<springdoc.version>3.2.0</springdoc.version>
 	</properties>
 
 	<dependencies>
@@ -70,6 +71,13 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-session-jdbc</artifactId>
+		</dependency>
+		<!-- Contrato OpenAPI gerado a partir dos controllers, em /v3/api-docs, e o Swagger UI
+		     em /swagger-ui.html (ADR 0010). O springdoc não faz parte do Boot, por isso declara versão. -->
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-starter-webmvc-ui</artifactId>
+			<version>${springdoc.version}</version>
 		</dependency>
 		<!-- Spring Modulith: entende os pacotes como módulos e verifica as fronteiras (ADR 0002). -->
 		<dependency>

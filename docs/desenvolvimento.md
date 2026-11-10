@@ -64,6 +64,19 @@ cd web && pnpm lint && pnpm typecheck && pnpm test
 
 O CI roda os mesmos comandos em todo PR que toca `api/` ou `web/`.
 
+### Contrato da API (ADR 0010)
+
+O contrato OpenAPI fica versionado em `api/openapi.json`, e os tipos do front em `web/src/lib/api/schema.d.ts`.
+Mudou um controller ou um record da camada `web`:
+
+```bash
+cd api && ./mvnw test -Dtest=OpenApiContractTest -Dopenapi.write=true   # regenera api/openapi.json
+cd web && pnpm api:types                                                 # regenera os tipos TypeScript
+```
+
+Comite os dois arquivos. O `OpenApiContractTest` e o CI falham se algum deles ficar desatualizado.
+Com a API rodando, o Swagger UI fica em http://localhost:8080/swagger-ui.html.
+
 ## Por onde começar a ler o código
 
 Para quem está aprendendo Spring, nesta ordem:

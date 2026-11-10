@@ -63,6 +63,10 @@ server:
         # Em produção (HTTPS) fica true pelo .env; em localhost (HTTP) o navegador recusaria o cookie.
         secure: ${SESSION_COOKIE_SECURE:false}
 
+springdoc:
+  # Chaves em ordem alfabética: o openapi.json versionado só muda quando o contrato muda.
+  writer-with-order-by-keys: true
+
 management:
   endpoints:
     web:
