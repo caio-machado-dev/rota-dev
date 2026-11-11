@@ -1,8 +1,11 @@
 "use client";
 
+import { Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
 
+import { SessionProvider, useSessionUi } from "@/components/sessions/session-context";
+import { SessionSheet } from "@/components/sessions/session-sheet";
 import { navItems } from "@/config/navigation";
 
 import { AuthGate } from "./auth-gate";
@@ -17,7 +20,16 @@ import { Topbar } from "./topbar";
  * inferior (celular), paleta de comandos e atalhos de teclado. Largura útil de até 1320px.
  */
 export function AppShell({ children }: { children: React.ReactNode }) {
+  return (
+    <SessionProvider>
+      <ShellFrame>{children}</ShellFrame>
+    </SessionProvider>
+  );
+}
+
+function ShellFrame({ children }: { children: React.ReactNode }) {
   const router = useRouter();
+  const { openSession } = useSessionUi();
   const [paletteOpen, setPaletteOpen] = useState(false);
 
   const togglePalette = useCallback(() => setPaletteOpen((open) => !open), []);
@@ -28,7 +40,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
     },
     [router],
   );
-  useGlobalShortcuts({ onTogglePalette: togglePalette, onSequence });
+  const onKey = useCallback((key: string) => key === "n" && openSession(), [openSession]);
+  useGlobalShortcuts({ onTogglePalette: togglePalette, onSequence, onKey });
 
   return (
     <div className="flex min-h-dvh">
@@ -40,7 +53,16 @@ export function AppShell({ children }: { children: React.ReactNode }) {
         </main>
       </div>
       <MobileNav />
-      <CommandPalette open={paletteOpen} onOpenChange={setPaletteOpen} />
+      <button
+        type="button"
+        onClick={() => openSession()}
+        aria-label="Registrar sessão"
+        className="fixed right-4 bottom-[calc(4.5rem+env(safe-area-inset-bottom))] z-40 grid size-12 place-items-center rounded-full bg-primary text-primary-foreground shadow-raised outline-none transition-transform duration-150 active:scale-95 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background md:hidden"
+      >
+        <Plus className="size-6" strokeWidth={1.5} aria-hidden />
+      </button>
+      <SessionSheet />
+      <CommandPalette open={paletteOpen} onOpenChange={setPaletteOpen} onRegisterSession={() => openSession()} />
     </div>
   );
 }
