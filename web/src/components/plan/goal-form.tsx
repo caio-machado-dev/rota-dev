@@ -53,7 +53,7 @@ export function GoalForm({ initial, onSaved, onCancel }: { initial: Goal | null;
   }
 
   return (
-    <form onSubmit={submit} className="grid gap-5 md:grid-cols-2">
+    <form onSubmit={submit} className="grid grid-cols-1 gap-5 md:grid-cols-2">
       <Field label="Cargo-alvo" className="md:col-span-2">
         <Input value={targetRole} onChange={(e) => setTargetRole(e.target.value)} required maxLength={120} placeholder="Ex.: Desenvolvedor Backend Java" />
       </Field>

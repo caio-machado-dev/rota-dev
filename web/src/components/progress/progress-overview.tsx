@@ -43,7 +43,7 @@ export function ProgressOverview() {
   return (
     <div className="space-y-6">
       <Card>
-        <div className="grid items-center gap-8 md:grid-cols-[auto_1fr]">
+        <div className="grid grid-cols-1 items-center gap-8 md:grid-cols-[auto_1fr]">
           <div className="flex flex-col items-center gap-3">
             <ReadinessGauge score={readiness.current.score} />
             {delta !== null ? (
@@ -73,7 +73,7 @@ export function ProgressOverview() {
         <ReadinessTrend history={readiness.history} />
       </Card>
 
-      <div className="grid items-start gap-6 lg:grid-cols-2">
+      <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-2">
         <Card>
           <CardHeader>
             <div>

@@ -152,7 +152,7 @@ function Resources({ resources }: { resources: Content["resources"] }) {
           <CardDescription>Cada item está no plano por um motivo.</CardDescription>
         </div>
       </CardHeader>
-      <div className="grid gap-6 md:grid-cols-2">
+      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         {groups.map(([kind, items]) => (
           <section key={kind}>
             <h3 className="mb-2 text-small font-medium text-muted-foreground">{RESOURCE_KIND[kind] ?? kind}</h3>

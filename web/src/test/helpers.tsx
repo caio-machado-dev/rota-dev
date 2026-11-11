@@ -8,7 +8,7 @@ import { ToastProvider } from "@/components/ui/toast";
 export type Call = { method: string; path: string; body: unknown };
 
 /**
- * Simula a API: `routes` mapeia caminho → resposta JSON (ou `null` para 404). Escritas (POST/PUT/DELETE)
+ * Simula a API: `routes` mapeia caminho → resposta JSON (`null` para 404; uma função devolve a `Response` que quiser, como um 401). Escritas (POST/PUT/DELETE)
  * são registradas em `calls`; `onWrite` define a resposta delas (padrão: 200 com `{}`).
  */
 export function stubApi(routes: Record<string, unknown>, onWrite?: (call: Call) => Response) {
@@ -23,6 +23,7 @@ export function stubApi(routes: Record<string, unknown>, onWrite?: (call: Call) 
         return onWrite ? onWrite(call) : Response.json({});
       }
       const value = routes[path];
+      if (typeof value === "function") return (value as () => Response)();
       return value === undefined || value === null ? new Response(null, { status: 404 }) : Response.json(value);
     }),
   );

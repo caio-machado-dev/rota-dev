@@ -65,7 +65,7 @@ export function FileUploader({
           choose(e.dataTransfer.files[0]);
         }}
         className={cn(
-          "flex cursor-pointer flex-col items-center gap-1 rounded-card border border-dashed border-input px-4 py-6 text-center transition-colors hover:bg-accent/40 has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-ring",
+          "relative flex cursor-pointer flex-col items-center gap-1 rounded-card border border-dashed border-input px-4 py-6 text-center transition-colors hover:bg-accent/40 has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-ring",
           dragging && "border-brand bg-brand/10",
         )}
       >

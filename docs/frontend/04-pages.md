@@ -51,3 +51,12 @@ Layout comum com `PageHeader` + `SectionNav` (navegação por rota; o breadcrumb
   **Sem** confirmar/corrigir/remover/adicionar (a API não tem).
 - **Meus dados:** conta (nome, login, e-mail, fuso, plano), exportação JSON, privacidade e exclusão com diálogo + digitar o login.
 - A paleta (⌘K) agora busca habilidades e evidências do perfil.
+
+## Login (`/login`) e Onboarding (`/onboarding`)
+- **Login:** logotipo, proposta de valor, "Entrar com GitHub" (único método da API), o que pedimos ao GitHub (`read:user`, `user:email`) e privacidade.
+  Quem já tem sessão vai direto para Agora; o `AuthGate` do shell manda quem não tem para cá.
+- **Onboarding (4 etapas, sem estado no servidor):** 1. fontes (GitHub do login + upload de currículo/LinkedIn; precisa do GitHub para continuar),
+  2. revisar o perfil lido (aguarda e atualiza sozinho enquanto a leitura roda), 3. objetivo (salvar avança), 4. diagnóstico (job real: pedir,
+  acompanhar `PENDING`, ver o resultado). `Stepper` com etapa atual; voltar a qualquer etapa; "Pular por agora".
+  A tela de processamento mostra só o que a API sabe (fontes lidas e status do job), sem etapas nem porcentagem inventadas.
+- **Agora** mostra um convite ao onboarding enquanto não há objetivo.
