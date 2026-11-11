@@ -10,7 +10,8 @@ Legenda: Não iniciado · Em andamento · Implementado (funciona com a API) · T
 | `/login` | Implementado | só GitHub; capturado |
 | `/configuracoes` | Implementado | tema e resumo da conta; notificações não existem no backend |
 | Agora | Testado | testes de componente + captura desktop/mobile; ver limitações em `04-pages.md` |
-| Plano, Progresso, Perfil | Não iniciado | painéis antigos funcionando dentro do novo shell |
+| Plano (objetivo, diagnóstico, roadmap, versões) | Testado | 4 subrotas; 14 testes; captura desktop/mobile. Sem restaurar versão/contestar nota (API) |
+| Progresso, Perfil | Não iniciado | painéis antigos funcionando dentro do novo shell |
 | Onboarding | Não iniciado | |
 
 Validação visual: Chromium (Playwright) com respostas da API simuladas **só no navegador de teste**; nada disso entra no produto.

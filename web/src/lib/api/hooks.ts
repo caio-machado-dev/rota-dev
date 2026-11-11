@@ -10,6 +10,7 @@ import {
   getLatestPlan,
   getMe,
   getNow,
+  getPlanVersion,
   getProfile,
   getReadiness,
   listAdjustments,
@@ -57,6 +58,9 @@ export const useUploads = () => useSWR(keys.uploads, listUploads, defaults);
 export const useProfile = () => useSWR(keys.profile, getProfile, defaults);
 export const useCurrentPlan = () => useSWR(keys.planCurrent, getCurrentPlan, defaults);
 export const usePlanVersions = () => useSWR(keys.planVersions, listPlanVersions, defaults);
+
+/** Conteúdo completo de uma versão do plano; `id` nulo não busca nada (usado ao comparar versões). */
+export const usePlanVersion = (id: string | null) => useSWR(id ? `/api/plan/versions/${id}` : null, () => getPlanVersion(id as string), defaults);
 
 /** Diagnóstico e plano são gerados num job: enquanto estão `PENDING`, refaz a busca a cada 3 s. */
 export function useLatestDiagnosis() {

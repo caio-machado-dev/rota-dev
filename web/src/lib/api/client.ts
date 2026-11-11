@@ -145,6 +145,13 @@ export async function listPlanVersions(): Promise<PlanVersion[]> {
   return json(await apiFetch("/api/plan/versions"));
 }
 
+/** Uma versão específica do plano (com o conteúdo completo), ou `null` se não existir. */
+export async function getPlanVersion(id: string): Promise<PlanVersion | null> {
+  const response = await apiFetch(`/api/plan/versions/${id}`);
+  if (response.status === 404) return null;
+  return json(response);
+}
+
 /** Pede uma versão nova do plano. A API responde 202 e gera num job. */
 export async function requestPlan(): Promise<void> {
   await json(await apiFetch("/api/plan", { method: "POST" }));
