@@ -12,7 +12,9 @@ Escuro é o padrão; o claro usa um verde mais fechado porque o limão some no b
 | Escuro | `oklch(0.88 0.2 128)` | `oklch(0.22 0.05 128)` |
 | Claro | `oklch(0.5 0.15 135)` | `oklch(0.99 0 0)` |
 
-Logotipo e favicon: a chegar no próximo PR da Fase 2.
+Logotipo: um "R" desenhado como trajeto (`web/src/components/brand/logo.tsx`: `LogoMark` e `Logo`), com ponto de partida na cor da marca.
+Usa `currentColor`, então serve em fundo escuro, claro e na versão monocromática (`mono`). Favicon: `web/src/app/icon.svg` (SVG estático, com as
+cores copiadas de `brand.ts`; se a marca mudar, atualize os dois).
 
 ## Cores
 - **Escalas** (`primary`, `neutral` 50–950; `success`, `warning`, `destructive`, `info` 50–900): classes `bg-primary-500`, `text-info-300`...
@@ -47,6 +49,10 @@ Geist (interface) e Geist Mono (identificadores, métricas; com moderação). N�
 `ThemeProvider` + `ThemeToggle` (`src/components/theme/`): escuro, claro ou sistema, guardado em `localStorage` (`rota-theme`).
 `themeScript` roda no `<head>` e aplica a classe `dark` antes da pintura (sem piscar). Sem preferência, vale o escuro.
 
+## Componentes-base
+`ui/`: `Button`, `Card` (+Header/Title/Description), `Badge` (tons neutral, brand, success, warning, danger, info), `Skeleton`, `Progress`.
+`system/`: `PageHeader`, `EmptyState` (sempre com ação útil), `ErrorState` (alerta + tentar de novo).
+
 ## Pendências desta fase
-Logo, favicon, componentes-base (card, badge, skeleton, tabs, progress, tooltip, dialog, toast) e a troca do verde nos componentes antigos
+Tabs, tooltip, dialog/sheet, toast e paleta de comandos (entram com o shell, Fase 3); a troca do verde nos componentes antigos
 (`text-brand`/`bg-brand` continuam funcionando e já mudam de cor com o tema).
