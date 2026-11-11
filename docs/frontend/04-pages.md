@@ -15,3 +15,17 @@
   - tarefa do plano não tem "concluída" na API: o botão "Registrar" cria a sessão correspondente;
   - sem streak/histórico do protocolo (a API devolve só o dia atual) e sem contribuições semanais do GitHub;
   - "ritmo" e a frase da semana são calculados no cliente a partir de minutos e meta (`lib/format.ts`).
+
+## Plano (`/plano`, `/plano/diagnostico`, `/plano/roadmap`, `/plano/versoes`)
+Layout comum com `PageHeader` + `SectionNav` (navegação por rota; o breadcrumb mostra a subseção).
+- **Objetivo:** `GoalSection` → formulário (`GoalForm`, campos controlados, erros da API sem perder dados) ou resumo compacto (`CareerGoalCard`).
+  Dados: `GET/PUT /api/goal`.
+- **Diagnóstico:** `DiagnosisSection` → `DiagnosisHeader` (nível, **compatibilidade** = soma de min(nota, exigido) ÷ soma do exigido, cálculo explicado na tela),
+  `SkillRadar` (atual × exigido; clique no eixo seleciona), lista de competências, `SkillDetail` (nota, exigida, falta, justificativa, evidências,
+  "Não verificado" quando não há prova), `SkillGapChart`. Job: `POST /api/diagnosis` + polling de 3 s enquanto `PENDING` (`JobBanner`; sem etapas inventadas).
+- **Roadmap:** projeto-âncora (evidências resolvidas pelos ids no perfil), abas Trimestres (portões com conquistado/pendente) e Semanas
+  (semana atual destacada via `/api/now`), recursos agrupados com o motivo. Geração: `POST /api/plan`.
+- **Versões:** histórico estilo `git log` (versão, id curto, motivo, data, status) e **comparação** entre duas versões (`lib/domain/plan-diff.ts`,
+  calculada no cliente com `GET /api/plan/versions/{id}`).
+- **Limitações (não simuladas):** sem restaurar versão, sem autor da versão (a API não informa), sem contestar nota, sem checklist persistido do
+  projeto-âncora, a API só marca como dependente a geração do plano de objetivo + diagnóstico prontos.
