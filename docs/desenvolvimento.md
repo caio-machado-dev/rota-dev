@@ -115,3 +115,6 @@ Para quem está aprendendo Spring, nesta ordem:
 5. [`ApplicationIntegrationTest.java`](../api/src/test/java/dev/rotadev/ApplicationIntegrationTest.java) e [`TestcontainersConfiguration.java`](../api/src/test/java/dev/rotadev/TestcontainersConfiguration.java): um teste que sobe a aplicação inteira contra um Postgres real.
 6. [`ModularityTest.java`](../api/src/test/java/dev/rotadev/ModularityTest.java): **exercício `TODO(caio)`**.
 7. Módulo [`identity`](../api/src/main/java/dev/rotadev/identity): o primeiro módulo real, lido de dentro para fora. `domain/` (records puros) → `application/` (`GithubSignIn`, com `@Transactional`, e a interface `UserRepository`) → `infrastructure/` (entidade JPA e a implementação do repositório) → [`V2__users.sql`](../api/src/main/resources/db/migration/V2__users.sql). Os testes ficam no mesmo pacote em `src/test`, e `GithubSignInTest` tem outro **exercício `TODO(caio)`**.
+
+## Front-end (redesign)
+Design system, arquitetura, componentes, páginas e integração com a API: `docs/frontend/`. Auditoria que originou o redesign: `docs/01-auditoria-tecnica.md`.
