@@ -34,7 +34,7 @@ Geist (interface) e Geist Mono (identificadores, métricas; com moderação). N�
 | `text-display` | 72px | número de destaque (prontidão) |
 | `text-h1` / `text-h2` / `text-h3` | 30 / 22 / 17px | títulos |
 | `text-body` | 15px | texto corrido |
-| `text-secondary` | 13px | apoio |
+| `text-small` | 13px | apoio |
 | `text-micro` | 12px | rótulos, legendas |
 
 ## Espaço, raio, sombra, movimento
