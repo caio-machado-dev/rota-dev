@@ -3,6 +3,7 @@ package dev.rotadev.ai.infrastructure;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 
 import com.anthropic.client.AnthropicClient;
@@ -23,6 +24,7 @@ import tools.jackson.databind.json.JsonMapper;
 
 /**
  * {@link LlmGateway} com o SDK oficial da Anthropic ({@code com.anthropic:anthropic-java}).
+ * Ativo com {@code rota.ai.provider=anthropic} (ADR 0016).
  *
  * <ul>
  *   <li><b>Saída estruturada:</b> {@code output_config.format} com o JSON Schema do prompt. O modelo
@@ -40,6 +42,7 @@ import tools.jackson.databind.json.JsonMapper;
  * {@code ANTHROPIC_API_KEY}, e só o que usa IA falha, com mensagem clara.
  */
 @Component
+@ConditionalOnProperty(name = "rota.ai.provider", havingValue = "anthropic")
 class AnthropicLlmGateway implements LlmGateway {
 
     private static final TypeReference<Map<String, Object>> MAP = new TypeReference<>() { };
@@ -76,7 +79,7 @@ class AnthropicLlmGateway implements LlmGateway {
         json.readValue(schemaJson, MAP).forEach((key, value) -> schema.putAdditionalProperty(key, JsonValue.from(value)));
 
         MessageCreateParams params = MessageCreateParams.builder()
-                .model(properties.model())
+                .model(properties.anthropic().model())
                 .maxTokens(properties.maxTokens())
                 .system(system)
                 .addUserMessage(userContent)
@@ -94,10 +97,10 @@ class AnthropicLlmGateway implements LlmGateway {
         if (client == null) {
             synchronized (this) {
                 if (client == null) {
-                    if (properties.apiKey() == null || properties.apiKey().isBlank()) {
+                    if (properties.anthropic().apiKey() == null || properties.anthropic().apiKey().isBlank()) {
                         throw new AiCallFailedException("ANTHROPIC_API_KEY não configurada (veja docs/desenvolvimento.md)");
                     }
-                    client = AnthropicOkHttpClient.builder().apiKey(properties.apiKey()).build();
+                    client = AnthropicOkHttpClient.builder().apiKey(properties.anthropic().apiKey()).build();
                 }
             }
         }

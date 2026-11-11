@@ -2,6 +2,7 @@ package dev.rotadev.ai.application;
 
 import java.math.BigDecimal;
 import java.util.Map;
+import java.util.Set;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
@@ -14,10 +15,38 @@ import dev.rotadev.ai.domain.Pricing;
  * um {@code BaseSettings} do pydantic-settings: o Boot preenche os campos pelos nomes e falha na
  * subida se um tipo não bater.
  *
- * @param pricing preço por modelo, em USD por milhão de tokens; a chave é o id do modelo
+ * @param provider qual {@code LlmGateway} atende as chamadas: {@code openrouter} ou {@code anthropic} (ADR 0016)
+ * @param pricing  preço por modelo, em USD por milhão de tokens; a chave é o id do modelo
  */
 @ConfigurationProperties("rota.ai")
-public record AiProperties(String apiKey, String model, String effort, long maxTokens, int maxAttempts, Map<String, Price> pricing) {
+public record AiProperties(
+        String provider,
+        String effort,
+        long maxTokens,
+        int maxAttempts,
+        Map<String, Price> pricing,
+        Anthropic anthropic,
+        OpenRouter openrouter) {
+
+    static final Set<String> PROVIDERS = Set.of("openrouter", "anthropic");
+
+    public AiProperties {
+        if (!PROVIDERS.contains(provider)) {
+            throw new IllegalArgumentException("rota.ai.provider deve ser um de " + PROVIDERS + ", não '" + provider + "'");
+        }
+    }
+
+    /** O modelo do provedor ativo, para registrar em {@code ai_calls} quando a chamada nem chega a responder. */
+    public String activeModel() {
+        return provider.equals("anthropic") ? anthropic.model() : openrouter.model();
+    }
+
+    public record Anthropic(String apiKey, String model) {
+    }
+
+    /** @param baseUrl trocável nos testes */
+    public record OpenRouter(String apiKey, String model, String baseUrl) {
+    }
 
     public record Price(BigDecimal input, BigDecimal output, BigDecimal cacheRead, BigDecimal cacheWrite) {
 
