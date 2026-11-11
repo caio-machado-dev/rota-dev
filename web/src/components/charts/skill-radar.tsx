@@ -84,7 +84,8 @@ export function SkillRadar({ axes, selectedKey, onSelect }: { axes: Axis[]; sele
           <Tooltip content={<ChartTooltip />} />
         </RadarChart>
       </ResponsiveContainer>
-      <table className="sr-only">
+      <div className="sr-only">
+        <table>
         <caption>Notas por competência</caption>
         <thead>
           <tr>
@@ -103,6 +104,7 @@ export function SkillRadar({ axes, selectedKey, onSelect }: { axes: Axis[]; sele
           ))}
         </tbody>
       </table>
+      </div>
     </figure>
   );
 }

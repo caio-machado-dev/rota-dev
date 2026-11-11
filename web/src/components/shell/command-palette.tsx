@@ -1,7 +1,7 @@
 "use client";
 
 import { Command } from "cmdk";
-import { LogOut, Monitor, Moon, Plus, Sun } from "lucide-react";
+import { ClipboardCheck, LogOut, Monitor, Moon, Plus, Sun } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 import { useTheme } from "@/components/theme/theme-provider";
@@ -13,7 +13,7 @@ const itemClass =
 
 /**
  * Paleta de comandos (⌘/Ctrl + K): navegar, trocar de tema e sair. A lista de ações cresce com as telas;
- * Ações: registrar sessão (n).
+ * Ações: registrar sessão (n) e abrir check-in (c).
  */
 export function CommandPalette({
   open,
@@ -62,6 +62,11 @@ export function CommandPalette({
             <Plus strokeWidth={1.5} aria-hidden />
             <span className="flex-1">Registrar sessão</span>
             <kbd className="num text-micro text-muted-foreground">n</kbd>
+          </Command.Item>
+          <Command.Item value="abrir check-in semanal" onSelect={() => run(() => router.push("/progresso/checkin"))} className={itemClass}>
+            <ClipboardCheck strokeWidth={1.5} aria-hidden />
+            <span className="flex-1">Abrir check-in</span>
+            <kbd className="num text-micro text-muted-foreground">c</kbd>
           </Command.Item>
         </Command.Group>
 

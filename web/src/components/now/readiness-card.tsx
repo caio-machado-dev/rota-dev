@@ -3,17 +3,9 @@ import Link from "next/link";
 import { Sparkline } from "@/components/charts/sparkline";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
+import { ReadinessComposition } from "@/components/progress/readiness-composition";
 import type { Readiness } from "@/lib/api/client";
 import { readinessBand, readinessDelta } from "@/lib/format";
-
-/** Pesos do índice, como definidos no produto (docs/glossario.md). */
-export const READINESS_WEIGHTS = [
-  { key: "skills", label: "Habilidades", weight: 40 },
-  { key: "gates", label: "Portões", weight: 25 },
-  { key: "study", label: "Estudo", weight: 20 },
-  { key: "habit", label: "Hábito", weight: 15 },
-] as const;
 
 /** O índice de prontidão com a origem da nota à vista: quanto cada componente contribui. */
 export function ReadinessCard({ readiness }: { readiness: Readiness }) {
@@ -44,24 +36,7 @@ export function ReadinessCard({ readiness }: { readiness: Readiness }) {
         <Sparkline values={trend} label="Histórico semanal da prontidão" />
       </div>
 
-      <ul className="mt-6 space-y-3" aria-label="Composição do índice">
-        {READINESS_WEIGHTS.map(({ key, label, weight }) => {
-          const value = current[key];
-          return (
-            <li key={key}>
-              <div className="mb-1 flex justify-between text-small">
-                <span>
-                  {label} <span className="text-muted-foreground">· peso {weight}%</span>
-                </span>
-                <span className="num text-muted-foreground">
-                  {value} → {((value * weight) / 100).toFixed(1)} pts
-                </span>
-              </div>
-              <Progress label={`${label}: ${value} de 100`} value={value} />
-            </li>
-          );
-        })}
-      </ul>
+      <ReadinessComposition current={current} className="mt-6" />
       <Link href="/progresso" className="mt-4 inline-block text-small text-brand hover:underline">
         Ver evolução completa
       </Link>
