@@ -47,7 +47,7 @@ function stubApi(overrides: Overrides = {}, posts: { path: string; body: unknown
     vi.fn(async (path: string, init?: RequestInit) => {
       if (init?.method === "POST" || init?.method === "PUT") {
         posts.push({ path, body: JSON.parse(String(init.body)) });
-        return Response.json({ id: "s2", ...baseNow.sessionsToday[0] }, { status: 201 });
+        return Response.json({ ...baseNow.sessionsToday[0], id: "s2" }, { status: 201 });
       }
       return path in data && data[path] !== null ? Response.json(data[path]) : new Response(null, { status: 404 });
     }),
