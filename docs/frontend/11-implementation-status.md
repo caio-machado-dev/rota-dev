@@ -12,7 +12,7 @@ Legenda: Não iniciado · Em andamento · Implementado (funciona com a API) · T
 | Agora | Testado | testes de componente + captura desktop/mobile; ver limitações em `04-pages.md` |
 | Plano (objetivo, diagnóstico, roadmap, versões) | Testado | 4 subrotas; 14 testes; captura desktop/mobile. Sem restaurar versão/contestar nota (API) |
 | Progresso (visão geral, check-in, portões, reajustes) | Testado | 19 testes novos; captura desktop/mobile; sem impacto esperado de reajuste (API) |
-| Perfil | Não iniciado | painéis antigos funcionando dentro do novo shell |
+| Perfil (fontes, o que encontramos, meus dados) | Testado | 16 testes; captura. Sem editar habilidades nem dados manuais (API) |
 | Onboarding | Não iniciado | |
 
 Validação visual: Chromium (Playwright) com respostas da API simuladas **só no navegador de teste**; nada disso entra no produto.

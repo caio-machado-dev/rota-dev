@@ -18,7 +18,7 @@ export function stubApi(routes: Record<string, unknown>, onWrite?: (call: Call) 
     vi.fn(async (path: string, init?: RequestInit) => {
       const method = (init?.method ?? "GET").toUpperCase();
       if (method !== "GET") {
-        const call = { method, path, body: init?.body ? JSON.parse(String(init.body)) : undefined };
+        const call = { method, path, body: typeof init?.body === "string" ? JSON.parse(init.body) : init?.body };
         calls.push(call);
         return onWrite ? onWrite(call) : Response.json({});
       }

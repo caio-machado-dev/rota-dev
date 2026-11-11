@@ -56,7 +56,9 @@ export const useCheckinStatus = () => useSWR(keys.checkin, getCheckinStatus, def
 export const useMilestones = () => useSWR(keys.milestones, listMilestones, defaults);
 export const useAdjustments = () => useSWR(keys.adjustments, listAdjustments, defaults);
 export const useSources = () => useSWR(keys.sources, listSources, defaults);
-export const useUploads = () => useSWR(keys.uploads, listUploads, defaults);
+/** Arquivos enviados; enquanto algum está `RECEIVED` (sendo lido em segundo plano), refaz a busca a cada 3 s. */
+export const useUploads = () =>
+  useSWR(keys.uploads, listUploads, { ...defaults, refreshInterval: (list) => (list?.some((u) => u.status === "RECEIVED") ? 3000 : 0) });
 export const useProfile = () => useSWR(keys.profile, getProfile, defaults);
 export const useCurrentPlan = () => useSWR(keys.planCurrent, getCurrentPlan, defaults);
 export const usePlanVersions = () => useSWR(keys.planVersions, listPlanVersions, defaults);

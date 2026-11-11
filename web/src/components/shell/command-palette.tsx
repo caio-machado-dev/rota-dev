@@ -1,11 +1,13 @@
 "use client";
 
 import { Command } from "cmdk";
-import { ClipboardCheck, LogOut, Monitor, Moon, Plus, Sun } from "lucide-react";
+import { ClipboardCheck, FileSearch, LogOut, Monitor, Moon, Plus, Sparkles, Sun } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 import { useTheme } from "@/components/theme/theme-provider";
 import { navItems, settingsItem } from "@/config/navigation";
+import { useProfile } from "@/lib/api/hooks";
+import { skillRows } from "@/lib/domain/profile";
 import { logout } from "@/lib/api/client";
 
 const itemClass =
@@ -26,6 +28,10 @@ export function CommandPalette({
 }) {
   const router = useRouter();
   const { setTheme } = useTheme();
+  const { data: profile } = useProfile();
+  const skills = skillRows(profile?.snapshots ?? []);
+  const evidences = (profile?.snapshots ?? []).flatMap((s) => s.evidences).slice(0, 40);
+  const goTo = (q: string) => run(() => router.push(`/perfil/encontramos?q=${encodeURIComponent(q)}`));
 
   function run(action: () => void | Promise<void>) {
     onOpenChange(false);
@@ -69,6 +75,28 @@ export function CommandPalette({
             <kbd className="num text-micro text-muted-foreground">c</kbd>
           </Command.Item>
         </Command.Group>
+
+        {skills.length > 0 ? (
+          <Command.Group heading="Habilidades" className="text-micro text-muted-foreground [&_[cmdk-group-heading]]:px-3 [&_[cmdk-group-heading]]:py-1.5">
+            {skills.map((skill) => (
+              <Command.Item key={skill.key} value={`habilidade ${skill.name}`} onSelect={() => goTo(skill.name)} className={itemClass}>
+                <Sparkles strokeWidth={1.5} aria-hidden />
+                <span className="flex-1">{skill.name}</span>
+              </Command.Item>
+            ))}
+          </Command.Group>
+        ) : null}
+
+        {evidences.length > 0 ? (
+          <Command.Group heading="Evidências" className="text-micro text-muted-foreground [&_[cmdk-group-heading]]:px-3 [&_[cmdk-group-heading]]:py-1.5">
+            {evidences.map((e) => (
+              <Command.Item key={e.id} value={`evidência ${e.title}`} onSelect={() => (e.skill ? goTo(e.skill) : run(() => router.push("/perfil/encontramos")))} className={itemClass}>
+                <FileSearch strokeWidth={1.5} aria-hidden />
+                <span className="flex-1 truncate">{e.title}</span>
+              </Command.Item>
+            ))}
+          </Command.Group>
+        ) : null}
 
         <Command.Group heading="Tema" className="text-micro text-muted-foreground [&_[cmdk-group-heading]]:px-3 [&_[cmdk-group-heading]]:py-1.5">
           <Command.Item value="tema escuro" onSelect={() => run(() => setTheme("dark"))} className={itemClass}>
