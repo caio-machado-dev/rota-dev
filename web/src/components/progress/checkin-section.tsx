@@ -52,7 +52,7 @@ function CheckinForm({ weekIso, onDone }: { weekIso: string; onDone: () => Promi
   }
 
   return (
-    <form onSubmit={submit} className="grid gap-5 md:grid-cols-2" aria-label={`Check-in da semana de ${week(weekIso)}`}>
+    <form onSubmit={submit} className="grid grid-cols-1 gap-5 md:grid-cols-2" aria-label={`Check-in da semana de ${week(weekIso)}`}>
       <Field label="Commits na semana" hint="A API não lê seus commits ainda: informe o número.">
         <Input type="number" min={0} max={1000} required value={commits} onChange={(e) => setCommits(Number(e.target.value))} className="num w-32" />
       </Field>

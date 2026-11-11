@@ -13,6 +13,6 @@ Legenda: Não iniciado · Em andamento · Implementado (funciona com a API) · T
 | Plano (objetivo, diagnóstico, roadmap, versões) | Testado | 4 subrotas; 14 testes; captura desktop/mobile. Sem restaurar versão/contestar nota (API) |
 | Progresso (visão geral, check-in, portões, reajustes) | Testado | 19 testes novos; captura desktop/mobile; sem impacto esperado de reajuste (API) |
 | Perfil (fontes, o que encontramos, meus dados) | Testado | 16 testes; captura. Sem editar habilidades nem dados manuais (API) |
-| Onboarding | Não iniciado | |
+| Onboarding (4 etapas) | Testado | 4 testes do fluxo; captura desktop/mobile. Sem etapas de processamento detalhadas (API só tem status) |
 
 Validação visual: Chromium (Playwright) com respostas da API simuladas **só no navegador de teste**; nada disso entra no produto.

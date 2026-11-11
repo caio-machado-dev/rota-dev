@@ -23,7 +23,7 @@ const UPLOAD_STATUS: Record<string, { label: string; tone: "info" | "success" | 
   FAILED: { label: "Não consegui ler", tone: "danger" },
 };
 
-function GithubCard({ source }: { source: Source | undefined }) {
+export function GithubCard({ source }: { source: Source | undefined }) {
   const { mutate } = useSWRConfig();
   const toast = useToast();
   const { data: profile } = useProfile();
@@ -106,7 +106,7 @@ function GithubCard({ source }: { source: Source | undefined }) {
   );
 }
 
-function UploadCard({ kind, uploads }: { kind: UploadKind; uploads: Upload[] }) {
+export function UploadCard({ kind, uploads }: { kind: UploadKind; uploads: Upload[] }) {
   const { mutate } = useSWRConfig();
   const toast = useToast();
   const rule = UPLOAD_RULES[kind];
@@ -162,7 +162,7 @@ export function SourcesSection() {
   if (error || !sources) return <ErrorState message="Não consegui carregar as fontes." onRetry={() => void mutate()} />;
 
   return (
-    <div className="grid items-start gap-6 lg:grid-cols-2">
+    <div className="grid grid-cols-1 items-start gap-6 lg:grid-cols-2">
       <GithubCard source={sources.find((s) => s.type === "GITHUB")} />
       <UploadCard kind="LINKEDIN" uploads={uploads ?? []} />
       <UploadCard kind="RESUME" uploads={uploads ?? []} />
