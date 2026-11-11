@@ -1,7 +1,7 @@
 "use client";
 
 import { Command } from "cmdk";
-import { LogOut, Monitor, Moon, Sun } from "lucide-react";
+import { LogOut, Monitor, Moon, Plus, Sun } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 import { useTheme } from "@/components/theme/theme-provider";
@@ -13,16 +13,16 @@ const itemClass =
 
 /**
  * Paleta de comandos (⌘/Ctrl + K): navegar, trocar de tema e sair. A lista de ações cresce com as telas;
- * `extra` permite que cada tela registre comandos próprios (registrar sessão, abrir check-in...).
+ * Ações: registrar sessão (n).
  */
 export function CommandPalette({
   open,
   onOpenChange,
-  extra,
+  onRegisterSession,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  extra?: React.ReactNode;
+  onRegisterSession: () => void;
 }) {
   const router = useRouter();
   const { setTheme } = useTheme();
@@ -57,7 +57,13 @@ export function CommandPalette({
           ))}
         </Command.Group>
 
-        {extra}
+        <Command.Group heading="Ações" className="text-micro text-muted-foreground [&_[cmdk-group-heading]]:px-3 [&_[cmdk-group-heading]]:py-1.5">
+          <Command.Item value="registrar sessão de estudo" onSelect={() => run(onRegisterSession)} className={itemClass}>
+            <Plus strokeWidth={1.5} aria-hidden />
+            <span className="flex-1">Registrar sessão</span>
+            <kbd className="num text-micro text-muted-foreground">n</kbd>
+          </Command.Item>
+        </Command.Group>
 
         <Command.Group heading="Tema" className="text-micro text-muted-foreground [&_[cmdk-group-heading]]:px-3 [&_[cmdk-group-heading]]:py-1.5">
           <Command.Item value="tema escuro" onSelect={() => run(() => setTheme("dark"))} className={itemClass}>

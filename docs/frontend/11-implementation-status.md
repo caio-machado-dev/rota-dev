@@ -9,7 +9,8 @@ Legenda: Não iniciado · Em andamento · Implementado (funciona com a API) · T
 | Shell (sidebar, topbar, mobile, paleta, atalhos, guarda) | Testado | testes de integração + captura (desktop, mobile, claro/escuro) |
 | `/login` | Implementado | só GitHub; capturado |
 | `/configuracoes` | Implementado | tema e resumo da conta; notificações não existem no backend |
-| Agora, Plano, Progresso, Perfil | Não iniciado | painéis antigos funcionando dentro do novo shell |
+| Agora | Testado | testes de componente + captura desktop/mobile; ver limitações em `04-pages.md` |
+| Plano, Progresso, Perfil | Não iniciado | painéis antigos funcionando dentro do novo shell |
 | Onboarding | Não iniciado | |
 
 Validação visual: Chromium (Playwright) com respostas da API simuladas **só no navegador de teste**; nada disso entra no produto.

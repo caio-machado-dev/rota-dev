@@ -1,10 +1,9 @@
-import { NowPanel } from "@/components/now/now-panel";
+import type { Metadata } from "next";
+
+import { NowDashboard } from "@/components/now/now-dashboard";
+
+export const metadata: Metadata = { title: "Agora" };
 
 export default function NowPage() {
-  return (
-    <section className="max-w-3xl">
-      <h1 className="sr-only">Agora</h1>
-      <NowPanel />
-    </section>
-  );
+  return <NowDashboard />;
 }

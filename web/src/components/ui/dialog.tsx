@@ -20,6 +20,9 @@ const placement = {
   /** Bottom sheet (celular). */
   bottom:
     "inset-x-0 bottom-0 max-h-[90dvh] rounded-t-modal pb-[max(1.25rem,env(safe-area-inset-bottom))] data-[starting-style]:translate-y-8 data-[ending-style]:translate-y-8",
+  /** Bottom sheet no celular e painel lateral a partir de `md`. */
+  responsive:
+    "inset-x-0 bottom-0 max-h-[90dvh] rounded-t-modal pb-[max(1.25rem,env(safe-area-inset-bottom))] data-[starting-style]:translate-y-8 data-[ending-style]:translate-y-8 md:inset-x-auto md:right-0 md:top-0 md:bottom-auto md:h-dvh md:max-h-none md:w-[28rem] md:rounded-l-modal md:rounded-tr-none md:pb-5 md:data-[starting-style]:translate-y-0 md:data-[ending-style]:translate-y-0 md:data-[starting-style]:translate-x-8 md:data-[ending-style]:translate-x-8",
 } as const;
 
 /**
