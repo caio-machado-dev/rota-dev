@@ -19,6 +19,7 @@ ADR aceito não se edita. Para mudar de ideia, crie um ADR novo que **substitui*
 | [0012](0012-marca-centralizada.md) | Marca centralizada | Aceito |
 | [0013](0013-deploy-vps-compose.md) | Deploy na VPS com Docker Compose | Aceito |
 | [0014](0014-ci-workflow-unico-com-porteiro.md) | CI com workflow único e check porteiro | Aceito |
-| [0015](0015-ia-sdk-modelo-saida-estruturada.md) | IA: SDK oficial, Claude Opus 5.5 e saída estruturada | Aceito |
+| [0015](0015-ia-sdk-modelo-saida-estruturada.md) | IA: SDK oficial, Claude Opus 5.5 e saída estruturada | Provedor e modelo substituídos por 0016 |
+| [0016](0016-ia-via-openrouter.md) | IA via OpenRouter, com modelo gratuito para uso pessoal | Aceito |
 
 Modelo para novos ADRs: [0000-modelo.md](0000-modelo.md).

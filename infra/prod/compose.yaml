@@ -36,7 +36,10 @@ services:
       GITHUB_CLIENT_ID: ${GITHUB_CLIENT_ID:?}
       GITHUB_CLIENT_SECRET: ${GITHUB_CLIENT_SECRET:?}
       ROTA_ENCRYPTION_KEY: ${ROTA_ENCRYPTION_KEY:?}
-      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:?}
+      ROTA_AI_PROVIDER: ${ROTA_AI_PROVIDER:-openrouter}
+      OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:-}
+      ROTA_AI_OPENROUTER_MODEL: ${ROTA_AI_OPENROUTER_MODEL:-nvidia/nemotron-3.5-super-vl:free}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
       # HTTPS em produção: o cookie de sessão só trafega com Secure.
       SESSION_COOKIE_SECURE: "true"
       # Logs em JSON (formato ECS, suportado nativamente pelo Spring Boot): um coletor lê campos, não texto.

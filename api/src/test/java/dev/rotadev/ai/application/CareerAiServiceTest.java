@@ -37,8 +37,9 @@ class CareerAiServiceTest {
     private final List<AiCallLog.Entry> logged = new ArrayList<>();
     /** Registry em memória: o teste lê os contadores direto, sem Prometheus. */
     private final SimpleMeterRegistry meters = new SimpleMeterRegistry();
-    private final AiProperties properties = new AiProperties("chave", "claude-opus-5-5", "high", 16000, 2,
-            Map.of("claude-opus-5-5", new AiProperties.Price(new BigDecimal("4"), new BigDecimal("20"), new BigDecimal("0.2"), new BigDecimal("5"))));
+    private final AiProperties properties = new AiProperties("anthropic", "high", 16000, 2,
+            Map.of("claude-opus-5-5", new AiProperties.Price(new BigDecimal("4"), new BigDecimal("20"), new BigDecimal("0.2"), new BigDecimal("5"))),
+            new AiProperties.Anthropic("chave", "claude-opus-5-5"), new AiProperties.OpenRouter("", "nvidia/nemotron-3.5-super-vl:free", "https://openrouter.ai/api/v1"));
 
     private final CareerAiService service = new CareerAiService(
             (name, version) -> new Prompt(name, version, "sistema", SCHEMA),
@@ -94,6 +95,31 @@ class CareerAiServiceTest {
 
         assertThatThrownBy(() -> service.run(request)).isInstanceOf(AiCallFailedException.class).hasMessageContaining("refusal");
         assertThat(logged).extracting(AiCallLog.Entry::status).containsExactly("REFUSED");
+    }
+
+    @Test
+    void freeModelCostsZero() {
+        responses.add(new LlmGateway.LlmResponse("{\"answer\": \"ok\"}", "end_turn", "nvidia/nemotron-3.5-super-vl:free", USAGE));
+
+        service.run(request);
+
+        assertThat(logged.getFirst().costUsdMicros()).isZero();
+    }
+
+    /** Chave ausente ou recusada: o gateway avisa que não vale tentar de novo, e o serviço não embrulha o erro. */
+    @Test
+    void permanentGatewayFailureIsNotRetryable() {
+        var failing = new CareerAiService((n, v) -> new Prompt(n, v, "s", SCHEMA),
+                (system, user, schema) -> { throw new AiCallFailedException("OPENROUTER_API_KEY não configurada"); },
+                entry -> {
+                    logged.add(entry);
+                    return UUID.randomUUID();
+                },
+                properties, JsonMapper.builder().build(), Clock.systemUTC(), meters);
+
+        assertThatThrownBy(() -> failing.run(request))
+                .isInstanceOfSatisfying(AiCallFailedException.class, e -> assertThat(e.retryable()).isFalse());
+        assertThat(logged).singleElement().extracting(AiCallLog.Entry::status).isEqualTo("ERROR");
     }
 
     @Test

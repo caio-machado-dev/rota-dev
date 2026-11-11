@@ -23,7 +23,7 @@ class AnthropicLlmGatewayTest {
 
     @Test
     void buildsStructuredOutputRequestWithEffortAndDefaultFallback() {
-        var gateway = new AnthropicLlmGateway(new AiProperties("k", "claude-opus-5-5", "high", 16000, 2, Map.of()), JsonMapper.builder().build());
+        var gateway = new AnthropicLlmGateway(props("k"), JsonMapper.builder().build());
 
         var params = gateway.params("sistema", "{\"x\": 1}", SCHEMA);
 
@@ -38,9 +38,14 @@ class AnthropicLlmGatewayTest {
 
     @Test
     void missingApiKeyFailsOnlyWhenCalled() {
-        var gateway = new AnthropicLlmGateway(new AiProperties("", "claude-opus-5-5", "high", 16000, 2, Map.of()), JsonMapper.builder().build());
+        var gateway = new AnthropicLlmGateway(props(""), JsonMapper.builder().build());
 
         assertThatThrownBy(() -> gateway.send("s", "{}", SCHEMA)).isInstanceOf(AiCallFailedException.class)
                 .hasMessageContaining("ANTHROPIC_API_KEY");
+    }
+
+    private static AiProperties props(String key) {
+        return new AiProperties("anthropic", "high", 16000, 2, Map.of(), new AiProperties.Anthropic(key, "claude-opus-5-5"),
+                new AiProperties.OpenRouter("", "x:free", "https://openrouter.test"));
     }
 }

@@ -1,6 +1,6 @@
 # 0015. IA: SDK oficial, Claude Opus 5.5 e saída estruturada
 
-- **Status:** Aceito
+- **Status:** Aceito (provedor e modelo substituídos pelo [ADR 0016](0016-ia-via-openrouter.md))
 - **Data:** 2026-11-10
 - **Complementa:** [ADR 0007](0007-ia-atras-de-interface.md), que deixou SDK, modelo e preço para a Fase 2
 

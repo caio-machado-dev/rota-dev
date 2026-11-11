@@ -37,6 +37,10 @@ services:
       GITHUB_CLIENT_SECRET: ${GITHUB_CLIENT_SECRET:-dev-sem-oauth}
       # O padrão é uma chave só de desenvolvimento, pública neste arquivo. Produção usa outra (ADR 0008).
       # Sem a chave, a API sobe, mas o diagnóstico e o plano (IA) falham.
+      # IA (ADR 0016): OpenRouter por padrão, com modelo gratuito. Sem a chave, diagnóstico e plano falham na hora.
+      ROTA_AI_PROVIDER: ${ROTA_AI_PROVIDER:-openrouter}
+      OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:-}
+      ROTA_AI_OPENROUTER_MODEL: ${ROTA_AI_OPENROUTER_MODEL:-nvidia/nemotron-3.5-super-vl:free}
       ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
       ROTA_ENCRYPTION_KEY: ${ROTA_ENCRYPTION_KEY:-Y2hhdmUtZGUtZGV2LWxvY2FsLW5hby11c2FyLXByb2Q=}
     volumes:

@@ -53,7 +53,7 @@ flowchart LR
     A --> DB[(PostgreSQL 17)]
     A -->|jobs: FOR UPDATE SKIP LOCKED| DB
     A -.->|OAuth + REST/GraphQL| GH[API do GitHub]
-    A -.->|JSON validado por schema| LLM[API do Claude]
+    A -.->|JSON validado por schema| LLM[LLM via OpenRouter ou API do Claude]
 ```
 
 - **Monólito modular.** Cada pacote de topo é um módulo com as camadas `domain → application → infrastructure / web`. O [Spring Modulith](https://spring.io/projects/spring-modulith) verifica as fronteiras num teste, e o build quebra se um módulo mexer nas entranhas de outro.

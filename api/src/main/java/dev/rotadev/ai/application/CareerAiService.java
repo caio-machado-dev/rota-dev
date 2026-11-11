@@ -80,10 +80,15 @@ public class CareerAiService implements CareerAiClient {
             LlmGateway.LlmResponse response;
             try {
                 response = llm.send(prompt.system(), request.inputJson(), prompt.schemaJson());
+            } catch (AiCallFailedException e) {
+                // O gateway já sabe que tentar de novo não adianta (chave ausente ou inválida, pedido
+                // recusado pelo provedor): registra e falha na hora, sem o job ficar horas em retry.
+                record(request, properties.activeModel(), attempt, "ERROR", TokenUsage.NONE, started, e.getMessage());
+                throw e;
             } catch (RuntimeException e) {
                 // Erro de rede ou da API: o SDK já tentou de novo por conta própria. Registramos e
                 // deixamos o job que chamou decidir (ele tem retry com backoff, ADR 0006).
-                record(request, properties.model(), attempt, "ERROR", TokenUsage.NONE, started, e.getMessage());
+                record(request, properties.activeModel(), attempt, "ERROR", TokenUsage.NONE, started, e.getMessage());
                 throw new AiCallFailedException("falha ao chamar a IA", e);
             }
 
@@ -121,7 +126,8 @@ public class CareerAiService implements CareerAiClient {
 
     private UUID record(AiRequest request, String model, int attempt, String status, TokenUsage usage, long startedNanos, String error) {
         var price = properties.pricing() == null ? null : properties.pricing().get(model);
-        Long cost = price == null ? null : price.toPricing().costUsdMicros(usage);
+        // Modelos ":free" do OpenRouter não cobram nada; os demais sem preço na tabela ficam sem custo (nulo).
+        Long cost = price != null ? Long.valueOf(price.toPricing().costUsdMicros(usage)) : model.endsWith(":free") ? Long.valueOf(0L) : null;
         long latencyMs = (System.nanoTime() - startedNanos) / 1_000_000;
         observe(request.prompt(), model, status, cost, latencyMs);
         return calls.record(new AiCallLog.Entry(request.userId(), request.prompt(), request.version(), model, attempt, status,

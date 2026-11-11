@@ -66,10 +66,19 @@ Os testes usam a chave de `api/src/test/resources/application.properties`.
 
 ### IA (diagnóstico e plano)
 
-As chamadas ao Claude precisam de `ANTHROPIC_API_KEY` (no `infra/.env` ou exportada no terminal).
-Sem ela, tudo sobe normalmente e só a geração de diagnóstico e plano falha. Os testes nunca chamam a
-API: o `LlmGateway` é trocado por um falso. Cada chamada fica registrada na tabela `ai_calls`, com
-tokens e custo estimado (ADR 0015).
+Por padrão a IA vem do **OpenRouter com um modelo gratuito** (`nvidia/nemotron-3.5-super-vl:free`, ADR 0016):
+
+1. Crie uma chave em https://openrouter.ai/keys (grátis, sem cartão).
+2. Coloque em `infra/.env`: `OPENROUTER_API_KEY=sk-or-...` (ou exporte no terminal da API).
+
+Limites do plano gratuito: 20 pedidos por minuto e **50 por dia**. Um diagnóstico e um plano usam
+de 2 a 4 pedidos. Modelos gratuitos podem registrar o que recebem: use só com os **seus** dados.
+
+Sem a chave, tudo sobe normalmente e só a geração de diagnóstico e plano falha, na hora e com a
+mensagem "OPENROUTER_API_KEY não configurada". Os testes nunca chamam a API: o `LlmGateway` é trocado
+por um falso. Cada chamada fica registrada na tabela `ai_calls`, com tokens e custo (zero nos `:free`).
+
+Para usar o Claude: `ROTA_AI_PROVIDER=anthropic` e `ANTHROPIC_API_KEY`.
 
 ## Testes
 
