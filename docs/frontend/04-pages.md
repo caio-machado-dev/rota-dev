@@ -41,3 +41,13 @@ Layout comum com `PageHeader` + `SectionNav` (navegação por rota; o breadcrumb
 - **Reajustes:** motivo, semana afetada, status; aceitar pede confirmação explícita (gera nova versão via job), recusar mantém o plano; aceitos mostram
   o antes/depois como diff entre a versão gerada e a anterior. **Não há** "impacto esperado" nem "histórico de decisões" além do status (API).
 - **Atalhos/paleta:** `c` e "Abrir check-in" levam a `/progresso/checkin`.
+
+## Perfil (`/perfil`, `/perfil/encontramos`, `/perfil/dados`)
+- **Fontes:** GitHub (conta, conexão, última leitura, dados identificados, "Atualizar agora": job com acompanhamento por `lastSyncedAt` até 90 s),
+  LinkedIn e Currículo (`FileUploader`: clique ou arraste, validação de formato e 10 MB antes de enviar, lista com formato, tamanho e estado,
+  polling enquanto `RECEIVED`), Dados manuais (indisponível na API, sem botão).
+- **O que encontramos:** habilidades das leituras mais recentes de cada fonte (confiança, peso, fonte, evidências ao expandir), filtros por fonte/
+  confiança/nome (a paleta de comandos abre aqui com `?q=`), comparação das duas últimas leituras de uma fonte (entrou/saiu/mudou de peso).
+  **Sem** confirmar/corrigir/remover/adicionar (a API não tem).
+- **Meus dados:** conta (nome, login, e-mail, fuso, plano), exportação JSON, privacidade e exclusão com diálogo + digitar o login.
+- A paleta (⌘K) agora busca habilidades e evidências do perfil.

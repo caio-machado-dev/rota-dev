@@ -81,6 +81,7 @@ function ConfirmDialog({
   confirmLabel,
   destructive = false,
   busy = false,
+  confirmDisabled = false,
   onConfirm,
   children,
 }: {
@@ -91,6 +92,8 @@ function ConfirmDialog({
   confirmLabel: string;
   destructive?: boolean;
   busy?: boolean;
+  /** Desabilita a confirmação sem mostrar "Aguarde…" (ex.: campo de confirmação ainda não confere). */
+  confirmDisabled?: boolean;
   onConfirm: () => void | Promise<void>;
   /** Campos extras, como "digite seu login para confirmar". */
   children?: React.ReactNode;
@@ -101,7 +104,7 @@ function ConfirmDialog({
         {children}
         <div className="mt-5 flex justify-end gap-2">
           <DialogClose render={<Button variant="outline" disabled={busy} />}>Cancelar</DialogClose>
-          <Button variant={destructive ? "destructive" : "default"} disabled={busy} onClick={() => void onConfirm()}>
+          <Button variant={destructive ? "destructive" : "default"} disabled={busy || confirmDisabled} onClick={() => void onConfirm()}>
             {busy ? "Aguarde…" : confirmLabel}
           </Button>
         </div>
