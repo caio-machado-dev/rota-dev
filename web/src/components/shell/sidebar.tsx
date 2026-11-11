@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 
 import { Logo, LogoMark } from "@/components/brand/logo";
 import { Progress } from "@/components/ui/progress";
+import { Tooltip } from "@/components/ui/tooltip";
 import { brand } from "@/config/brand";
 import { isActive, navItems, settingsItem, type NavItem } from "@/config/navigation";
 import { useReadiness } from "@/lib/api/hooks";
@@ -18,10 +19,9 @@ const KEY = "rota-sidebar";
 
 function NavLink({ item, collapsed, active }: { item: NavItem; collapsed: boolean; active: boolean }) {
   const { href, label, icon: Icon } = item;
-  return (
+  const link = (
     <Link
       href={href}
-      title={collapsed ? label : undefined}
       aria-label={collapsed ? label : undefined}
       aria-current={active ? "page" : undefined}
       className={cn(
@@ -35,6 +35,7 @@ function NavLink({ item, collapsed, active }: { item: NavItem; collapsed: boolea
       {collapsed ? null : label}
     </Link>
   );
+  return collapsed ? <Tooltip label={label}>{link}</Tooltip> : link;
 }
 
 /** Mostra a prontidão atual em qualquer página. Some se ainda não há dado (sem sessão, por exemplo). */
