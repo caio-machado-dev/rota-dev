@@ -20,6 +20,7 @@ export type Readiness = components["schemas"]["ReadinessResponse"];
 export type CheckinStatus = components["schemas"]["CheckinStatusResponse"];
 export type CheckinInput = components["schemas"]["CheckinRequest"];
 export type MilestoneAchievement = components["schemas"]["MilestoneAchievementResponse"];
+export type Checkin = components["schemas"]["CheckinResponse"];
 export type Adjustment = components["schemas"]["AdjustmentResponse"];
 
 /** Onde o login começa. É um link comum (navegação inteira), não uma chamada `fetch`. */
@@ -192,6 +193,15 @@ export async function getReadiness(): Promise<Readiness> {
 
 export async function getCheckinStatus(): Promise<CheckinStatus> {
   return json(await apiFetch("/api/checkin"));
+}
+
+export async function getCheckinHistory(): Promise<Checkin[]> {
+  return json(await apiFetch("/api/checkin/history"));
+}
+
+/** Sessões de estudo entre duas datas (`YYYY-MM-DD`, inclusive). */
+export async function listSessions(from: string, to: string): Promise<StudySession[]> {
+  return json(await apiFetch(`/api/tracking/sessions?from=${from}&to=${to}`));
 }
 
 export async function submitCheckin(input: CheckinInput): Promise<void> {

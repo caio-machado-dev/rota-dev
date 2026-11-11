@@ -29,3 +29,15 @@ Layout comum com `PageHeader` + `SectionNav` (navegação por rota; o breadcrumb
   calculada no cliente com `GET /api/plan/versions/{id}`).
 - **Limitações (não simuladas):** sem restaurar versão, sem autor da versão (a API não informa), sem contestar nota, sem checklist persistido do
   projeto-âncora, a API só marca como dependente a geração do plano de objetivo + diagnóstico prontos.
+
+## Progresso (`/progresso`, `/progresso/checkin`, `/progresso/portoes`, `/progresso/reajustes`)
+- **Visão geral:** `ReadinessGauge` (radial, número em texto), `ReadinessComposition` (peso e pontos de cada componente: 40/25/20/15), variação desde o último ponto,
+  `ReadinessTrend` (índice + componentes, ativáveis), `ConsistencyHeatmap` (12 semanas, de `GET /api/tracking/sessions?from&to`), `SessionMix`,
+  `WeeklyHoursChart` (com a meta), `GoalComparison` (atual × exigido do diagnóstico). Cada gráfico tem tooltip, estado vazio e tabela oculta para leitores de tela.
+  Os números do heatmap, horas e mix são calculados no cliente a partir das sessões (`lib/domain/consistency.ts`, testado).
+- **Check-in:** estados Fechado (abre no sábado, fecha na terça), Aberto (resumo automático + commits, energia 1–5, bloqueios, notas) e Concluído
+  (resultado, link para reajustes sugeridos); histórico de `GET /api/checkin/history`. Commits são digitados: a API não os lê do GitHub.
+- **Portões:** trajeto com conquistados (data, versão, evidência), próximo marco e pendentes; "Registrar conquista" pede a URL (`POST /api/milestones`).
+- **Reajustes:** motivo, semana afetada, status; aceitar pede confirmação explícita (gera nova versão via job), recusar mantém o plano; aceitos mostram
+  o antes/depois como diff entre a versão gerada e a anterior. **Não há** "impacto esperado" nem "histórico de decisões" além do status (API).
+- **Atalhos/paleta:** `c` e "Abrir check-in" levam a `/progresso/checkin`.

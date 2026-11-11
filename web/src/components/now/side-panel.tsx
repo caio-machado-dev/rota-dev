@@ -62,20 +62,20 @@ export function SidePanel({
         ) : (
           <p className="text-small text-muted-foreground">Sem portões pendentes. Eles aparecem quando o plano estiver pronto.</p>
         )}
-        <SideLink href="/progresso">Ver portões</SideLink>
+        <SideLink href="/progresso/portoes">Ver portões</SideLink>
       </Card>
 
       <Card>
         <CardHeader>
           <div>
             <CardTitle>Check-in semanal</CardTitle>
-            <CardDescription>{checkin?.openWeek ? "Aberto para esta semana" : checkin?.done ? "Concluído nesta semana" : "Ainda fechado"}</CardDescription>
+            <CardDescription>{checkin?.done ? "Concluído nesta semana" : checkin?.openWeek ? "Aberto para esta semana" : "Fechado: abre no sábado"}</CardDescription>
           </div>
         </CardHeader>
         <p className="num text-small text-muted-foreground">
           {checkin ? `${checkin.minutesLogged} min registrados · ${checkin.reviewDays} dias de revisão` : "—"}
         </p>
-        <SideLink href="/progresso">{checkin?.openWeek ? "Fazer o check-in" : "Ver check-ins"}</SideLink>
+        <SideLink href="/progresso/checkin">{checkin?.openWeek && !checkin.done ? "Fazer o check-in" : "Ver check-ins"}</SideLink>
       </Card>
 
       {proposed.length > 0 ? (
@@ -89,7 +89,7 @@ export function SidePanel({
             </div>
           </CardHeader>
           <p className="text-small text-muted-foreground">{proposed[0].reason}</p>
-          <SideLink href="/progresso">Decidir</SideLink>
+          <SideLink href="/progresso/reajustes">Decidir</SideLink>
         </Card>
       ) : null}
     </>

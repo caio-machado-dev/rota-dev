@@ -4,6 +4,7 @@ import useSWR, { type SWRConfiguration } from "swr";
 
 import {
   getCheckinStatus,
+  getCheckinHistory,
   getCurrentPlan,
   getGoal,
   getLatestDiagnosis,
@@ -16,6 +17,7 @@ import {
   listAdjustments,
   listMilestones,
   listPlanVersions,
+  listSessions,
   listSources,
   listUploads,
 } from "./client";
@@ -58,6 +60,12 @@ export const useUploads = () => useSWR(keys.uploads, listUploads, defaults);
 export const useProfile = () => useSWR(keys.profile, getProfile, defaults);
 export const useCurrentPlan = () => useSWR(keys.planCurrent, getCurrentPlan, defaults);
 export const usePlanVersions = () => useSWR(keys.planVersions, listPlanVersions, defaults);
+
+export const useCheckinHistory = () => useSWR("/api/checkin/history", getCheckinHistory, defaults);
+
+/** Sessões no intervalo `[from, to]` (datas `YYYY-MM-DD`); `from` nulo não busca (enquanto "hoje" ainda não é conhecido). */
+export const useSessions = (from: string | null, to: string | null) =>
+  useSWR(from && to ? `/api/tracking/sessions?from=${from}&to=${to}` : null, () => listSessions(from as string, to as string), defaults);
 
 /** Conteúdo completo de uma versão do plano; `id` nulo não busca nada (usado ao comparar versões). */
 export const usePlanVersion = (id: string | null) => useSWR(id ? `/api/plan/versions/${id}` : null, () => getPlanVersion(id as string), defaults);

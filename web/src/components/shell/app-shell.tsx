@@ -40,7 +40,13 @@ function ShellFrame({ children }: { children: React.ReactNode }) {
     },
     [router],
   );
-  const onKey = useCallback((key: string) => key === "n" && openSession(), [openSession]);
+  const onKey = useCallback(
+    (key: string) => {
+      if (key === "n") openSession();
+      if (key === "c") router.push("/progresso/checkin");
+    },
+    [openSession, router],
+  );
   useGlobalShortcuts({ onTogglePalette: togglePalette, onSequence, onKey });
 
   return (
