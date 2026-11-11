@@ -12,7 +12,7 @@ type State = { status: "loading" } | { status: "anonymous" } | { status: "signed
  * Mostra quem está logado ou o botão de entrar. Busca `/api/me` no navegador, depois que a página
  * carrega: o cookie de sessão vai junto sozinho, porque a API está na mesma origem.
  */
-export function UserMenu() {
+export function UserMenu({ compact = false }: { compact?: boolean }) {
   const [state, setState] = useState<State>({ status: "loading" });
   const router = useRouter();
 
@@ -34,22 +34,23 @@ export function UserMenu() {
     return (
       <a
         href={LOGIN_URL}
-        className="flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium text-brand hover:bg-sidebar-accent"
+        aria-label="Entrar com GitHub"
+        className="flex items-center justify-center gap-2 rounded-control px-3 py-2 text-small font-medium text-brand hover:bg-sidebar-accent"
       >
         <LogIn className="size-4" aria-hidden />
-        Entrar com GitHub
+        {compact ? null : "Entrar com GitHub"}
       </a>
     );
   }
 
   const { me } = state;
   return (
-    <div className="flex items-center gap-3 px-3 py-2">
+    <div className={compact ? "flex flex-col items-center gap-2 py-1" : "flex items-center gap-3 px-3 py-2"}>
       {me.avatarUrl ? (
         // eslint-disable-next-line @next/next/no-img-element -- avatar externo e pequeno, sem otimização.
         <img src={me.avatarUrl} alt="" className="size-7 rounded-full" />
       ) : null}
-      <span className="min-w-0 flex-1 truncate text-sm">{me.name || me.login}</span>
+      {compact ? null : <span className="min-w-0 flex-1 truncate text-small">{me.name || me.login}</span>}
       <button
         type="button"
         onClick={async () => {

@@ -1,81 +1,46 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { useCallback, useState } from "react";
 
-import { brand } from "@/config/brand";
-import { isActive, navItems } from "@/config/navigation";
-import { cn } from "@/lib/utils";
+import { navItems } from "@/config/navigation";
 
-import { UserMenu } from "./user-menu";
+import { AuthGate } from "./auth-gate";
+import { CommandPalette } from "./command-palette";
+import { MobileNav } from "./mobile-nav";
+import { Sidebar } from "./sidebar";
+import { useGlobalShortcuts } from "./shortcuts";
+import { Topbar } from "./topbar";
 
 /**
- * Estrutura de navegação: barra lateral fixa a partir de `md` (desktop) e barra inferior
- * no celular. É um Client Component porque precisa da rota atual (`usePathname`).
+ * Estrutura das telas internas: barra lateral fixa e compactável (desktop), topbar, navegação
+ * inferior (celular), paleta de comandos e atalhos de teclado. Largura útil de até 1320px.
  */
 export function AppShell({ children }: { children: React.ReactNode }) {
-  const pathname = usePathname();
+  const router = useRouter();
+  const [paletteOpen, setPaletteOpen] = useState(false);
+
+  const togglePalette = useCallback(() => setPaletteOpen((open) => !open), []);
+  const onSequence = useCallback(
+    (second: string) => {
+      const target = navItems.find((item) => item.shortcut === second);
+      if (target) router.push(target.href);
+    },
+    [router],
+  );
+  useGlobalShortcuts({ onTogglePalette: togglePalette, onSequence });
 
   return (
     <div className="flex min-h-dvh">
-      <aside className="hidden w-60 shrink-0 flex-col border-r border-border bg-sidebar px-3 py-6 md:flex">
-        <Link href="/" className="mb-8 px-3 font-mono text-sm font-semibold tracking-tight text-brand">
-          {brand.name}
-        </Link>
-        <nav aria-label="Navegação principal" className="flex flex-col gap-1">
-          {navItems.map(({ href, label, icon: Icon }) => {
-            const active = isActive(pathname, href);
-            return (
-              <Link
-                key={href}
-                href={href}
-                aria-current={active ? "page" : undefined}
-                className={cn(
-                  "flex items-center gap-3 rounded-md px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-sidebar-accent hover:text-foreground",
-                  active && "bg-sidebar-accent text-foreground",
-                )}
-              >
-                <Icon className={cn("size-4", active && "text-brand")} aria-hidden />
-                {label}
-              </Link>
-            );
-          })}
-        </nav>
-        <div className="mt-auto border-t border-border pt-4">
-          <UserMenu />
-        </div>
-      </aside>
-
-      <main className="flex-1 px-5 pb-24 pt-8 md:px-10 md:pb-10">
-        {/* No celular não há barra lateral: o menu do usuário fica no topo. */}
-        <div className="mb-6 flex justify-end md:hidden">
-          <UserMenu />
-        </div>
-        {children}
-      </main>
-
-      <nav
-        aria-label="Navegação principal"
-        className="fixed inset-x-0 bottom-0 grid grid-cols-4 border-t border-border bg-background/95 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden"
-      >
-        {navItems.map(({ href, label, icon: Icon }) => {
-          const active = isActive(pathname, href);
-          return (
-            <Link
-              key={href}
-              href={href}
-              aria-current={active ? "page" : undefined}
-              className={cn(
-                "flex flex-col items-center gap-1 py-2.5 text-[11px] text-muted-foreground",
-                active && "text-brand",
-              )}
-            >
-              <Icon className="size-5" aria-hidden />
-              {label}
-            </Link>
-          );
-        })}
-      </nav>
+      <Sidebar />
+      <div className="flex min-w-0 flex-1 flex-col">
+        <Topbar onOpenPalette={() => setPaletteOpen(true)} />
+        <main className="mx-auto w-full max-w-[1320px] flex-1 px-4 pb-24 pt-6 md:px-8 md:pb-10 md:pt-8">
+          <AuthGate>{children}</AuthGate>
+        </main>
+      </div>
+      <MobileNav />
+      <CommandPalette open={paletteOpen} onOpenChange={setPaletteOpen} />
     </div>
   );
 }

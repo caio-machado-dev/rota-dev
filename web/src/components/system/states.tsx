@@ -22,7 +22,7 @@ export function EmptyState({
       <Icon className="size-6 text-muted-foreground" strokeWidth={1.5} aria-hidden />
       <div>
         <p className="font-medium">{title}</p>
-        {description ? <p className="mt-1 max-w-sm text-secondary text-muted-foreground">{description}</p> : null}
+        {description ? <p className="mt-1 max-w-sm text-small text-muted-foreground">{description}</p> : null}
       </div>
       {action}
     </div>
@@ -43,7 +43,7 @@ export function ErrorState({
     <div role="alert" className={cn("flex items-start gap-3 rounded-card border border-destructive/30 bg-destructive/10 p-4", className)}>
       <CircleAlert className="mt-0.5 size-4 shrink-0 text-destructive" strokeWidth={1.5} aria-hidden />
       <div className="flex-1">
-        <p className="text-secondary">{message}</p>
+        <p className="text-small">{message}</p>
         {onRetry ? (
           <Button variant="outline" size="sm" className="mt-3" onClick={onRetry}>
             Tentar de novo
