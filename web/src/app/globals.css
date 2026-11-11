@@ -4,15 +4,30 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/*
+ * Design system do Rota Dev. Valores de cor, tipografia, raio, sombra e movimento vivem SÓ aqui
+ * (e a cor da marca em src/config/brand.ts, ADR 0012). Componentes usam tokens semânticos
+ * (bg-card, text-muted-foreground...), nunca valores soltos. Documentação: docs/frontend/01-design-system.md
+ */
 @theme inline {
-  /* Gráficos: duas séries validadas com o validador de paleta da skill dataviz
-     (scripts/validate_palette.js), uma por tema. Texto nunca usa estas cores. */
+  /* Gráficos: duas séries validadas com o validador de paleta da skill dataviz, uma por tema.
+     Texto nunca usa estas cores. */
   --color-viz-current: var(--viz-current);
   --color-viz-required: var(--viz-required);
   --color-brand: var(--brand);
   --color-brand-foreground: var(--brand-foreground);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
+  --color-surface-overlay: var(--surface-overlay);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+  --color-chart-6: var(--chart-6);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --font-heading: var(--font-sans);
@@ -45,6 +60,8 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
+
+  /* Raios: controles 6px, cards 10px, modais 14px. */
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
@@ -52,81 +69,198 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+  --radius-control: 0.375rem;
+  --radius-card: 0.625rem;
+  --radius-modal: 0.875rem;
+
+  /* Tipografia (tamanho / altura de linha). Números usam tabular-nums (classe .num). */
+  --text-display: 4.5rem;
+  --text-display--line-height: 1;
+  --text-h1: 1.875rem;
+  --text-h1--line-height: 1.2;
+  --text-h2: 1.375rem;
+  --text-h2--line-height: 1.3;
+  --text-h3: 1.0625rem;
+  --text-h3--line-height: 1.4;
+  --text-body: 0.9375rem;
+  --text-body--line-height: 1.55;
+  --text-secondary: 0.8125rem;
+  --text-secondary--line-height: 1.5;
+  --text-micro: 0.75rem;
+  --text-micro--line-height: 1.4;
+
+  /* Sombras sutis: a profundidade vem mais da superfície do que da sombra. */
+  --shadow-surface: 0 1px 0 0 oklch(1 0 0 / 4%) inset, 0 1px 2px 0 oklch(0 0 0 / 20%);
+  --shadow-raised: 0 4px 12px -2px oklch(0 0 0 / 25%);
+  --shadow-overlay: 0 12px 32px -8px oklch(0 0 0 / 45%);
+
+  /* Movimento funcional: 150 a 250 ms. */
+  --ease-out-soft: cubic-bezier(0.16, 1, 0.3, 1);
+  --duration-fast: 150ms;
+  --duration-base: 200ms;
+  --duration-slow: 250ms;
+
+  /* Escalas (geradas por script, matiz fixo por escala). Use os tokens semânticos nos componentes; as escalas são a matéria-prima. */
+  --color-primary-50: oklch(0.985 0.037 128);
+  --color-primary-100: oklch(0.96 0.154 128);
+  --color-primary-200: oklch(0.92 0.163 128);
+  --color-primary-300: oklch(0.86 0.176 128);
+  --color-primary-400: oklch(0.79 0.191 128);
+  --color-primary-500: oklch(0.71 0.191 128);
+  --color-primary-600: oklch(0.62 0.171 128);
+  --color-primary-700: oklch(0.52 0.149 128);
+  --color-primary-800: oklch(0.42 0.127 128);
+  --color-primary-900: oklch(0.33 0.108 128);
+  --color-primary-950: oklch(0.24 0.022 128);
+  --color-neutral-50: oklch(0.985 0.004 128);
+  --color-neutral-100: oklch(0.96 0.012 128);
+  --color-neutral-200: oklch(0.92 0.012 128);
+  --color-neutral-300: oklch(0.86 0.012 128);
+  --color-neutral-400: oklch(0.79 0.012 128);
+  --color-neutral-500: oklch(0.71 0.012 128);
+  --color-neutral-600: oklch(0.62 0.012 128);
+  --color-neutral-700: oklch(0.52 0.012 128);
+  --color-neutral-800: oklch(0.42 0.012 128);
+  --color-neutral-900: oklch(0.33 0.012 128);
+  --color-neutral-950: oklch(0.24 0.004 128);
+  --color-success-50: oklch(0.985 0.028 155);
+  --color-success-100: oklch(0.96 0.115 155);
+  --color-success-200: oklch(0.92 0.122 155);
+  --color-success-300: oklch(0.86 0.132 155);
+  --color-success-400: oklch(0.79 0.143 155);
+  --color-success-500: oklch(0.71 0.143 155);
+  --color-success-600: oklch(0.62 0.129 155);
+  --color-success-700: oklch(0.52 0.112 155);
+  --color-success-800: oklch(0.42 0.096 155);
+  --color-success-900: oklch(0.33 0.081 155);
+  --color-warning-50: oklch(0.985 0.028 75);
+  --color-warning-100: oklch(0.96 0.115 75);
+  --color-warning-200: oklch(0.92 0.122 75);
+  --color-warning-300: oklch(0.86 0.132 75);
+  --color-warning-400: oklch(0.79 0.143 75);
+  --color-warning-500: oklch(0.71 0.143 75);
+  --color-warning-600: oklch(0.62 0.129 75);
+  --color-warning-700: oklch(0.52 0.112 75);
+  --color-warning-800: oklch(0.42 0.096 75);
+  --color-warning-900: oklch(0.33 0.081 75);
+  --color-destructive-50: oklch(0.985 0.037 25);
+  --color-destructive-100: oklch(0.96 0.154 25);
+  --color-destructive-200: oklch(0.92 0.163 25);
+  --color-destructive-300: oklch(0.86 0.176 25);
+  --color-destructive-400: oklch(0.79 0.191 25);
+  --color-destructive-500: oklch(0.71 0.191 25);
+  --color-destructive-600: oklch(0.62 0.171 25);
+  --color-destructive-700: oklch(0.52 0.149 25);
+  --color-destructive-800: oklch(0.42 0.127 25);
+  --color-destructive-900: oklch(0.33 0.108 25);
+  --color-info-50: oklch(0.985 0.024 240);
+  --color-info-100: oklch(0.96 0.100 240);
+  --color-info-200: oklch(0.92 0.106 240);
+  --color-info-300: oklch(0.86 0.114 240);
+  --color-info-400: oklch(0.79 0.124 240);
+  --color-info-500: oklch(0.71 0.124 240);
+  --color-info-600: oklch(0.62 0.111 240);
+  --color-info-700: oklch(0.52 0.097 240);
+  --color-info-800: oklch(0.42 0.083 240);
+  --color-info-900: oklch(0.33 0.070 240);
 }
 
 :root {
-  /* Fundo claro: aqua com contraste 2,8:1, por isso os gráficos sempre trazem os números em texto. */
+  /* Fundo claro: o verde dos gráficos tem contraste baixo, por isso os gráficos sempre trazem os números em texto. */
   --viz-current: #1baf7a;
   --viz-required: #2a78d6;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
-  --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
+  --brand: var(--brand-light);
+  --brand-foreground: var(--brand-light-foreground);
+  --background: oklch(0.985 0.004 128);
+  --foreground: oklch(0.2 0.01 128);
+  --surface: oklch(1 0 0);
+  --surface-raised: oklch(1 0 0);
+  --surface-overlay: oklch(1 0 0);
+  --card: var(--surface);
+  --card-foreground: var(--foreground);
+  --popover: var(--surface-overlay);
+  --popover-foreground: var(--foreground);
+  --primary: var(--brand);
+  --primary-foreground: var(--brand-foreground);
+  --secondary: oklch(0.95 0.006 128);
+  --secondary-foreground: oklch(0.25 0.01 128);
+  --muted: oklch(0.955 0.005 128);
+  --muted-foreground: oklch(0.46 0.012 128);
+  --accent: oklch(0.94 0.02 128);
+  --accent-foreground: oklch(0.25 0.01 128);
+  --destructive: oklch(0.55 0.21 27);
+  --success: oklch(0.52 0.14 155);
+  --success-foreground: oklch(0.99 0 0);
+  --warning: oklch(0.6 0.15 70);
+  --warning-foreground: oklch(0.2 0.04 70);
+  --info: oklch(0.52 0.15 245);
+  --info-foreground: oklch(0.99 0 0);
+  --border: oklch(0.2 0.01 128 / 12%);
+  --input: oklch(0.2 0.01 128 / 18%);
+  --ring: var(--brand);
+  --chart-1: oklch(0.52 0.15 135);
+  --chart-2: oklch(0.55 0.15 245);
+  --chart-3: oklch(0.62 0.15 70);
+  --chart-4: oklch(0.55 0.15 190);
+  --chart-5: oklch(0.58 0.18 25);
+  --chart-6: oklch(0.55 0.1 300);
   --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --sidebar: oklch(0.97 0.005 128);
+  --sidebar-foreground: oklch(0.2 0.01 128);
+  --sidebar-primary: var(--brand);
+  --sidebar-primary-foreground: var(--brand-foreground);
+  --sidebar-accent: oklch(0.93 0.015 128);
+  --sidebar-accent-foreground: oklch(0.2 0.01 128);
+  --sidebar-border: oklch(0.2 0.01 128 / 10%);
+  --sidebar-ring: var(--brand);
 }
 
 .dark {
   --viz-current: #199e70;
   --viz-required: #3987e5;
-  /* primária e foco seguem a cor da marca (src/config/brand.ts) */
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
+  --brand: var(--brand-dark);
+  --brand-foreground: var(--brand-dark-foreground);
+  --background: oklch(0.14 0.008 128);
+  --foreground: oklch(0.97 0.006 128);
+  --surface: oklch(0.175 0.009 128);
+  --surface-raised: oklch(0.21 0.01 128);
+  --surface-overlay: oklch(0.25 0.01 128);
+  --card: var(--surface);
+  --card-foreground: var(--foreground);
+  --popover: var(--surface-overlay);
+  --popover-foreground: var(--foreground);
   --primary: var(--brand);
   --primary-foreground: var(--brand-foreground);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
+  --secondary: oklch(0.25 0.01 128);
+  --secondary-foreground: oklch(0.97 0.006 128);
+  --muted: oklch(0.23 0.01 128);
+  --muted-foreground: oklch(0.72 0.012 128);
+  --accent: oklch(0.27 0.03 128);
+  --accent-foreground: oklch(0.97 0.006 128);
+  --destructive: oklch(0.7 0.19 22);
+  --success: oklch(0.75 0.16 155);
+  --success-foreground: oklch(0.2 0.04 155);
+  --warning: oklch(0.82 0.15 78);
+  --warning-foreground: oklch(0.2 0.04 78);
+  --info: oklch(0.74 0.12 240);
+  --info-foreground: oklch(0.2 0.04 240);
+  --border: oklch(1 0 0 / 9%);
+  --input: oklch(1 0 0 / 14%);
   --ring: var(--brand);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
+  --chart-1: oklch(0.88 0.2 128);
+  --chart-2: oklch(0.74 0.12 240);
+  --chart-3: oklch(0.82 0.15 78);
+  --chart-4: oklch(0.78 0.12 190);
+  --chart-5: oklch(0.72 0.17 20);
+  --chart-6: oklch(0.75 0.1 300);
+  --sidebar: oklch(0.16 0.009 128);
+  --sidebar-foreground: oklch(0.97 0.006 128);
+  --sidebar-primary: var(--brand);
+  --sidebar-primary-foreground: var(--brand-foreground);
+  --sidebar-accent: oklch(0.23 0.015 128);
+  --sidebar-accent-foreground: oklch(0.97 0.006 128);
+  --sidebar-border: oklch(1 0 0 / 9%);
+  --sidebar-ring: var(--brand);
 }
 
 @layer base {
@@ -138,5 +272,22 @@
   }
   html {
     @apply font-sans;
+  }
+}
+
+/* Números sempre alinhados em coluna. */
+.num {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Quem pede menos movimento recebe transições e animações praticamente instantâneas. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
