@@ -51,10 +51,16 @@ function ShellFrame({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="flex min-h-dvh">
+      <a
+        href="#conteudo"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[80] focus:rounded-control focus:bg-primary focus:px-3 focus:py-2 focus:text-small focus:font-medium focus:text-primary-foreground"
+      >
+        Pular para o conteúdo
+      </a>
       <Sidebar />
       <div className="flex min-w-0 flex-1 flex-col">
         <Topbar onOpenPalette={() => setPaletteOpen(true)} />
-        <main className="mx-auto w-full max-w-[1320px] flex-1 px-4 pb-24 pt-6 md:px-8 md:pb-10 md:pt-8">
+        <main id="conteudo" tabIndex={-1} className="mx-auto outline-none w-full max-w-[1320px] flex-1 px-4 pb-24 pt-6 md:px-8 md:pb-10 md:pt-8">
           <AuthGate>{children}</AuthGate>
         </main>
       </div>

@@ -189,11 +189,11 @@
   --accent: oklch(0.94 0.02 128);
   --accent-foreground: oklch(0.25 0.01 128);
   --destructive: oklch(0.55 0.21 27);
-  --success: oklch(0.52 0.14 155);
+  --success: oklch(0.41 0.12 155);
   --success-foreground: oklch(0.99 0 0);
-  --warning: oklch(0.6 0.15 70);
+  --warning: oklch(0.44 0.11 65);
   --warning-foreground: oklch(0.2 0.04 70);
-  --info: oklch(0.52 0.15 245);
+  --info: oklch(0.43 0.14 245);
   --info-foreground: oklch(0.99 0 0);
   --border: oklch(0.2 0.01 128 / 12%);
   --input: oklch(0.2 0.01 128 / 18%);

@@ -42,7 +42,7 @@ export function SettingsPanel() {
         ) : null}
         <p className="mt-4 text-small text-muted-foreground">
           Exportar dados e excluir a conta ficam em{" "}
-          <Link href="/perfil" className="text-brand hover:underline">
+          <Link href="/perfil" className="text-brand underline underline-offset-2">
             Perfil
           </Link>
           .

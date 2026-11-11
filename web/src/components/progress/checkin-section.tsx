@@ -170,7 +170,7 @@ export function CheckinSection() {
             {proposed.length > 0 ? (
               <p className="mt-4 rounded-control border border-brand/30 bg-brand/10 p-3 text-small">
                 O check-in gerou {proposed.length} {proposed.length === 1 ? "sugestão de reajuste" : "sugestões de reajuste"} do plano.{" "}
-                <Link href="/progresso/reajustes" className="font-medium text-brand hover:underline">
+                <Link href="/progresso/reajustes" className="font-medium text-brand underline underline-offset-2">
                   Revisar e decidir
                 </Link>
               </p>

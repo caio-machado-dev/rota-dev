@@ -31,7 +31,7 @@ export function Topbar({ onOpenPalette }: { onOpenPalette: () => void }) {
   const current = crumbs[crumbs.length - 1];
 
   return (
-    <div className="sticky top-0 z-30 flex h-14 items-center gap-3 border-b border-border bg-background/90 px-4 backdrop-blur md:px-8">
+    <header className="sticky top-0 z-30 flex h-14 items-center gap-3 border-b border-border bg-background/90 px-4 backdrop-blur md:px-8">
       <Link href="/" aria-label="Ir para Agora" className="md:hidden">
         <LogoMark className="size-7" />
       </Link>
@@ -73,6 +73,6 @@ export function Topbar({ onOpenPalette }: { onOpenPalette: () => void }) {
         <span className="hidden flex-1 text-left md:inline">Buscar no {brand.name}…</span>
         <kbd className="num hidden rounded-[4px] border border-border px-1.5 text-micro md:inline">⌘K</kbd>
       </button>
-    </div>
+    </header>
   );
 }
